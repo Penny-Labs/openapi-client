@@ -1,0 +1,1334 @@
+openapi: 3.1.0
+info:
+  title: PennyOS Management API
+  version: v1
+  description: >
+    REST API for management operations across Penny stack services.
+    This spec includes currently implemented REST routes only.
+servers:
+  - url: http://localhost:8090
+tags:
+  - name: Health
+  - name: Institutions
+  - name: Runtime
+  - name: Link
+  - name: LicensePublic
+  - name: LicenseAdmin
+  - name: Newsletter
+paths:
+  /healthz:
+    get:
+      tags: [Health]
+      operationId: getHealthz
+      summary: Health check
+      responses:
+        "200":
+          description: Service healthy
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ok
+        "500":
+          description: Service unhealthy
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: failed
+
+  /readyz:
+    get:
+      tags: [Health]
+      operationId: getReadyz
+      summary: Readiness check
+      responses:
+        "200":
+          description: Service ready
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ok
+        "500":
+          description: Service not ready
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: failed
+
+  /v1/institutions/:
+    get:
+      tags: [Institutions]
+      operationId: listInstitutions
+      summary: List institutions
+      responses:
+        "200":
+          description: Institution list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Institution"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/link/token:
+    put:
+      tags: [Link]
+      operationId: createLinkToken
+      summary: Create Plaid link token
+      security:
+        - RuntimeBearer: []
+      responses:
+        "200":
+          description: Link token created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateLinkTokenResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            text/plain:
+              schema:
+                type: string
+
+  /v1/link/connect:
+    post:
+      tags: [Link]
+      operationId: connectLinkToken
+      summary: Exchange public token and connect item
+      security:
+        - RuntimeBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConnectLinkTokenRequest"
+      responses:
+        "200":
+          description: Token connected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConnectLinkTokenResponse"
+        "400":
+          description: Invalid request or duplicate connection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            text/plain:
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            text/plain:
+              schema:
+                type: string
+
+  /v1/runtime/jwks:
+    get:
+      tags: [Runtime]
+      operationId: getRuntimeJwks
+      summary: Get active JWKS for lease JWT verification
+      responses:
+        "200":
+          description: Active signing keys
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwksResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/runtime/activate:
+    post:
+      tags: [Runtime]
+      operationId: activateRuntimeInstall
+      summary: Activate runtime install and issue lease JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RuntimeActivateRequest"
+      responses:
+        "200":
+          description: Runtime install activated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeActivateResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "409":
+          description: Transfer confirmation required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferConfirmationRequiredResponse"
+        "429":
+          description: Transfer cooldown active
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/runtime/lease/renew:
+    post:
+      tags: [Runtime]
+      operationId: renewRuntimeLease
+      summary: Renew runtime lease JWT
+      security:
+        - RuntimeBearer: []
+      responses:
+        "200":
+          description: Lease renewed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeRenewResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/runtime/usage/batch:
+    post:
+      tags: [Runtime]
+      operationId: ingestRuntimeUsageBatch
+      summary: Ingest usage events for billing meters
+      security:
+        - RuntimeBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RuntimeUsageBatchRequest"
+      responses:
+        "200":
+          description: Usage batch processed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeUsageBatchResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/signup:
+    post:
+      tags: [LicensePublic]
+      operationId: signupLicense
+      summary: Create a pending license via public signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LicenseSignupRequest"
+      responses:
+        "201":
+          description: License created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenseSignupResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/activate:
+    post:
+      tags: [LicensePublic]
+      operationId: activateLicense
+      summary: Activate or transfer license to an install
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LicenseActivateRequest"
+      responses:
+        "200":
+          description: License activated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenseActivateResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "409":
+          description: Transfer requires explicit confirmation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferConfirmationRequiredResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/validate:
+    post:
+      tags: [LicensePublic]
+      operationId: validateLicense
+      summary: Validate license and refresh lease
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LicenseValidateRequest"
+      responses:
+        "200":
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenseValidateResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/:
+    get:
+      tags: [LicenseAdmin]
+      operationId: listLicenses
+      summary: List licenses (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: false
+          description: Search by id or key suffix
+        - in: query
+          name: status
+          schema:
+            $ref: "#/components/schemas/LicenseStatus"
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+          required: false
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          required: false
+      responses:
+        "200":
+          description: Paginated license list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenseListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+    post:
+      tags: [LicenseAdmin]
+      operationId: createLicenseAdmin
+      summary: Issue new pending license (admin)
+      security:
+        - AdminBearer: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+      responses:
+        "201":
+          description: License issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateLicenseResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/{licenseID}:
+    patch:
+      tags: [LicenseAdmin]
+      operationId: patchLicense
+      summary: Patch license status/expiry (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: licenseID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchLicenseRequest"
+      responses:
+        "200":
+          description: Updated license
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/License"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/{licenseID}/entitlements:
+    get:
+      tags: [LicenseAdmin]
+      operationId: listLicenseEntitlements
+      summary: List product entitlements for a license (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: licenseID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Entitlements list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntitlementListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    put:
+      tags: [LicenseAdmin]
+      operationId: upsertLicenseEntitlement
+      summary: Upsert product entitlement for a license (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: licenseID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertEntitlementRequest"
+      responses:
+        "200":
+          description: Updated entitlement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entitlement"
+        "201":
+          description: Created entitlement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entitlement"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/{licenseID}/installs:
+    get:
+      tags: [LicenseAdmin]
+      operationId: listLicenseInstalls
+      summary: List runtime installs for a license (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: licenseID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Installs list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstallListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/{licenseID}/transfers:
+    get:
+      tags: [LicenseAdmin]
+      operationId: listLicenseTransfers
+      summary: List runtime transfer history for a license (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: licenseID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Transfers list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/{licenseID}/usage/daily:
+    get:
+      tags: [LicenseAdmin]
+      operationId: listLicenseUsageDaily
+      summary: List daily usage aggregates for a license/product (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: licenseID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: product_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: from
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Daily usage list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsageDailyListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/{licenseID}/billing/monthly:
+    get:
+      tags: [LicenseAdmin]
+      operationId: listLicenseBillingMonthly
+      summary: List monthly billing lines for a license/product (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: licenseID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: product_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: month
+          required: true
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}$'
+      responses:
+        "200":
+          description: Monthly billing lines
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingMonthlyListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/newsletter/subscribe:
+    post:
+      tags: [Newsletter]
+      operationId: subscribeNewsletter
+      summary: Subscribe email to a mailing list (admin)
+      security:
+        - AdminBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewsletterSubscribeRequest"
+      responses:
+        "204":
+          description: Subscription accepted
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+components:
+  securitySchemes:
+    AdminBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: APIKey
+    RuntimeBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    XLicenseKey:
+      type: apiKey
+      in: header
+      name: X-License-Key
+    XLicenseInstallID:
+      type: apiKey
+      in: header
+      name: X-License-Install-ID
+    XLicenseMachineFingerprint:
+      type: apiKey
+      in: header
+      name: X-License-Machine-Fingerprint
+
+  responses:
+    BadRequestResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+        text/plain:
+          schema:
+            type: string
+            example: Unauthorized
+    ForbiddenResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFoundResponse:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    InternalServerErrorResponse:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+
+    LicenseStatus:
+      type: string
+      enum: [active, pending, revoked, suspended, expired]
+
+    License:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        key_suffix:
+          type: string
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+        date_expires:
+          type: [string, "null"]
+          format: date-time
+        status:
+          $ref: "#/components/schemas/LicenseStatus"
+        holder_name:
+          type: [string, "null"]
+        holder_email:
+          type: [string, "null"]
+        holder_company:
+          type: [string, "null"]
+      required: [id, key_suffix, date_added, status]
+
+    LicenseListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/License"
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+      required: [items, total, limit, offset]
+
+    CreateLicenseResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        license_id:
+          type: string
+          format: uuid
+        license_key:
+          type: string
+      required: [id, license_id, license_key]
+
+    PatchLicenseRequest:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/LicenseStatus"
+        date_expires:
+          type: [string, "null"]
+          format: date-time
+      additionalProperties: false
+
+    LicenseSignupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        company:
+          type: string
+      required: [name, email, company]
+      additionalProperties: false
+
+    LicenseSignupResponse:
+      type: object
+      properties:
+        license_id:
+          type: string
+          format: uuid
+        license_key:
+          type: string
+        status:
+          $ref: "#/components/schemas/LicenseStatus"
+      required: [license_id, license_key, status]
+
+    LicenseActivateRequest:
+      type: object
+      properties:
+        license_key:
+          type: string
+        install_id:
+          type: string
+          format: uuid
+        machine_fingerprint:
+          type: string
+        confirm_transfer:
+          type: boolean
+          default: false
+      required: [license_key, install_id, machine_fingerprint]
+      additionalProperties: false
+
+    LicenseActivateResponse:
+      type: object
+      properties:
+        license_id:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/LicenseStatus"
+        activation_id:
+          type: string
+          format: uuid
+        lease_expires_at:
+          type: string
+          format: date-time
+        transferred:
+          type: boolean
+        warning:
+          type: string
+      required: [license_id, status, activation_id, lease_expires_at, transferred]
+
+    TransferConfirmationRequiredResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum: [transfer_confirmation_required]
+        reason:
+          type: string
+      required: [error, reason]
+
+    LicenseValidateRequest:
+      type: object
+      properties:
+        license_key:
+          type: string
+        install_id:
+          type: string
+          format: uuid
+        machine_fingerprint:
+          type: string
+      required: [license_key, install_id, machine_fingerprint]
+      additionalProperties: false
+
+    LicenseValidateResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        reason:
+          type: string
+        license_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        lease_expires_at:
+          type: [string, "null"]
+          format: date-time
+      required: [valid, reason, lease_expires_at]
+
+    Institution:
+      type: object
+      properties:
+        ID:
+          type: string
+          format: uuid
+        name:
+          type: string
+        country_code:
+          type: string
+        logo_url:
+          type: [string, "null"]
+          format: uri
+        website_url:
+          type: [string, "null"]
+          format: uri
+        website_login_url:
+          type: [string, "null"]
+          format: uri
+      required: [ID, name, country_code]
+
+    CreateLinkTokenResponse:
+      type: object
+      properties:
+        link_token:
+          type: string
+      required: [link_token]
+
+    LinkInstitution:
+      type: object
+      properties:
+        name:
+          type: string
+        institution_id:
+          type: string
+      required: [institution_id]
+
+    LinkAccount:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        mask:
+          type: string
+        type:
+          type: string
+        subtype:
+          type: string
+      required: [id]
+
+    ConnectLinkMetadata:
+      type: object
+      properties:
+        institution:
+          $ref: "#/components/schemas/LinkInstitution"
+        accounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/LinkAccount"
+      required: [institution, accounts]
+
+    ConnectLinkTokenRequest:
+      type: object
+      properties:
+        public_token:
+          type: string
+        link_token:
+          type: string
+        metadata:
+          $ref: "#/components/schemas/ConnectLinkMetadata"
+      required: [public_token, link_token, metadata]
+      additionalProperties: false
+
+    ConnectLinkTokenResponse:
+      type: object
+      properties:
+        accounts:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        connection_id:
+          type: string
+          format: uuid
+      required: [accounts, connection_id]
+
+    JwkKey:
+      type: object
+      properties:
+        kty:
+          type: string
+          example: OKP
+        crv:
+          type: string
+          example: Ed25519
+        kid:
+          type: string
+        alg:
+          type: string
+          example: EdDSA
+        use:
+          type: string
+          example: sig
+        x:
+          type: string
+      required: [kty, crv, kid, alg, use, x]
+
+    JwksResponse:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: "#/components/schemas/JwkKey"
+      required: [keys]
+
+    RuntimeActivateRequest:
+      type: object
+      properties:
+        license_key:
+          type: string
+        product_id:
+          type: string
+        install_id:
+          type: string
+          format: uuid
+        install_public_key:
+          type: string
+          description: Base64-encoded Ed25519 public key
+        challenge:
+          type: string
+        challenge_signature:
+          type: string
+          description: Base64-encoded signature of challenge
+        confirm_transfer:
+          type: boolean
+          default: false
+      required: [license_key, product_id, install_id, install_public_key, challenge, challenge_signature]
+      additionalProperties: false
+
+    RuntimeActivateResponse:
+      type: object
+      properties:
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+        install_id:
+          type: string
+          format: uuid
+        lease_token:
+          type: string
+        lease_expires_at:
+          type: string
+          format: date-time
+        scopes:
+          type: array
+          items:
+            type: string
+        caps:
+          type: object
+          additionalProperties:
+            type: integer
+        transferred:
+          type: boolean
+        warning:
+          type: string
+      required: [license_id, product_id, install_id, lease_token, lease_expires_at, scopes, caps, transferred]
+
+    RuntimeRenewResponse:
+      type: object
+      properties:
+        lease_token:
+          type: string
+        lease_expires_at:
+          type: string
+          format: date-time
+        scopes:
+          type: array
+          items:
+            type: string
+        caps:
+          type: object
+          additionalProperties:
+            type: integer
+      required: [lease_token, lease_expires_at, scopes, caps]
+
+    RuntimeUsageEvent:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        meter_type:
+          type: string
+          enum:
+            - transactions_connected_account_month
+            - recurring_connected_account_month
+            - transactions_refresh_success_call
+        quantity:
+          type: integer
+          minimum: 1
+        occurred_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+      required: [meter_type, quantity]
+
+    RuntimeUsageBatchRequest:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuntimeUsageEvent"
+      required: [events]
+      additionalProperties: false
+
+    RuntimeUsageBatchResponse:
+      type: object
+      properties:
+        accepted:
+          type: integer
+        ignored:
+          type: integer
+      required: [accepted, ignored]
+
+    Entitlement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+        status:
+          type: string
+          enum: [active, suspended, revoked]
+        scopes:
+          type: string
+        cap_transactions_connected_accounts:
+          type: [integer, "null"]
+        cap_recurring_connected_accounts:
+          type: [integer, "null"]
+        cap_transactions_refresh_calls:
+          type: [integer, "null"]
+      required: [id, license_id, product_id, status, scopes]
+
+    EntitlementListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Entitlement"
+      required: [items]
+
+    UpsertEntitlementRequest:
+      type: object
+      properties:
+        product_id:
+          type: string
+        status:
+          type: string
+          enum: [active, suspended, revoked]
+        scopes:
+          type: string
+        cap_transactions_connected_accounts:
+          type: [integer, "null"]
+        cap_recurring_connected_accounts:
+          type: [integer, "null"]
+        cap_transactions_refresh_calls:
+          type: [integer, "null"]
+      required: [product_id]
+      additionalProperties: false
+
+    RuntimeInstall:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+        install_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        activated_at:
+          type: string
+          format: date-time
+        transferred_at:
+          type: [string, "null"]
+          format: date-time
+        last_seen_at:
+          type: [string, "null"]
+          format: date-time
+        last_seen_ip:
+          type: [string, "null"]
+      required: [id, license_id, product_id, install_id, status, activated_at]
+
+    InstallListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuntimeInstall"
+      required: [items]
+
+    RuntimeTransfer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+        from_install_id:
+          type: string
+          format: uuid
+        to_install_id:
+          type: string
+          format: uuid
+        transferred_at:
+          type: string
+          format: date-time
+        confirmed:
+          type: boolean
+        actor_ip:
+          type: [string, "null"]
+        cooldown_until:
+          type: string
+          format: date-time
+      required: [id, license_id, product_id, from_install_id, to_install_id, transferred_at, confirmed, cooldown_until]
+
+    TransferListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuntimeTransfer"
+      required: [items]
+
+    UsageDailyAgg:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        usage_date:
+          type: string
+          format: date
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+        meter_type:
+          type: string
+        quantity:
+          type: integer
+      required: [id, usage_date, license_id, product_id, meter_type, quantity]
+
+    UsageDailyListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/UsageDailyAgg"
+      required: [items]
+
+    BillingMonthlyLine:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        billing_month:
+          type: string
+          format: date
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+        meter_type:
+          type: string
+        quantity:
+          type: integer
+        unit_price_usd:
+          type: string
+        amount_usd:
+          type: string
+        currency:
+          type: string
+      required: [id, billing_month, license_id, product_id, meter_type, quantity, unit_price_usd, amount_usd, currency]
+
+    BillingMonthlyListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BillingMonthlyLine"
+      required: [items]
+
+    NewsletterSubscribeRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        mailing_list:
+          type: string
+          description: >
+            Mailing list key. Supported values are beta, announcements,
+            promotions, and general (default fallback for unknown values).
+      required: [email, mailing_list]
+      additionalProperties: false
