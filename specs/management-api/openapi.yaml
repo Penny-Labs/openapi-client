@@ -569,7 +569,7 @@ paths:
           name: product_id
           required: true
           schema:
-            type: string
+            $ref: "#/components/schemas/ProductID"
         - in: query
           name: from
           required: false
@@ -614,7 +614,7 @@ paths:
           name: product_id
           required: true
           schema:
-            type: string
+            $ref: "#/components/schemas/ProductID"
         - in: query
           name: month
           required: true
@@ -728,6 +728,10 @@ components:
     LicenseStatus:
       type: string
       enum: [active, pending, revoked, suspended, expired]
+
+    ProductID:
+      type: string
+      enum: [pennyos, openchat]
 
     License:
       type: object
@@ -1019,7 +1023,7 @@ components:
         license_key:
           type: string
         product_id:
-          type: string
+          $ref: "#/components/schemas/ProductID"
         install_id:
           type: string
           format: uuid
@@ -1044,7 +1048,7 @@ components:
           type: string
           format: uuid
         product_id:
-          type: string
+          $ref: "#/components/schemas/ProductID"
         install_id:
           type: string
           format: uuid
@@ -1137,7 +1141,7 @@ components:
           type: string
           format: uuid
         product_id:
-          type: string
+          $ref: "#/components/schemas/ProductID"
         status:
           type: string
           enum: [active, suspended, revoked]
@@ -1164,7 +1168,7 @@ components:
       type: object
       properties:
         product_id:
-          type: string
+          $ref: "#/components/schemas/ProductID"
         status:
           type: string
           enum: [active, suspended, revoked]
@@ -1189,7 +1193,7 @@ components:
           type: string
           format: uuid
         product_id:
-          type: string
+          $ref: "#/components/schemas/ProductID"
         install_id:
           type: string
           format: uuid
@@ -1227,7 +1231,7 @@ components:
           type: string
           format: uuid
         product_id:
-          type: string
+          $ref: "#/components/schemas/ProductID"
         from_install_id:
           type: string
           format: uuid
@@ -1268,7 +1272,7 @@ components:
           type: string
           format: uuid
         product_id:
-          type: string
+          $ref: "#/components/schemas/ProductID"
         meter_type:
           type: string
         quantity:
@@ -1297,7 +1301,7 @@ components:
           type: string
           format: uuid
         product_id:
-          type: string
+          $ref: "#/components/schemas/ProductID"
         meter_type:
           type: string
         quantity:
