@@ -1,0 +1,2272 @@
+openapi: 3.1.0
+info:
+  title: PennyOS API
+  version: v1
+  description: >
+    REST API for PennyOS core functionality.
+    This spec includes currently implemented REST routes only.
+  license:
+    name: See LICENSE.md
+    identifier: AGPL-3.0-or-later
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Auth
+    description: Local authentication and session lifecycle operations.
+  - name: Users
+    description: User creation and retrieval operations.
+  - name: Accounts
+    description: Bank account and account-scoped transaction operations.
+  - name: Categories
+    description: User category management operations.
+  - name: Budgets
+    description: User budget, period, and allocation planning operations.
+  - name: Tags
+    description: User tag management and transaction tagging operations.
+paths:
+  /v1/auth/signup:
+    post:
+      tags: [Auth]
+      operationId: signup
+      summary: Create local credentials and start session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthCredentialRequest"
+      responses:
+        "201":
+          description: Signup succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionAuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/auth/signin:
+    post:
+      tags: [Auth]
+      operationId: signin
+      summary: Authenticate credentials and start session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthCredentialRequest"
+      responses:
+        "200":
+          description: Signin succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionAuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/auth/signout:
+    post:
+      tags: [Auth]
+      operationId: signout
+      summary: Revoke current session token and clear session cookie
+      responses:
+        "200":
+          description: Signout succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignoutResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/auth/me:
+    get:
+      tags: [Auth]
+      operationId: getSessionUser
+      summary: Get current authenticated user
+      security:
+        - SessionCookieAuth: []
+      responses:
+        "200":
+          description: Session user found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/users:
+    post:
+      tags: [Users]
+      operationId: createUser
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreateRequest"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [Users]
+      operationId: listUsers
+      summary: List users (admin only)
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: status
+          required: false
+          schema:
+            type: string
+          description: Comma-separated user status filters.
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserListResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/users/{userID}:
+    get:
+      tags: [Users]
+      operationId: getUserByID
+      summary: Get user by ID (self only)
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/categories:
+    post:
+      tags: [Categories]
+      operationId: createCategory
+      summary: Create a category for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryCreateRequest"
+      responses:
+        "201":
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [Categories]
+      operationId: listCategories
+      summary: List categories for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      responses:
+        "200":
+          description: Category list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryListResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/categories/{categoryID}:
+    get:
+      tags: [Categories]
+      operationId: getCategoryByID
+      summary: Get category by ID for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: categoryID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Category found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    patch:
+      tags: [Categories]
+      operationId: patchCategory
+      summary: Patch category fields for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: categoryID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryPatchRequest"
+      responses:
+        "200":
+          description: Category updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    delete:
+      tags: [Categories]
+      operationId: deleteCategory
+      summary: Delete category by ID for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: categoryID
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Category deleted
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/budgets:
+    post:
+      tags: [Budgets]
+      operationId: createBudget
+      summary: Create a budget for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetCreateRequest"
+      responses:
+        "201":
+          description: Budget created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Budget"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [Budgets]
+      operationId: listBudgets
+      summary: List budgets for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      responses:
+        "200":
+          description: Budget list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetListResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/budgets/{budgetID}:
+    get:
+      tags: [Budgets]
+      operationId: getBudgetByID
+      summary: Get budget by ID for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: budgetID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Budget found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Budget"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    patch:
+      tags: [Budgets]
+      operationId: patchBudget
+      summary: Patch budget fields for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: budgetID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetPatchRequest"
+      responses:
+        "200":
+          description: Budget updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Budget"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    delete:
+      tags: [Budgets]
+      operationId: deleteBudget
+      summary: Delete budget by ID for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: budgetID
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Budget deleted
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/budgets/{budgetID}/periods:
+    post:
+      tags: [Budgets]
+      operationId: createBudgetPeriod
+      summary: Create a budget period for a budget owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: budgetID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetPeriodCreateRequest"
+      responses:
+        "201":
+          description: Budget period created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetPeriod"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [Budgets]
+      operationId: listBudgetPeriods
+      summary: List budget periods for a budget owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: budgetID
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: status
+          required: false
+          schema:
+            $ref: "#/components/schemas/BudgetPeriodStatus"
+      responses:
+        "200":
+          description: Budget period list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetPeriodListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/budgets/{budgetID}/periods/{budgetPeriodID}:
+    get:
+      tags: [Budgets]
+      operationId: getBudgetPeriodByID
+      summary: Get budget period by ID for a budget owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: budgetID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: budgetPeriodID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Budget period found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetPeriod"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    patch:
+      tags: [Budgets]
+      operationId: patchBudgetPeriod
+      summary: Patch budget period fields for a budget owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: budgetID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: budgetPeriodID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetPeriodPatchRequest"
+      responses:
+        "200":
+          description: Budget period updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetPeriod"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/budgets/{budgetID}/periods/{budgetPeriodID}/allocations:
+    put:
+      tags: [Budgets]
+      operationId: replaceBudgetPeriodAllocations
+      summary: Replace all category allocations for a budget period owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: budgetID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: budgetPeriodID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetPeriodAllocationsReplaceRequest"
+      responses:
+        "200":
+          description: Budget period allocations replaced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetPeriod"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/tags:
+    post:
+      tags: [Tags]
+      operationId: createTag
+      summary: Create a tag for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagCreateRequest"
+      responses:
+        "201":
+          description: Tag created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [Tags]
+      operationId: listTags
+      summary: List tags for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      responses:
+        "200":
+          description: Tag list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagListResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/tags/{tagID}:
+    get:
+      tags: [Tags]
+      operationId: getTagByID
+      summary: Get tag by ID for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: tagID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tag found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    patch:
+      tags: [Tags]
+      operationId: patchTag
+      summary: Patch tag fields for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: tagID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagPatchRequest"
+      responses:
+        "200":
+          description: Tag updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    delete:
+      tags: [Tags]
+      operationId: deleteTag
+      summary: Delete tag by ID for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: tagID
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Tag deleted
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/accounts:
+    post:
+      tags: [Accounts]
+      operationId: createAccount
+      summary: Create account for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountCreateRequest"
+      responses:
+        "201":
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [Accounts]
+      operationId: listAccounts
+      summary: List accounts for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Account page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/accounts/{accountID}:
+    get:
+      tags: [Accounts]
+      operationId: getAccountByID
+      summary: Get account by ID for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Account found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    patch:
+      tags: [Accounts]
+      operationId: patchAccount
+      summary: Patch account fields for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountPatchRequest"
+      responses:
+        "200":
+          description: Account updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/accounts/{accountID}/balances:
+    post:
+      tags: [Accounts]
+      operationId: upsertBalance
+      summary: Upsert a balance snapshot for an account owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BalanceCreateRequest"
+      responses:
+        "200":
+          description: Balance snapshot upserted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Balance"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [Accounts]
+      operationId: listBalances
+      summary: List balance snapshots for an account owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: date_from
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: date_to
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        "200":
+          description: Balance snapshot page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BalanceListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/accounts/{accountID}/balances/current:
+    get:
+      tags: [Accounts]
+      operationId: getCurrentBalance
+      summary: Get latest balance snapshot for an account owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Current balance snapshot, or null when no snapshot exists
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: "#/components/schemas/Balance"
+                  - type: "null"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/accounts/{accountID}/transactions:
+    post:
+      tags: [Accounts]
+      operationId: createTransaction
+      summary: Create a transaction for an account owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionCreateRequest"
+      responses:
+        "201":
+          description: Transaction created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [Accounts]
+      operationId: listTransactions
+      summary: List transactions for an account owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: pending
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: date_from
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: date_to
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: amount_min
+          required: false
+          schema:
+            type: number
+            format: double
+        - in: query
+          name: amount_max
+          required: false
+          schema:
+            type: number
+            format: double
+        - in: query
+          name: category_id
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: tag_ids
+          required: false
+          schema:
+            type: string
+          description: Comma-separated tag IDs.
+        - in: query
+          name: tag_mode
+          required: false
+          schema:
+            type: string
+            enum: [any, all]
+            default: any
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        "200":
+          description: Transaction page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/accounts/{accountID}/transactions/{transactionID}:
+    get:
+      tags: [Accounts]
+      operationId: getTransactionByID
+      summary: Get a transaction by ID for an owned account
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: transactionID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Transaction found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    patch:
+      tags: [Accounts]
+      operationId: patchTransaction
+      summary: Patch mutable transaction fields by ID for an owned account
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: transactionID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionPatchRequest"
+      responses:
+        "200":
+          description: Transaction updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/accounts/{accountID}/transactions/{transactionID}/tags:
+    put:
+      tags: [Tags]
+      operationId: replaceTransactionTags
+      summary: Replace all tags for a transaction owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: transactionID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionTagsReplaceRequest"
+      responses:
+        "200":
+          description: Transaction tags replaced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/accounts/{accountID}/transactions/{transactionID}/tags/{tagID}:
+    put:
+      tags: [Tags]
+      operationId: attachTagToTransaction
+      summary: Attach a tag to a transaction owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: transactionID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: tagID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tag attached to transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    delete:
+      tags: [Tags]
+      operationId: detachTagFromTransaction
+      summary: Detach a tag from a transaction owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: accountID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: transactionID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: tagID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tag detached from transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+components:
+  securitySchemes:
+    SessionCookieAuth:
+      type: apiKey
+      in: cookie
+      name: penny_session_token
+
+  responses:
+    BadRequestResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    ForbiddenResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFoundResponse:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    ConflictResponse:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    InternalServerErrorResponse:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  schemas:
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        error:
+          type: string
+      required: [error]
+      example:
+        error: invalid request
+
+    UserStatus:
+      type: string
+      enum: [pending, active, inactive]
+
+    UserCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          format: email
+      required: [email]
+      example:
+        email: user@example.com
+
+    BankAccountStatus:
+      type: string
+      enum: [active, inactive, closed]
+
+    BankAccountType:
+      type: string
+      enum: [depository, credit, loan, investment, other]
+
+    BankAccountSubtype:
+      type: string
+      enum:
+        - checking
+        - savings
+        - money market
+        - certificate of deposit
+        - credit card
+        - auto
+        - business
+        - commercial
+        - construction
+        - consumer
+        - home equity
+        - line of credit
+        - mortgage
+        - student
+        - 401k
+        - "529"
+        - 401a
+        - 403b
+        - brokerage
+        - cash management
+        - ira
+        - roth
+        - hsa
+        - stock plan
+        - trust
+        - other
+
+    AccountCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        official_name:
+          type: [string, "null"]
+        mask:
+          type: [string, "null"]
+        type:
+          $ref: "#/components/schemas/BankAccountType"
+        subtype:
+          $ref: "#/components/schemas/BankAccountSubtype"
+      required: [name, type, subtype]
+      example:
+        name: Primary Checking
+        official_name: Main Checking
+        mask: "1234"
+        type: depository
+        subtype: checking
+
+    AccountPatchRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        official_name:
+          type: [string, "null"]
+        mask:
+          type: [string, "null"]
+        type:
+          $ref: "#/components/schemas/BankAccountType"
+        subtype:
+          $ref: "#/components/schemas/BankAccountSubtype"
+        status:
+          $ref: "#/components/schemas/BankAccountStatus"
+      example:
+        name: Payroll Checking
+        type: depository
+        subtype: checking
+        status: inactive
+
+    Account:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+        name:
+          type: string
+        official_name:
+          type: [string, "null"]
+        mask:
+          type: [string, "null"]
+        type:
+          $ref: "#/components/schemas/BankAccountType"
+        subtype:
+          $ref: "#/components/schemas/BankAccountSubtype"
+        status:
+          $ref: "#/components/schemas/BankAccountStatus"
+        current_balance:
+          anyOf:
+            - $ref: "#/components/schemas/Balance"
+            - type: "null"
+      required: [id, date_added, name, type, subtype, status, current_balance]
+      example:
+        id: acct-123
+        date_added: "2026-03-01T00:00:00Z"
+        date_modified: null
+        name: Primary Checking
+        official_name: Main Checking
+        mask: "1234"
+        type: depository
+        subtype: checking
+        status: active
+        current_balance: null
+
+    AuthCredentialRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required: [email, password]
+      example:
+        email: user@example.com
+        password: Valid123!
+
+    User:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+        status:
+          $ref: "#/components/schemas/UserStatus"
+      required: [id, email, date_added, status]
+      example:
+        id: user-123
+        email: user@example.com
+        date_added: "2026-03-01T00:00:00Z"
+        date_modified: null
+        status: pending
+
+    SessionAuthResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        session_token:
+          type: string
+        session_expires_at:
+          type: string
+          format: date-time
+      required:
+        - user
+        - session_token
+        - session_expires_at
+      example:
+        user:
+          id: user-123
+          email: user@example.com
+          date_added: "2026-03-01T00:00:00Z"
+          date_modified: null
+          status: pending
+        session_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        session_expires_at: "2026-03-29T14:45:00Z"
+
+    SignoutResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+      required: [status]
+      example:
+        status: signed_out
+
+    UserListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        total:
+          type: integer
+          minimum: 0
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
+    AccountListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Account"
+        total:
+          type: integer
+          minimum: 0
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
+    CategoryCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+      required: [name]
+      example:
+        name: Groceries
+
+    CategoryPatchRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name:
+          type: string
+      example:
+        name: Food & Dining
+
+    Category:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+        name:
+          type: string
+      required: [id, date_added, name]
+      example:
+        id: cat-1
+        date_added: "2026-03-01T00:00:00Z"
+        date_modified: null
+        name: Groceries
+
+    CategoryListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Category"
+        total:
+          type: integer
+          minimum: 0
+      required: [items, total]
+
+    BudgetPeriodStatus:
+      type: string
+      enum: [draft, active, closed]
+
+    BudgetCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        currency_code:
+          type: string
+      required: [name, currency_code]
+      example:
+        name: Home Budget
+        currency_code: USD
+
+    BudgetPatchRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name:
+          type: string
+        currency_code:
+          type: string
+      example:
+        name: Home Budget 2026
+        currency_code: USD
+
+    Budget:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+        name:
+          type: string
+        currency_code:
+          type: string
+      required: [id, date_added, name, currency_code]
+      example:
+        id: budget-1
+        date_added: "2026-04-01T00:00:00Z"
+        date_modified: null
+        name: Home Budget
+        currency_code: USD
+
+    BudgetListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Budget"
+        total:
+          type: integer
+          minimum: 0
+      required: [items, total]
+
+    BudgetPeriodCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        target_amount:
+          type: number
+          format: double
+      required: [start_date, end_date, target_amount]
+      example:
+        start_date: "2026-04-01"
+        end_date: "2026-04-30"
+        target_amount: 3000
+
+    BudgetPeriodPatchRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        target_amount:
+          type: number
+          format: double
+        status:
+          $ref: "#/components/schemas/BudgetPeriodStatus"
+      example:
+        status: active
+
+    BudgetPeriodAllocation:
+      type: object
+      additionalProperties: false
+      properties:
+        category_id:
+          type: string
+        target_amount:
+          type: number
+          format: double
+      required: [category_id, target_amount]
+      example:
+        category_id: cat-1
+        target_amount: 600
+
+    BudgetPeriodAllocationsReplaceRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        allocations:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetPeriodAllocation"
+      required: [allocations]
+      example:
+        allocations:
+          - category_id: cat-1
+            target_amount: 600
+          - category_id: cat-2
+            target_amount: 450
+
+    BudgetPeriod:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        budget_id:
+          type: string
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        target_amount:
+          type: number
+          format: double
+        status:
+          $ref: "#/components/schemas/BudgetPeriodStatus"
+        allocations:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetPeriodAllocation"
+      required:
+        - id
+        - budget_id
+        - date_added
+        - start_date
+        - end_date
+        - target_amount
+        - status
+        - allocations
+      example:
+        id: period-1
+        budget_id: budget-1
+        date_added: "2026-04-01T00:00:00Z"
+        date_modified: null
+        start_date: "2026-04-01"
+        end_date: "2026-04-30"
+        target_amount: 3000
+        status: draft
+        allocations: []
+
+    BudgetPeriodListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetPeriod"
+        total:
+          type: integer
+          minimum: 0
+      required: [items, total]
+
+    TagCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+      required: [name]
+      example:
+        name: Needs Review
+
+    TagPatchRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name:
+          type: string
+      example:
+        name: Recurring
+
+    Tag:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+        name:
+          type: string
+      required: [id, date_added, name]
+      example:
+        id: tag-1
+        date_added: "2026-03-01T00:00:00Z"
+        date_modified: null
+        name: Needs Review
+
+    TagListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
+        total:
+          type: integer
+          minimum: 0
+      required: [items, total]
+
+    BalanceCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        as_of:
+          type: string
+          format: date-time
+        current:
+          type: number
+          format: double
+        available:
+          type: [number, "null"]
+          format: double
+        credit_limit:
+          type: [number, "null"]
+          format: double
+        iso_currency_code:
+          type: [string, "null"]
+        unofficial_currency_code:
+          type: [string, "null"]
+      required: [as_of, current]
+      example:
+        as_of: "2026-03-10T13:05:00Z"
+        current: 1200.5
+        available: 1000.25
+        credit_limit: null
+        iso_currency_code: USD
+        unofficial_currency_code: null
+
+    Balance:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        bank_account_id:
+          type: string
+        as_of:
+          type: string
+          format: date-time
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+        current:
+          type: number
+          format: double
+        available:
+          type: [number, "null"]
+          format: double
+        credit_limit:
+          type: [number, "null"]
+          format: double
+        iso_currency_code:
+          type: [string, "null"]
+        unofficial_currency_code:
+          type: [string, "null"]
+      required:
+        - id
+        - bank_account_id
+        - as_of
+        - date_added
+        - current
+      example:
+        id: bal-1
+        bank_account_id: acct-123
+        as_of: "2026-03-10T13:05:00Z"
+        date_added: "2026-03-10T13:05:01Z"
+        date_modified: null
+        current: 1200.5
+        available: 1000.25
+        credit_limit: null
+        iso_currency_code: USD
+        unofficial_currency_code: null
+
+    BalanceListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Balance"
+        total:
+          type: integer
+          minimum: 0
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
+    TransactionPaymentChannel:
+      type: string
+      enum: [in store, online, other]
+
+    TransactionCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        transaction_id:
+          type: [string, "null"]
+        date_posted:
+          type: [string, "null"]
+          format: date-time
+        original_description:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+          format: double
+        pending:
+          type: boolean
+        iso_currency_code:
+          type: [string, "null"]
+        unofficial_currency_code:
+          type: [string, "null"]
+        payment_channel:
+          $ref: "#/components/schemas/TransactionPaymentChannel"
+        notes:
+          type: [string, "null"]
+      required:
+        - original_description
+        - description
+        - amount
+        - pending
+        - payment_channel
+      example:
+        transaction_id: plaid-transaction-id-1
+        date_posted: "2026-03-10T13:05:00Z"
+        original_description: STARBUCKS STORE 1234
+        description: Starbucks
+        amount: 4.25
+        pending: false
+        iso_currency_code: USD
+        payment_channel: in store
+        notes: Morning coffee
+
+    TransactionPatchRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        date_posted:
+          type: string
+          format: date-time
+        original_description:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+          format: double
+        pending:
+          type: boolean
+        iso_currency_code:
+          type: string
+        unofficial_currency_code:
+          type: string
+        payment_channel:
+          $ref: "#/components/schemas/TransactionPaymentChannel"
+        notes:
+          type: string
+        category_id:
+          type: [string, "null"]
+      example:
+        description: Starbucks Coffee
+        notes: Recurring card charge
+        category_id: null
+
+    TransactionTagsReplaceRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        tag_ids:
+          type: array
+          items:
+            type: string
+      required: [tag_ids]
+      example:
+        tag_ids:
+          - tag-1
+          - tag-2
+
+    Transaction:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        bank_account_id:
+          type: string
+        transaction_id:
+          type: [string, "null"]
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+        date_posted:
+          type: [string, "null"]
+          format: date-time
+        original_description:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+          format: double
+        pending:
+          type: boolean
+        iso_currency_code:
+          type: [string, "null"]
+        unofficial_currency_code:
+          type: [string, "null"]
+        payment_channel:
+          $ref: "#/components/schemas/TransactionPaymentChannel"
+        merchant_id:
+          type: [string, "null"]
+        location_id:
+          type: [string, "null"]
+        notes:
+          type: [string, "null"]
+        category_id:
+          type: [string, "null"]
+        tag_ids:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - bank_account_id
+        - date_added
+        - original_description
+        - description
+        - amount
+        - pending
+        - payment_channel
+        - tag_ids
+
+    TransactionListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Transaction"
+        total:
+          type: integer
+          minimum: 0
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]

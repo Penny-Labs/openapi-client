@@ -26,4 +26,18 @@ This command:
 - Generates `clients/management-api/typescript-fetch`.
 - Sets generated package metadata to `@penny/openapi-management-api-client` and version `0.1.0`.
 
+## Generate penny client
+
+From `openapi-client/`:
+
+```bash
+./scripts/generate.sh penny typescript-fetch
+```
+
+This command:
+- Copies `../penny/api/openapi.yaml` to `specs/penny/openapi.yaml`.
+- Runs `openapitools/openapi-generator-cli:v7.20.0` in Docker.
+- Generates `clients/penny/typescript-fetch`.
+- Sets generated package metadata to `@penny/openapi-penny-client` and version `0.1.0`.
+
 Use `OPENAPI_GENERATOR_IMAGE=<image>` to override the generator image.
