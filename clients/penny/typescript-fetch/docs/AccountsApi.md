@@ -4,6 +4,7 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
+| [**aggregateTransactions**](AccountsApi.md#aggregatetransactions) | **GET** /v1/transactions/aggregates | Aggregate transactions for user-owned accounts |
 | [**createAccount**](AccountsApi.md#createaccount) | **POST** /v1/accounts | Create account for current authenticated user |
 | [**createTransaction**](AccountsApi.md#createtransaction) | **POST** /v1/accounts/{accountID}/transactions | Create a transaction for an account owned by the current authenticated user |
 | [**getAccountByID**](AccountsApi.md#getaccountbyid) | **GET** /v1/accounts/{accountID} | Get account by ID for current authenticated user |
@@ -12,10 +13,112 @@ All URIs are relative to *http://localhost:8080*
 | [**listAccounts**](AccountsApi.md#listaccounts) | **GET** /v1/accounts | List accounts for current authenticated user |
 | [**listBalances**](AccountsApi.md#listbalances) | **GET** /v1/accounts/{accountID}/balances | List balance snapshots for an account owned by the current authenticated user |
 | [**listTransactions**](AccountsApi.md#listtransactions) | **GET** /v1/accounts/{accountID}/transactions | List transactions for an account owned by the current authenticated user |
+| [**listTransactionsForAccounts**](AccountsApi.md#listtransactionsforaccounts) | **GET** /v1/transactions | List transactions across specified accounts owned by the current authenticated user |
 | [**patchAccount**](AccountsApi.md#patchaccount) | **PATCH** /v1/accounts/{accountID} | Patch account fields for current authenticated user |
 | [**patchTransaction**](AccountsApi.md#patchtransaction) | **PATCH** /v1/accounts/{accountID}/transactions/{transactionID} | Patch mutable transaction fields by ID for an owned account |
 | [**upsertBalance**](AccountsApi.md#upsertbalance) | **POST** /v1/accounts/{accountID}/balances | Upsert a balance snapshot for an account owned by the current authenticated user |
 
+
+
+## aggregateTransactions
+
+> TransactionAggregateResponse aggregateTransactions(accountIds, q, pending, dateFrom, dateTo, amountMin, amountMax, categoryId, tagIds, tagMode)
+
+Aggregate transactions for user-owned accounts
+
+### Example
+
+```ts
+import {
+  Configuration,
+  AccountsApi,
+} from '@penny/openapi-penny-client';
+import type { AggregateTransactionsRequest } from '@penny/openapi-penny-client';
+
+async function example() {
+  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  const config = new Configuration({ 
+    // To configure API key authorization: SessionCookieAuth
+    apiKey: "YOUR API KEY",
+  });
+  const api = new AccountsApi(config);
+
+  const body = {
+    // string | Comma-separated account IDs. When omitted, all user-owned accounts are included. (optional)
+    accountIds: accountIds_example,
+    // string (optional)
+    q: q_example,
+    // boolean (optional)
+    pending: true,
+    // Date (optional)
+    dateFrom: 2013-10-20T19:20:30+01:00,
+    // Date (optional)
+    dateTo: 2013-10-20T19:20:30+01:00,
+    // number (optional)
+    amountMin: 1.2,
+    // number (optional)
+    amountMax: 1.2,
+    // string (optional)
+    categoryId: categoryId_example,
+    // string | Comma-separated tag IDs. (optional)
+    tagIds: tagIds_example,
+    // 'any' | 'all' (optional)
+    tagMode: tagMode_example,
+  } satisfies AggregateTransactionsRequest;
+
+  try {
+    const data = await api.aggregateTransactions(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **accountIds** | `string` | Comma-separated account IDs. When omitted, all user-owned accounts are included. | [Optional] [Defaults to `undefined`] |
+| **q** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **pending** | `boolean` |  | [Optional] [Defaults to `undefined`] |
+| **dateFrom** | `Date` |  | [Optional] [Defaults to `undefined`] |
+| **dateTo** | `Date` |  | [Optional] [Defaults to `undefined`] |
+| **amountMin** | `number` |  | [Optional] [Defaults to `undefined`] |
+| **amountMax** | `number` |  | [Optional] [Defaults to `undefined`] |
+| **categoryId** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **tagIds** | `string` | Comma-separated tag IDs. | [Optional] [Defaults to `undefined`] |
+| **tagMode** | `any`, `all` |  | [Optional] [Defaults to `&#39;any&#39;`] [Enum: any, all] |
+
+### Return type
+
+[**TransactionAggregateResponse**](TransactionAggregateResponse.md)
+
+### Authorization
+
+[SessionCookieAuth](../README.md#SessionCookieAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Aggregated transaction metrics |  -  |
+| **400** | Bad request |  -  |
+| **401** | Unauthorized |  -  |
+| **403** | Forbidden |  -  |
+| **404** | Not found |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
 
 ## createAccount
@@ -628,6 +731,116 @@ example().catch(console.error);
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **accountID** | `string` |  | [Defaults to `undefined`] |
+| **limit** | `number` |  | [Optional] [Defaults to `undefined`] |
+| **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **q** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **pending** | `boolean` |  | [Optional] [Defaults to `undefined`] |
+| **dateFrom** | `Date` |  | [Optional] [Defaults to `undefined`] |
+| **dateTo** | `Date` |  | [Optional] [Defaults to `undefined`] |
+| **amountMin** | `number` |  | [Optional] [Defaults to `undefined`] |
+| **amountMax** | `number` |  | [Optional] [Defaults to `undefined`] |
+| **categoryId** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **tagIds** | `string` | Comma-separated tag IDs. | [Optional] [Defaults to `undefined`] |
+| **tagMode** | `any`, `all` |  | [Optional] [Defaults to `&#39;any&#39;`] [Enum: any, all] |
+| **sort** | `asc`, `desc` |  | [Optional] [Defaults to `&#39;desc&#39;`] [Enum: asc, desc] |
+
+### Return type
+
+[**TransactionListResponse**](TransactionListResponse.md)
+
+### Authorization
+
+[SessionCookieAuth](../README.md#SessionCookieAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Transaction page |  -  |
+| **400** | Bad request |  -  |
+| **401** | Unauthorized |  -  |
+| **403** | Forbidden |  -  |
+| **404** | Not found |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## listTransactionsForAccounts
+
+> TransactionListResponse listTransactionsForAccounts(accountIds, limit, cursor, q, pending, dateFrom, dateTo, amountMin, amountMax, categoryId, tagIds, tagMode, sort)
+
+List transactions across specified accounts owned by the current authenticated user
+
+### Example
+
+```ts
+import {
+  Configuration,
+  AccountsApi,
+} from '@penny/openapi-penny-client';
+import type { ListTransactionsForAccountsRequest } from '@penny/openapi-penny-client';
+
+async function example() {
+  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  const config = new Configuration({ 
+    // To configure API key authorization: SessionCookieAuth
+    apiKey: "YOUR API KEY",
+  });
+  const api = new AccountsApi(config);
+
+  const body = {
+    // string | Comma-separated account IDs. All account IDs must be owned by the current authenticated user.
+    accountIds: accountIds_example,
+    // number (optional)
+    limit: 56,
+    // string (optional)
+    cursor: cursor_example,
+    // string (optional)
+    q: q_example,
+    // boolean (optional)
+    pending: true,
+    // Date (optional)
+    dateFrom: 2013-10-20T19:20:30+01:00,
+    // Date (optional)
+    dateTo: 2013-10-20T19:20:30+01:00,
+    // number (optional)
+    amountMin: 1.2,
+    // number (optional)
+    amountMax: 1.2,
+    // string (optional)
+    categoryId: categoryId_example,
+    // string | Comma-separated tag IDs. (optional)
+    tagIds: tagIds_example,
+    // 'any' | 'all' (optional)
+    tagMode: tagMode_example,
+    // 'asc' | 'desc' (optional)
+    sort: sort_example,
+  } satisfies ListTransactionsForAccountsRequest;
+
+  try {
+    const data = await api.listTransactionsForAccounts(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **accountIds** | `string` | Comma-separated account IDs. All account IDs must be owned by the current authenticated user. | [Defaults to `undefined`] |
 | **limit** | `number` |  | [Optional] [Defaults to `undefined`] |
 | **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
 | **q** | `string` |  | [Optional] [Defaults to `undefined`] |

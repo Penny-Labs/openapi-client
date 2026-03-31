@@ -18,7 +18,7 @@ import {
   Configuration,
   AccountsApi,
 } from '@penny/openapi-penny-client';
-import type { CreateAccountRequest } from '@penny/openapi-penny-client';
+import type { AggregateTransactionsRequest } from '@penny/openapi-penny-client';
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-penny-client SDK...");
@@ -29,12 +29,30 @@ async function example() {
   const api = new AccountsApi(config);
 
   const body = {
-    // AccountCreateRequest
-    accountCreateRequest: ...,
-  } satisfies CreateAccountRequest;
+    // string | Comma-separated account IDs. When omitted, all user-owned accounts are included. (optional)
+    accountIds: accountIds_example,
+    // string (optional)
+    q: q_example,
+    // boolean (optional)
+    pending: true,
+    // Date (optional)
+    dateFrom: 2013-10-20T19:20:30+01:00,
+    // Date (optional)
+    dateTo: 2013-10-20T19:20:30+01:00,
+    // number (optional)
+    amountMin: 1.2,
+    // number (optional)
+    amountMax: 1.2,
+    // string (optional)
+    categoryId: categoryId_example,
+    // string | Comma-separated tag IDs. (optional)
+    tagIds: tagIds_example,
+    // 'any' | 'all' (optional)
+    tagMode: tagMode_example,
+  } satisfies AggregateTransactionsRequest;
 
   try {
-    const data = await api.createAccount(body);
+    const data = await api.aggregateTransactions(body);
     console.log(data);
   } catch (error) {
     console.error(error);
@@ -54,6 +72,7 @@ All URIs are relative to *http://localhost:8080*
 
 | Class | Method | HTTP request | Description
 | ----- | ------ | ------------ | -------------
+*AccountsApi* | [**aggregateTransactions**](docs/AccountsApi.md#aggregatetransactions) | **GET** /v1/transactions/aggregates | Aggregate transactions for user-owned accounts
 *AccountsApi* | [**createAccount**](docs/AccountsApi.md#createaccount) | **POST** /v1/accounts | Create account for current authenticated user
 *AccountsApi* | [**createTransaction**](docs/AccountsApi.md#createtransaction) | **POST** /v1/accounts/{accountID}/transactions | Create a transaction for an account owned by the current authenticated user
 *AccountsApi* | [**getAccountByID**](docs/AccountsApi.md#getaccountbyid) | **GET** /v1/accounts/{accountID} | Get account by ID for current authenticated user
@@ -62,6 +81,7 @@ All URIs are relative to *http://localhost:8080*
 *AccountsApi* | [**listAccounts**](docs/AccountsApi.md#listaccounts) | **GET** /v1/accounts | List accounts for current authenticated user
 *AccountsApi* | [**listBalances**](docs/AccountsApi.md#listbalances) | **GET** /v1/accounts/{accountID}/balances | List balance snapshots for an account owned by the current authenticated user
 *AccountsApi* | [**listTransactions**](docs/AccountsApi.md#listtransactions) | **GET** /v1/accounts/{accountID}/transactions | List transactions for an account owned by the current authenticated user
+*AccountsApi* | [**listTransactionsForAccounts**](docs/AccountsApi.md#listtransactionsforaccounts) | **GET** /v1/transactions | List transactions across specified accounts owned by the current authenticated user
 *AccountsApi* | [**patchAccount**](docs/AccountsApi.md#patchaccount) | **PATCH** /v1/accounts/{accountID} | Patch account fields for current authenticated user
 *AccountsApi* | [**patchTransaction**](docs/AccountsApi.md#patchtransaction) | **PATCH** /v1/accounts/{accountID}/transactions/{transactionID} | Patch mutable transaction fields by ID for an owned account
 *AccountsApi* | [**upsertBalance**](docs/AccountsApi.md#upsertbalance) | **POST** /v1/accounts/{accountID}/balances | Upsert a balance snapshot for an account owned by the current authenticated user
@@ -133,10 +153,13 @@ All URIs are relative to *http://localhost:8080*
 - [TagListResponse](docs/TagListResponse.md)
 - [TagPatchRequest](docs/TagPatchRequest.md)
 - [Transaction](docs/Transaction.md)
+- [TransactionAggregateResponse](docs/TransactionAggregateResponse.md)
 - [TransactionCreateRequest](docs/TransactionCreateRequest.md)
 - [TransactionListResponse](docs/TransactionListResponse.md)
 - [TransactionPatchRequest](docs/TransactionPatchRequest.md)
 - [TransactionPaymentChannel](docs/TransactionPaymentChannel.md)
+- [TransactionSpendingByCategoryPoint](docs/TransactionSpendingByCategoryPoint.md)
+- [TransactionSpendingByDayPoint](docs/TransactionSpendingByDayPoint.md)
 - [TransactionTagsReplaceRequest](docs/TransactionTagsReplaceRequest.md)
 - [User](docs/User.md)
 - [UserCreateRequest](docs/UserCreateRequest.md)

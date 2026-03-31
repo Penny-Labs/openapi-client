@@ -16,7 +16,7 @@ tags:
   - name: Users
     description: User creation and retrieval operations.
   - name: Accounts
-    description: Bank account and account-scoped transaction operations.
+    description: Bank account and transaction operations.
   - name: Categories
     description: User category management operations.
   - name: Budgets
@@ -812,6 +812,193 @@ paths:
       responses:
         "204":
           description: Tag deleted
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/transactions:
+    get:
+      tags: [Accounts]
+      operationId: listTransactionsForAccounts
+      summary: List transactions across specified accounts owned by the current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: query
+          name: account_ids
+          required: true
+          schema:
+            type: string
+          description: Comma-separated account IDs. All account IDs must be owned by the current authenticated user.
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: pending
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: date_from
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: date_to
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: amount_min
+          required: false
+          schema:
+            type: number
+            format: double
+        - in: query
+          name: amount_max
+          required: false
+          schema:
+            type: number
+            format: double
+        - in: query
+          name: category_id
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: tag_ids
+          required: false
+          schema:
+            type: string
+          description: Comma-separated tag IDs.
+        - in: query
+          name: tag_mode
+          required: false
+          schema:
+            type: string
+            enum: [any, all]
+            default: any
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        "200":
+          description: Transaction page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/transactions/aggregates:
+    get:
+      tags: [Accounts]
+      operationId: aggregateTransactions
+      summary: Aggregate transactions for user-owned accounts
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: query
+          name: account_ids
+          required: false
+          schema:
+            type: string
+          description: Comma-separated account IDs. When omitted, all user-owned accounts are included.
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: pending
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: date_from
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: date_to
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: amount_min
+          required: false
+          schema:
+            type: number
+            format: double
+        - in: query
+          name: amount_max
+          required: false
+          schema:
+            type: number
+            format: double
+        - in: query
+          name: category_id
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: tag_ids
+          required: false
+          schema:
+            type: string
+          description: Comma-separated tag IDs.
+        - in: query
+          name: tag_mode
+          required: false
+          schema:
+            type: string
+            enum: [any, all]
+            default: any
+      responses:
+        "200":
+          description: Aggregated transaction metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionAggregateResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
         "403":
@@ -2270,3 +2457,64 @@ components:
         next_cursor:
           type: [string, "null"]
       required: [items, total]
+
+    TransactionSpendingByCategoryPoint:
+      type: object
+      additionalProperties: false
+      properties:
+        category_id:
+          type: [string, "null"]
+        category_name:
+          type: string
+        amount:
+          type: number
+          format: double
+      required:
+        - category_name
+        - amount
+
+    TransactionSpendingByDayPoint:
+      type: object
+      additionalProperties: false
+      properties:
+        date:
+          type: string
+          description: UTC calendar day in YYYY-MM-DD format.
+        amount:
+          type: number
+          format: double
+      required:
+        - date
+        - amount
+
+    TransactionAggregateResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        total_spent:
+          type: number
+          format: double
+        income:
+          type: number
+          format: double
+        net_flow:
+          type: number
+          format: double
+        pending_count:
+          type: integer
+          minimum: 0
+        spending_by_category:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionSpendingByCategoryPoint"
+        spending_by_day:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionSpendingByDayPoint"
+      required:
+        - total_spent
+        - income
+        - net_flow
+        - pending_count
+        - spending_by_category
+        - spending_by_day

@@ -24,6 +24,7 @@ import type {
   BalanceListResponse,
   ErrorResponse,
   Transaction,
+  TransactionAggregateResponse,
   TransactionCreateRequest,
   TransactionListResponse,
   TransactionPatchRequest,
@@ -47,6 +48,8 @@ import {
     ErrorResponseToJSON,
     TransactionFromJSON,
     TransactionToJSON,
+    TransactionAggregateResponseFromJSON,
+    TransactionAggregateResponseToJSON,
     TransactionCreateRequestFromJSON,
     TransactionCreateRequestToJSON,
     TransactionListResponseFromJSON,
@@ -54,6 +57,19 @@ import {
     TransactionPatchRequestFromJSON,
     TransactionPatchRequestToJSON,
 } from '../models/index';
+
+export interface AggregateTransactionsRequest {
+    accountIds?: string;
+    q?: string;
+    pending?: boolean;
+    dateFrom?: Date;
+    dateTo?: Date;
+    amountMin?: number;
+    amountMax?: number;
+    categoryId?: string;
+    tagIds?: string;
+    tagMode?: AggregateTransactionsTagModeEnum;
+}
 
 export interface CreateAccountRequest {
     accountCreateRequest: AccountCreateRequest;
@@ -107,6 +123,22 @@ export interface ListTransactionsRequest {
     sort?: ListTransactionsSortEnum;
 }
 
+export interface ListTransactionsForAccountsRequest {
+    accountIds: string;
+    limit?: number;
+    cursor?: string;
+    q?: string;
+    pending?: boolean;
+    dateFrom?: Date;
+    dateTo?: Date;
+    amountMin?: number;
+    amountMax?: number;
+    categoryId?: string;
+    tagIds?: string;
+    tagMode?: ListTransactionsForAccountsTagModeEnum;
+    sort?: ListTransactionsForAccountsSortEnum;
+}
+
 export interface PatchAccountRequest {
     accountID: string;
     accountPatchRequest: AccountPatchRequest;
@@ -127,6 +159,83 @@ export interface UpsertBalanceRequest {
  * 
  */
 export class AccountsApi extends runtime.BaseAPI {
+
+    /**
+     * Creates request options for aggregateTransactions without sending the request
+     */
+    async aggregateTransactionsRequestOpts(requestParameters: AggregateTransactionsRequest): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters['accountIds'] != null) {
+            queryParameters['account_ids'] = requestParameters['accountIds'];
+        }
+
+        if (requestParameters['q'] != null) {
+            queryParameters['q'] = requestParameters['q'];
+        }
+
+        if (requestParameters['pending'] != null) {
+            queryParameters['pending'] = requestParameters['pending'];
+        }
+
+        if (requestParameters['dateFrom'] != null) {
+            queryParameters['date_from'] = (requestParameters['dateFrom'] as any).toISOString();
+        }
+
+        if (requestParameters['dateTo'] != null) {
+            queryParameters['date_to'] = (requestParameters['dateTo'] as any).toISOString();
+        }
+
+        if (requestParameters['amountMin'] != null) {
+            queryParameters['amount_min'] = requestParameters['amountMin'];
+        }
+
+        if (requestParameters['amountMax'] != null) {
+            queryParameters['amount_max'] = requestParameters['amountMax'];
+        }
+
+        if (requestParameters['categoryId'] != null) {
+            queryParameters['category_id'] = requestParameters['categoryId'];
+        }
+
+        if (requestParameters['tagIds'] != null) {
+            queryParameters['tag_ids'] = requestParameters['tagIds'];
+        }
+
+        if (requestParameters['tagMode'] != null) {
+            queryParameters['tag_mode'] = requestParameters['tagMode'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/v1/transactions/aggregates`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Aggregate transactions for user-owned accounts
+     */
+    async aggregateTransactionsRaw(requestParameters: AggregateTransactionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TransactionAggregateResponse>> {
+        const requestOptions = await this.aggregateTransactionsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TransactionAggregateResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Aggregate transactions for user-owned accounts
+     */
+    async aggregateTransactions(requestParameters: AggregateTransactionsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TransactionAggregateResponse> {
+        const response = await this.aggregateTransactionsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for createAccount without sending the request
@@ -577,6 +686,102 @@ export class AccountsApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for listTransactionsForAccounts without sending the request
+     */
+    async listTransactionsForAccountsRequestOpts(requestParameters: ListTransactionsForAccountsRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['accountIds'] == null) {
+            throw new runtime.RequiredError(
+                'accountIds',
+                'Required parameter "accountIds" was null or undefined when calling listTransactionsForAccounts().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['accountIds'] != null) {
+            queryParameters['account_ids'] = requestParameters['accountIds'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['cursor'] != null) {
+            queryParameters['cursor'] = requestParameters['cursor'];
+        }
+
+        if (requestParameters['q'] != null) {
+            queryParameters['q'] = requestParameters['q'];
+        }
+
+        if (requestParameters['pending'] != null) {
+            queryParameters['pending'] = requestParameters['pending'];
+        }
+
+        if (requestParameters['dateFrom'] != null) {
+            queryParameters['date_from'] = (requestParameters['dateFrom'] as any).toISOString();
+        }
+
+        if (requestParameters['dateTo'] != null) {
+            queryParameters['date_to'] = (requestParameters['dateTo'] as any).toISOString();
+        }
+
+        if (requestParameters['amountMin'] != null) {
+            queryParameters['amount_min'] = requestParameters['amountMin'];
+        }
+
+        if (requestParameters['amountMax'] != null) {
+            queryParameters['amount_max'] = requestParameters['amountMax'];
+        }
+
+        if (requestParameters['categoryId'] != null) {
+            queryParameters['category_id'] = requestParameters['categoryId'];
+        }
+
+        if (requestParameters['tagIds'] != null) {
+            queryParameters['tag_ids'] = requestParameters['tagIds'];
+        }
+
+        if (requestParameters['tagMode'] != null) {
+            queryParameters['tag_mode'] = requestParameters['tagMode'];
+        }
+
+        if (requestParameters['sort'] != null) {
+            queryParameters['sort'] = requestParameters['sort'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/v1/transactions`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List transactions across specified accounts owned by the current authenticated user
+     */
+    async listTransactionsForAccountsRaw(requestParameters: ListTransactionsForAccountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TransactionListResponse>> {
+        const requestOptions = await this.listTransactionsForAccountsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TransactionListResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List transactions across specified accounts owned by the current authenticated user
+     */
+    async listTransactionsForAccounts(requestParameters: ListTransactionsForAccountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TransactionListResponse> {
+        const response = await this.listTransactionsForAccountsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for patchAccount without sending the request
      */
     async patchAccountRequestOpts(requestParameters: PatchAccountRequest): Promise<runtime.RequestOpts> {
@@ -754,6 +959,14 @@ export class AccountsApi extends runtime.BaseAPI {
 /**
  * @export
  */
+export const AggregateTransactionsTagModeEnum = {
+    Any: 'any',
+    All: 'all'
+} as const;
+export type AggregateTransactionsTagModeEnum = typeof AggregateTransactionsTagModeEnum[keyof typeof AggregateTransactionsTagModeEnum];
+/**
+ * @export
+ */
 export const ListBalancesSortEnum = {
     Asc: 'asc',
     Desc: 'desc'
@@ -775,3 +988,19 @@ export const ListTransactionsSortEnum = {
     Desc: 'desc'
 } as const;
 export type ListTransactionsSortEnum = typeof ListTransactionsSortEnum[keyof typeof ListTransactionsSortEnum];
+/**
+ * @export
+ */
+export const ListTransactionsForAccountsTagModeEnum = {
+    Any: 'any',
+    All: 'all'
+} as const;
+export type ListTransactionsForAccountsTagModeEnum = typeof ListTransactionsForAccountsTagModeEnum[keyof typeof ListTransactionsForAccountsTagModeEnum];
+/**
+ * @export
+ */
+export const ListTransactionsForAccountsSortEnum = {
+    Asc: 'asc',
+    Desc: 'desc'
+} as const;
+export type ListTransactionsForAccountsSortEnum = typeof ListTransactionsForAccountsSortEnum[keyof typeof ListTransactionsForAccountsSortEnum];
