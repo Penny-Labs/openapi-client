@@ -1,0 +1,12 @@
+{
+  "name": "openapi-client",
+  "private": true,
+  "workspaces": [
+    "clients/management-api/typescript-fetch",
+    "clients/penny/typescript-fetch"
+  ],
+  "scripts": {
+    "build:management-api": "npm run build --workspace clients/management-api/typescript-fetch",
+    "build:penny": "npm run build --workspace clients/penny/typescript-fetch"
+  }
+}

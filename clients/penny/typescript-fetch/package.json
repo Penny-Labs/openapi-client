@@ -1,11 +1,14 @@
 {
-  "name": "@penny/openapi-penny-client",
+  "name": "@penny-labs/openapi-penny-client",
   "version": "0.1.0",
-  "description": "OpenAPI client for @penny/openapi-penny-client",
+  "description": "OpenAPI client for @penny-labs/openapi-penny-client",
   "author": "OpenAPI-Generator",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GIT_USER_ID/GIT_REPO_ID.git"
+    "url": "git+https://github.com/Penny-Labs/openapi-client.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

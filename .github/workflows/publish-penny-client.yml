@@ -1,0 +1,50 @@
+name: Publish Penny OpenAPI Client
+
+on:
+  push:
+    tags:
+      - "penny-client-v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse version from tag
+        id: version
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [[ ! "${TAG}" =~ ^penny-client-v([0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?)$ ]]; then
+            echo "invalid tag format: ${TAG}" >&2
+            exit 1
+          fi
+          echo "version=${BASH_REMATCH[1]}" >> "${GITHUB_OUTPUT}"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@penny-labs"
+
+      - name: Install workspace dependencies
+        run: npm ci --workspace clients/penny/typescript-fetch
+
+      - name: Set package version from tag
+        run: npm version "${{ steps.version.outputs.version }}" --workspace clients/penny/typescript-fetch --no-git-tag-version
+
+      - name: Build package
+        run: npm run build --workspace clients/penny/typescript-fetch
+
+      - name: Publish package
+        run: npm publish --workspace clients/penny/typescript-fetch --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

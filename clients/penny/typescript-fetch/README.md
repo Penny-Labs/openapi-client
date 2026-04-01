@@ -1,4 +1,4 @@
-# @penny/openapi-penny-client@0.1.0
+# @penny-labs/openapi-penny-client@0.1.0
 
 A TypeScript SDK client for the localhost API.
 
@@ -7,7 +7,7 @@ A TypeScript SDK client for the localhost API.
 First, install the SDK from npm.
 
 ```bash
-npm install @penny/openapi-penny-client --save
+npm install @penny-labs/openapi-penny-client --save
 ```
 
 Next, try it out.
@@ -17,11 +17,11 @@ Next, try it out.
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { AggregateTransactionsRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { AggregateTransactionsRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",

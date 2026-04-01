@@ -11,6 +11,7 @@ Centralized repository for generated OpenAPI client code.
 ## Prerequisites
 
 - `docker`
+- `node` + `npm` (for build/publish workflows)
 
 ## Generate management-api client
 
@@ -38,6 +39,22 @@ This command:
 - Copies `../penny/api/openapi.yaml` to `specs/penny/openapi.yaml`.
 - Runs `openapitools/openapi-generator-cli:v7.20.0` in Docker.
 - Generates `clients/penny/typescript-fetch`.
-- Sets generated package metadata to `@penny/openapi-penny-client` and version `0.1.0`.
+- Sets generated package metadata to `@penny-labs/openapi-penny-client` and version `0.1.0`.
+- Sets publish registry metadata for GitHub Packages (`https://npm.pkg.github.com`).
 
 Use `OPENAPI_GENERATOR_IMAGE=<image>` to override the generator image.
+
+## Publish Penny client (tag-based)
+
+1. Regenerate the Penny client:
+   ```bash
+   ./scripts/generate.sh penny typescript-fetch
+   ```
+2. Commit and push generated changes to `main`.
+3. Create and push a release tag with semver:
+   ```bash
+   git tag penny-client-v0.1.0
+   git push origin penny-client-v0.1.0
+   ```
+4. GitHub Actions workflow `.github/workflows/publish-penny-client.yml` publishes
+   `@penny-labs/openapi-penny-client` to GitHub Packages.
