@@ -104,6 +104,9 @@ All URIs are relative to *http://localhost:8080*
 *CategoriesApi* | [**getCategoryByID**](docs/CategoriesApi.md#getcategorybyid) | **GET** /v1/categories/{categoryID} | Get category by ID for current authenticated user
 *CategoriesApi* | [**listCategories**](docs/CategoriesApi.md#listcategories) | **GET** /v1/categories | List categories for current authenticated user
 *CategoriesApi* | [**patchCategory**](docs/CategoriesApi.md#patchcategory) | **PATCH** /v1/categories/{categoryID} | Patch category fields for current authenticated user
+*ExportsApi* | [**createTransactionExport**](docs/ExportsApi.md#createtransactionexportoperation) | **POST** /v1/exports/transactions | Create a transactions export job
+*ExportsApi* | [**downloadTransactionExport**](docs/ExportsApi.md#downloadtransactionexport) | **GET** /v1/exports/transactions/{exportID}/download | Download a completed transaction export
+*ExportsApi* | [**getTransactionExportByID**](docs/ExportsApi.md#gettransactionexportbyid) | **GET** /v1/exports/transactions/{exportID} | Get transaction export job status
 *TagsApi* | [**attachTagToTransaction**](docs/TagsApi.md#attachtagtotransaction) | **PUT** /v1/accounts/{accountID}/transactions/{transactionID}/tags/{tagID} | Attach a tag to a transaction owned by the current authenticated user
 *TagsApi* | [**createTag**](docs/TagsApi.md#createtag) | **POST** /v1/tags | Create a tag for current authenticated user
 *TagsApi* | [**deleteTag**](docs/TagsApi.md#deletetag) | **DELETE** /v1/tags/{tagID} | Delete tag by ID for current authenticated user
@@ -145,6 +148,7 @@ All URIs are relative to *http://localhost:8080*
 - [CategoryCreateRequest](docs/CategoryCreateRequest.md)
 - [CategoryListResponse](docs/CategoryListResponse.md)
 - [CategoryPatchRequest](docs/CategoryPatchRequest.md)
+- [CreateTransactionExportRequest](docs/CreateTransactionExportRequest.md)
 - [ErrorResponse](docs/ErrorResponse.md)
 - [SessionAuthResponse](docs/SessionAuthResponse.md)
 - [SignoutResponse](docs/SignoutResponse.md)
@@ -155,6 +159,9 @@ All URIs are relative to *http://localhost:8080*
 - [Transaction](docs/Transaction.md)
 - [TransactionAggregateResponse](docs/TransactionAggregateResponse.md)
 - [TransactionCreateRequest](docs/TransactionCreateRequest.md)
+- [TransactionExportFormat](docs/TransactionExportFormat.md)
+- [TransactionExportJob](docs/TransactionExportJob.md)
+- [TransactionExportStatus](docs/TransactionExportStatus.md)
 - [TransactionListResponse](docs/TransactionListResponse.md)
 - [TransactionPatchRequest](docs/TransactionPatchRequest.md)
 - [TransactionPaymentChannel](docs/TransactionPaymentChannel.md)

@@ -23,6 +23,8 @@ tags:
     description: User budget, period, and allocation planning operations.
   - name: Tags
     description: User tag management and transaction tagging operations.
+  - name: Exports
+    description: User transaction export operations.
 paths:
   /v1/auth/signup:
     post:
@@ -1005,6 +1007,107 @@ paths:
           $ref: "#/components/responses/ForbiddenResponse"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/exports/transactions:
+    post:
+      tags: [Exports]
+      operationId: createTransactionExport
+      summary: Create a transactions export job
+      security:
+        - SessionCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTransactionExportRequest"
+      responses:
+        "201":
+          description: Export job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionExportJob"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/exports/transactions/{exportID}:
+    get:
+      tags: [Exports]
+      operationId: getTransactionExportByID
+      summary: Get transaction export job status
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: exportID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Export job
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionExportJob"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/exports/transactions/{exportID}/download:
+    get:
+      tags: [Exports]
+      operationId: downloadTransactionExport
+      summary: Download a completed transaction export
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: exportID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Export file stream
+          headers:
+            Content-Disposition:
+              description: Attachment filename.
+              schema:
+                type: string
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
@@ -2518,3 +2621,88 @@ components:
         - pending_count
         - spending_by_category
         - spending_by_day
+
+    TransactionExportFormat:
+      type: string
+      enum: [csv, json]
+
+    TransactionExportStatus:
+      type: string
+      enum: [pending, processing, completed, failed, expired]
+
+    CreateTransactionExportRequest:
+      type: object
+      additionalProperties: false
+      required: [format, account_ids]
+      properties:
+        format:
+          $ref: "#/components/schemas/TransactionExportFormat"
+        account_ids:
+          type: array
+          items:
+            type: string
+        q:
+          type: string
+        pending:
+          type: boolean
+        date_from:
+          type: string
+          format: date-time
+        date_to:
+          type: string
+          format: date-time
+        amount_min:
+          type: number
+          format: double
+        amount_max:
+          type: number
+          format: double
+        category_id:
+          type: string
+        tag_ids:
+          type: array
+          items:
+            type: string
+        tag_mode:
+          type: string
+          enum: [any, all]
+          default: any
+        sort:
+          type: string
+          enum: [asc, desc]
+          default: desc
+
+    TransactionExportJob:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [transactions]
+        format:
+          $ref: "#/components/schemas/TransactionExportFormat"
+        status:
+          $ref: "#/components/schemas/TransactionExportStatus"
+        created_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: [string, "null"]
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+        row_count:
+          type: [integer, "null"]
+          minimum: 0
+        error:
+          type: [string, "null"]
+      required:
+        - id
+        - type
+        - format
+        - status
+        - created_at
+        - expires_at
