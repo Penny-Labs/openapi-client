@@ -39,7 +39,7 @@ jobs:
         run: npm ci --workspace clients/penny/typescript-fetch
 
       - name: Set package version from tag
-        run: npm version "${{ steps.version.outputs.version }}" --workspace clients/penny/typescript-fetch --no-git-tag-version
+        run: npm version "${{ steps.version.outputs.version }}" --workspace clients/penny/typescript-fetch --no-git-tag-version --allow-same-version
 
       - name: Build package
         run: npm run build --workspace clients/penny/typescript-fetch
