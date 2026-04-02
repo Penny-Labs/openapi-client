@@ -25,6 +25,12 @@ export interface CategoryCreateRequest {
      * @memberof CategoryCreateRequest
      */
     name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CategoryCreateRequest
+     */
+    parentCategoryId?: string | null;
 }
 
 /**
@@ -46,6 +52,7 @@ export function CategoryCreateRequestFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'name': json['name'],
+        'parentCategoryId': json['parent_category_id'] == null ? undefined : json['parent_category_id'],
     };
 }
 
@@ -61,6 +68,7 @@ export function CategoryCreateRequestToJSONTyped(value?: CategoryCreateRequest |
     return {
         
         'name': value['name'],
+        'parent_category_id': value['parentCategoryId'],
     };
 }
 

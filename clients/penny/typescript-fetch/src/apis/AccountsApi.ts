@@ -26,6 +26,7 @@ import type {
   Transaction,
   TransactionAggregateResponse,
   TransactionCreateRequest,
+  TransactionInsightsResponse,
   TransactionListResponse,
   TransactionPatchRequest,
 } from '../models/index';
@@ -52,6 +53,8 @@ import {
     TransactionAggregateResponseToJSON,
     TransactionCreateRequestFromJSON,
     TransactionCreateRequestToJSON,
+    TransactionInsightsResponseFromJSON,
+    TransactionInsightsResponseToJSON,
     TransactionListResponseFromJSON,
     TransactionListResponseToJSON,
     TransactionPatchRequestFromJSON,
@@ -91,6 +94,13 @@ export interface GetCurrentBalanceRequest {
 export interface GetTransactionByIDRequest {
     accountID: string;
     transactionID: string;
+}
+
+export interface GetTransactionInsightsRequest {
+    budgetPeriodId: string;
+    accountIds?: string;
+    topMerchantsLimit?: number;
+    recentLimit?: number;
 }
 
 export interface ListAccountsRequest {
@@ -479,6 +489,66 @@ export class AccountsApi extends runtime.BaseAPI {
      */
     async getTransactionByID(requestParameters: GetTransactionByIDRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Transaction> {
         const response = await this.getTransactionByIDRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getTransactionInsights without sending the request
+     */
+    async getTransactionInsightsRequestOpts(requestParameters: GetTransactionInsightsRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['budgetPeriodId'] == null) {
+            throw new runtime.RequiredError(
+                'budgetPeriodId',
+                'Required parameter "budgetPeriodId" was null or undefined when calling getTransactionInsights().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['budgetPeriodId'] != null) {
+            queryParameters['budget_period_id'] = requestParameters['budgetPeriodId'];
+        }
+
+        if (requestParameters['accountIds'] != null) {
+            queryParameters['account_ids'] = requestParameters['accountIds'];
+        }
+
+        if (requestParameters['topMerchantsLimit'] != null) {
+            queryParameters['top_merchants_limit'] = requestParameters['topMerchantsLimit'];
+        }
+
+        if (requestParameters['recentLimit'] != null) {
+            queryParameters['recent_limit'] = requestParameters['recentLimit'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/v1/transactions/insights`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Read finance insights for a budget period
+     */
+    async getTransactionInsightsRaw(requestParameters: GetTransactionInsightsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TransactionInsightsResponse>> {
+        const requestOptions = await this.getTransactionInsightsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TransactionInsightsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Read finance insights for a budget period
+     */
+    async getTransactionInsights(requestParameters: GetTransactionInsightsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TransactionInsightsResponse> {
+        const response = await this.getTransactionInsightsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

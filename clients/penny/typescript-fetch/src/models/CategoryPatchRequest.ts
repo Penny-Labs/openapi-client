@@ -25,6 +25,12 @@ export interface CategoryPatchRequest {
      * @memberof CategoryPatchRequest
      */
     name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CategoryPatchRequest
+     */
+    parentCategoryId?: string | null;
 }
 
 /**
@@ -45,6 +51,7 @@ export function CategoryPatchRequestFromJSONTyped(json: any, ignoreDiscriminator
     return {
         
         'name': json['name'] == null ? undefined : json['name'],
+        'parentCategoryId': json['parent_category_id'] == null ? undefined : json['parent_category_id'],
     };
 }
 
@@ -60,6 +67,7 @@ export function CategoryPatchRequestToJSONTyped(value?: CategoryPatchRequest | n
     return {
         
         'name': value['name'],
+        'parent_category_id': value['parentCategoryId'],
     };
 }
 

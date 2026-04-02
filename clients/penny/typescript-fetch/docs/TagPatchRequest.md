@@ -11,7 +11,7 @@ Name | Type
 ## Example
 
 ```typescript
-import type { TagPatchRequest } from '@penny/openapi-penny-client'
+import type { TagPatchRequest } from '@penny-labs/openapi-penny-client'
 
 // TODO: Update the object below with actual values
 const example = {

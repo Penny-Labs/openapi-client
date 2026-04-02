@@ -78,6 +78,7 @@ All URIs are relative to *http://localhost:8080*
 *AccountsApi* | [**getAccountByID**](docs/AccountsApi.md#getaccountbyid) | **GET** /v1/accounts/{accountID} | Get account by ID for current authenticated user
 *AccountsApi* | [**getCurrentBalance**](docs/AccountsApi.md#getcurrentbalance) | **GET** /v1/accounts/{accountID}/balances/current | Get latest balance snapshot for an account owned by the current authenticated user
 *AccountsApi* | [**getTransactionByID**](docs/AccountsApi.md#gettransactionbyid) | **GET** /v1/accounts/{accountID}/transactions/{transactionID} | Get a transaction by ID for an owned account
+*AccountsApi* | [**getTransactionInsights**](docs/AccountsApi.md#gettransactioninsights) | **GET** /v1/transactions/insights | Read finance insights for a budget period
 *AccountsApi* | [**listAccounts**](docs/AccountsApi.md#listaccounts) | **GET** /v1/accounts | List accounts for current authenticated user
 *AccountsApi* | [**listBalances**](docs/AccountsApi.md#listbalances) | **GET** /v1/accounts/{accountID}/balances | List balance snapshots for an account owned by the current authenticated user
 *AccountsApi* | [**listTransactions**](docs/AccountsApi.md#listtransactions) | **GET** /v1/accounts/{accountID}/transactions | List transactions for an account owned by the current authenticated user
@@ -162,6 +163,15 @@ All URIs are relative to *http://localhost:8080*
 - [TransactionExportFormat](docs/TransactionExportFormat.md)
 - [TransactionExportJob](docs/TransactionExportJob.md)
 - [TransactionExportStatus](docs/TransactionExportStatus.md)
+- [TransactionInsightsBudgetRow](docs/TransactionInsightsBudgetRow.md)
+- [TransactionInsightsCategoryBreakdownPoint](docs/TransactionInsightsCategoryBreakdownPoint.md)
+- [TransactionInsightsRecentTransaction](docs/TransactionInsightsRecentTransaction.md)
+- [TransactionInsightsResponse](docs/TransactionInsightsResponse.md)
+- [TransactionInsightsSankeyLink](docs/TransactionInsightsSankeyLink.md)
+- [TransactionInsightsSankeyNode](docs/TransactionInsightsSankeyNode.md)
+- [TransactionInsightsSummary](docs/TransactionInsightsSummary.md)
+- [TransactionInsightsTimePoint](docs/TransactionInsightsTimePoint.md)
+- [TransactionInsightsTopMerchant](docs/TransactionInsightsTopMerchant.md)
 - [TransactionListResponse](docs/TransactionListResponse.md)
 - [TransactionPatchRequest](docs/TransactionPatchRequest.md)
 - [TransactionPaymentChannel](docs/TransactionPaymentChannel.md)

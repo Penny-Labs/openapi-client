@@ -43,6 +43,12 @@ export interface Category {
      * @memberof Category
      */
     name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Category
+     */
+    parentCategoryId?: string | null;
 }
 
 /**
@@ -69,6 +75,7 @@ export function CategoryFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'dateAdded': (new Date(json['date_added'])),
         'dateModified': json['date_modified'] == null ? undefined : (new Date(json['date_modified'])),
         'name': json['name'],
+        'parentCategoryId': json['parent_category_id'] == null ? undefined : json['parent_category_id'],
     };
 }
 
@@ -87,6 +94,7 @@ export function CategoryToJSONTyped(value?: Category | null, ignoreDiscriminator
         'date_added': value['dateAdded'].toISOString(),
         'date_modified': value['dateModified'] == null ? value['dateModified'] : value['dateModified'].toISOString(),
         'name': value['name'],
+        'parent_category_id': value['parentCategoryId'],
     };
 }
 

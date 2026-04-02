@@ -20,7 +20,7 @@ Name | Type
 ## Example
 
 ```typescript
-import type { TransactionCreateRequest } from '@penny/openapi-penny-client'
+import type { TransactionCreateRequest } from '@penny-labs/openapi-penny-client'
 
 // TODO: Update the object below with actual values
 const example = {

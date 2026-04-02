@@ -12,7 +12,7 @@ Name | Type
 ## Example
 
 ```typescript
-import type { BudgetCreateRequest } from '@penny/openapi-penny-client'
+import type { BudgetCreateRequest } from '@penny-labs/openapi-penny-client'
 
 // TODO: Update the object below with actual values
 const example = {

@@ -1010,6 +1010,59 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
+  /v1/transactions/insights:
+    get:
+      tags: [Accounts]
+      operationId: getTransactionInsights
+      summary: Read finance insights for a budget period
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: query
+          name: budget_period_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: account_ids
+          required: false
+          schema:
+            type: string
+          description: Comma-separated account IDs. When omitted, all user-owned accounts are included.
+        - in: query
+          name: top_merchants_limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 5
+        - in: query
+          name: recent_limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 7
+      responses:
+        "200":
+          description: Finance insights payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionInsightsResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
   /v1/exports/transactions:
     post:
       tags: [Exports]
@@ -2005,9 +2058,12 @@ components:
       properties:
         name:
           type: string
+        parent_category_id:
+          type: [string, "null"]
       required: [name]
       example:
         name: Groceries
+        parent_category_id: null
 
     CategoryPatchRequest:
       type: object
@@ -2016,8 +2072,11 @@ components:
       properties:
         name:
           type: string
+        parent_category_id:
+          type: [string, "null"]
       example:
         name: Food & Dining
+        parent_category_id: null
 
     Category:
       type: object
@@ -2033,12 +2092,15 @@ components:
           format: date-time
         name:
           type: string
+        parent_category_id:
+          type: [string, "null"]
       required: [id, date_added, name]
       example:
         id: cat-1
         date_added: "2026-03-01T00:00:00Z"
         date_modified: null
         name: Groceries
+        parent_category_id: null
 
     CategoryListResponse:
       type: object
@@ -2621,6 +2683,212 @@ components:
         - pending_count
         - spending_by_category
         - spending_by_day
+
+    TransactionInsightsSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        planned:
+          type: number
+          format: double
+        spent:
+          type: number
+          format: double
+        remaining:
+          type: number
+          format: double
+        income:
+          type: number
+          format: double
+      required:
+        - planned
+        - spent
+        - remaining
+        - income
+
+    TransactionInsightsBudgetRow:
+      type: object
+      additionalProperties: false
+      properties:
+        category_id:
+          type: string
+        category_name:
+          type: string
+        parent_category_id:
+          type: [string, "null"]
+        parent_category_name:
+          type: string
+        planned:
+          type: number
+          format: double
+        spent:
+          type: number
+          format: double
+        remaining:
+          type: number
+          format: double
+        utilization_pct:
+          type: integer
+      required:
+        - category_id
+        - category_name
+        - parent_category_name
+        - planned
+        - spent
+        - remaining
+        - utilization_pct
+
+    TransactionInsightsCategoryBreakdownPoint:
+      type: object
+      additionalProperties: false
+      properties:
+        category_id:
+          type: [string, "null"]
+        category_name:
+          type: string
+        amount:
+          type: number
+          format: double
+      required:
+        - category_name
+        - amount
+
+    TransactionInsightsTimePoint:
+      type: object
+      additionalProperties: false
+      properties:
+        date:
+          type: string
+          description: UTC calendar day in YYYY-MM-DD format.
+        amount:
+          type: number
+          format: double
+      required:
+        - date
+        - amount
+
+    TransactionInsightsSankeyNode:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+      required:
+        - id
+
+    TransactionInsightsSankeyLink:
+      type: object
+      additionalProperties: false
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+        value:
+          type: number
+          format: double
+      required:
+        - from
+        - to
+        - value
+
+    TransactionInsightsTopMerchant:
+      type: object
+      additionalProperties: false
+      properties:
+        merchant_id:
+          type: string
+        amount:
+          type: number
+          format: double
+        transaction_count:
+          type: integer
+          minimum: 0
+      required:
+        - merchant_id
+        - amount
+        - transaction_count
+
+    TransactionInsightsRecentTransaction:
+      type: object
+      additionalProperties: false
+      properties:
+        transaction_id:
+          type: string
+        merchant_id:
+          type: [string, "null"]
+        description:
+          type: string
+        category_id:
+          type: [string, "null"]
+        category_name:
+          type: string
+        amount:
+          type: number
+          format: double
+        date:
+          type: string
+          description: UTC calendar day in YYYY-MM-DD format.
+      required:
+        - transaction_id
+        - description
+        - category_name
+        - amount
+        - date
+
+    TransactionInsightsResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        summary:
+          $ref: "#/components/schemas/TransactionInsightsSummary"
+        budget_rows:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionInsightsBudgetRow"
+        category_breakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionInsightsCategoryBreakdownPoint"
+        actual_by_day:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionInsightsTimePoint"
+        projected_by_day:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionInsightsTimePoint"
+        spending_over_time:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionInsightsTimePoint"
+        sankey_nodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionInsightsSankeyNode"
+        sankey_links:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionInsightsSankeyLink"
+        top_merchants:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionInsightsTopMerchant"
+        recent_transactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionInsightsRecentTransaction"
+      required:
+        - summary
+        - budget_rows
+        - category_breakdown
+        - actual_by_day
+        - projected_by_day
+        - spending_over_time
+        - sankey_nodes
+        - sankey_links
+        - top_merchants
+        - recent_transactions
 
     TransactionExportFormat:
       type: string

@@ -22,11 +22,11 @@ Create user
 import {
   Configuration,
   UsersApi,
-} from '@penny/openapi-penny-client';
-import type { CreateUserRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { CreateUserRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const api = new UsersApi();
 
   const body = {
@@ -90,11 +90,11 @@ Get user by ID (self only)
 import {
   Configuration,
   UsersApi,
-} from '@penny/openapi-penny-client';
-import type { GetUserByIDRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { GetUserByIDRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -163,11 +163,11 @@ List users (admin only)
 import {
   Configuration,
   UsersApi,
-} from '@penny/openapi-penny-client';
-import type { ListUsersRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ListUsersRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",

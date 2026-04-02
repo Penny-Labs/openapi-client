@@ -27,11 +27,11 @@ Attach a tag to a transaction owned by the current authenticated user
 import {
   Configuration,
   TagsApi,
-} from '@penny/openapi-penny-client';
-import type { AttachTagToTransactionRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { AttachTagToTransactionRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -106,11 +106,11 @@ Create a tag for current authenticated user
 import {
   Configuration,
   TagsApi,
-} from '@penny/openapi-penny-client';
-import type { CreateTagRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { CreateTagRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -180,11 +180,11 @@ Delete tag by ID for current authenticated user
 import {
   Configuration,
   TagsApi,
-} from '@penny/openapi-penny-client';
-import type { DeleteTagRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { DeleteTagRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -253,11 +253,11 @@ Detach a tag from a transaction owned by the current authenticated user
 import {
   Configuration,
   TagsApi,
-} from '@penny/openapi-penny-client';
-import type { DetachTagFromTransactionRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { DetachTagFromTransactionRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -332,11 +332,11 @@ Get tag by ID for current authenticated user
 import {
   Configuration,
   TagsApi,
-} from '@penny/openapi-penny-client';
-import type { GetTagByIDRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { GetTagByIDRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -405,11 +405,11 @@ List tags for current authenticated user
 import {
   Configuration,
   TagsApi,
-} from '@penny/openapi-penny-client';
-import type { ListTagsRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ListTagsRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -469,11 +469,11 @@ Patch tag fields for current authenticated user
 import {
   Configuration,
   TagsApi,
-} from '@penny/openapi-penny-client';
-import type { PatchTagRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { PatchTagRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -547,11 +547,11 @@ Replace all tags for a transaction owned by the current authenticated user
 import {
   Configuration,
   TagsApi,
-} from '@penny/openapi-penny-client';
-import type { ReplaceTransactionTagsRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ReplaceTransactionTagsRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",

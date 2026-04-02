@@ -10,7 +10,7 @@ Name | Type
 ## Example
 
 ```typescript
-import type { BankAccountStatus } from '@penny/openapi-penny-client'
+import type { BankAccountStatus } from '@penny-labs/openapi-penny-client'
 
 // TODO: Update the object below with actual values
 const example = {

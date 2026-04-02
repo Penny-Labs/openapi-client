@@ -24,11 +24,11 @@ Create a category for current authenticated user
 import {
   Configuration,
   CategoriesApi,
-} from '@penny/openapi-penny-client';
-import type { CreateCategoryRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { CreateCategoryRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -98,11 +98,11 @@ Delete category by ID for current authenticated user
 import {
   Configuration,
   CategoriesApi,
-} from '@penny/openapi-penny-client';
-import type { DeleteCategoryRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { DeleteCategoryRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -171,11 +171,11 @@ Get category by ID for current authenticated user
 import {
   Configuration,
   CategoriesApi,
-} from '@penny/openapi-penny-client';
-import type { GetCategoryByIDRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { GetCategoryByIDRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -244,11 +244,11 @@ List categories for current authenticated user
 import {
   Configuration,
   CategoriesApi,
-} from '@penny/openapi-penny-client';
-import type { ListCategoriesRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ListCategoriesRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -308,11 +308,11 @@ Patch category fields for current authenticated user
 import {
   Configuration,
   CategoriesApi,
-} from '@penny/openapi-penny-client';
-import type { PatchCategoryRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { PatchCategoryRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",

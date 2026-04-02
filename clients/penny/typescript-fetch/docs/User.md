@@ -15,7 +15,7 @@ Name | Type
 ## Example
 
 ```typescript
-import type { User } from '@penny/openapi-penny-client'
+import type { User } from '@penny-labs/openapi-penny-client'
 
 // TODO: Update the object below with actual values
 const example = {

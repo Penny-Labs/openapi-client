@@ -10,11 +10,12 @@ Name | Type
 `dateAdded` | Date
 `dateModified` | Date
 `name` | string
+`parentCategoryId` | string
 
 ## Example
 
 ```typescript
-import type { Category } from '@penny/openapi-penny-client'
+import type { Category } from '@penny-labs/openapi-penny-client'
 
 // TODO: Update the object below with actual values
 const example = {
@@ -22,6 +23,7 @@ const example = {
   "dateAdded": null,
   "dateModified": null,
   "name": null,
+  "parentCategoryId": null,
 } satisfies Category
 
 console.log(example)

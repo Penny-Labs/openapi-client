@@ -29,11 +29,11 @@ Create a budget for current authenticated user
 import {
   Configuration,
   BudgetsApi,
-} from '@penny/openapi-penny-client';
-import type { CreateBudgetRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { CreateBudgetRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -103,11 +103,11 @@ Create a budget period for a budget owned by the current authenticated user
 import {
   Configuration,
   BudgetsApi,
-} from '@penny/openapi-penny-client';
-import type { CreateBudgetPeriodRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { CreateBudgetPeriodRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -181,11 +181,11 @@ Delete budget by ID for current authenticated user
 import {
   Configuration,
   BudgetsApi,
-} from '@penny/openapi-penny-client';
-import type { DeleteBudgetRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { DeleteBudgetRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -254,11 +254,11 @@ Get budget by ID for current authenticated user
 import {
   Configuration,
   BudgetsApi,
-} from '@penny/openapi-penny-client';
-import type { GetBudgetByIDRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { GetBudgetByIDRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -327,11 +327,11 @@ Get budget period by ID for a budget owned by the current authenticated user
 import {
   Configuration,
   BudgetsApi,
-} from '@penny/openapi-penny-client';
-import type { GetBudgetPeriodByIDRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { GetBudgetPeriodByIDRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -404,11 +404,11 @@ List budget periods for a budget owned by the current authenticated user
 import {
   Configuration,
   BudgetsApi,
-} from '@penny/openapi-penny-client';
-import type { ListBudgetPeriodsRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ListBudgetPeriodsRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -481,11 +481,11 @@ List budgets for current authenticated user
 import {
   Configuration,
   BudgetsApi,
-} from '@penny/openapi-penny-client';
-import type { ListBudgetsRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ListBudgetsRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -545,11 +545,11 @@ Patch budget fields for current authenticated user
 import {
   Configuration,
   BudgetsApi,
-} from '@penny/openapi-penny-client';
-import type { PatchBudgetRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { PatchBudgetRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -623,11 +623,11 @@ Patch budget period fields for a budget owned by the current authenticated user
 import {
   Configuration,
   BudgetsApi,
-} from '@penny/openapi-penny-client';
-import type { PatchBudgetPeriodRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { PatchBudgetPeriodRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -704,11 +704,11 @@ Replace all category allocations for a budget period owned by the current authen
 import {
   Configuration,
   BudgetsApi,
-} from '@penny/openapi-penny-client';
-import type { ReplaceBudgetPeriodAllocationsRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ReplaceBudgetPeriodAllocationsRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",

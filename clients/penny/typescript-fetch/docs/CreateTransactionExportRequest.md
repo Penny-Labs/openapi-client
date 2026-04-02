@@ -22,7 +22,7 @@ Name | Type
 ## Example
 
 ```typescript
-import type { CreateTransactionExportRequest } from '@penny/openapi-penny-client'
+import type { CreateTransactionExportRequest } from '@penny-labs/openapi-penny-client'
 
 // TODO: Update the object below with actual values
 const example = {

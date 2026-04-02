@@ -10,6 +10,7 @@ All URIs are relative to *http://localhost:8080*
 | [**getAccountByID**](AccountsApi.md#getaccountbyid) | **GET** /v1/accounts/{accountID} | Get account by ID for current authenticated user |
 | [**getCurrentBalance**](AccountsApi.md#getcurrentbalance) | **GET** /v1/accounts/{accountID}/balances/current | Get latest balance snapshot for an account owned by the current authenticated user |
 | [**getTransactionByID**](AccountsApi.md#gettransactionbyid) | **GET** /v1/accounts/{accountID}/transactions/{transactionID} | Get a transaction by ID for an owned account |
+| [**getTransactionInsights**](AccountsApi.md#gettransactioninsights) | **GET** /v1/transactions/insights | Read finance insights for a budget period |
 | [**listAccounts**](AccountsApi.md#listaccounts) | **GET** /v1/accounts | List accounts for current authenticated user |
 | [**listBalances**](AccountsApi.md#listbalances) | **GET** /v1/accounts/{accountID}/balances | List balance snapshots for an account owned by the current authenticated user |
 | [**listTransactions**](AccountsApi.md#listtransactions) | **GET** /v1/accounts/{accountID}/transactions | List transactions for an account owned by the current authenticated user |
@@ -32,11 +33,11 @@ Aggregate transactions for user-owned accounts
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { AggregateTransactionsRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { AggregateTransactionsRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -133,11 +134,11 @@ Create account for current authenticated user
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { CreateAccountRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { CreateAccountRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -206,11 +207,11 @@ Create a transaction for an account owned by the current authenticated user
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { CreateTransactionRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { CreateTransactionRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -284,11 +285,11 @@ Get account by ID for current authenticated user
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { GetAccountByIDRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { GetAccountByIDRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -357,11 +358,11 @@ Get latest balance snapshot for an account owned by the current authenticated us
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { GetCurrentBalanceRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { GetCurrentBalanceRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -431,11 +432,11 @@ Get a transaction by ID for an owned account
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { GetTransactionByIDRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { GetTransactionByIDRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -496,6 +497,89 @@ example().catch(console.error);
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
 
+## getTransactionInsights
+
+> TransactionInsightsResponse getTransactionInsights(budgetPeriodId, accountIds, topMerchantsLimit, recentLimit)
+
+Read finance insights for a budget period
+
+### Example
+
+```ts
+import {
+  Configuration,
+  AccountsApi,
+} from '@penny-labs/openapi-penny-client';
+import type { GetTransactionInsightsRequest } from '@penny-labs/openapi-penny-client';
+
+async function example() {
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
+  const config = new Configuration({ 
+    // To configure API key authorization: SessionCookieAuth
+    apiKey: "YOUR API KEY",
+  });
+  const api = new AccountsApi(config);
+
+  const body = {
+    // string
+    budgetPeriodId: budgetPeriodId_example,
+    // string | Comma-separated account IDs. When omitted, all user-owned accounts are included. (optional)
+    accountIds: accountIds_example,
+    // number (optional)
+    topMerchantsLimit: 56,
+    // number (optional)
+    recentLimit: 56,
+  } satisfies GetTransactionInsightsRequest;
+
+  try {
+    const data = await api.getTransactionInsights(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **budgetPeriodId** | `string` |  | [Defaults to `undefined`] |
+| **accountIds** | `string` | Comma-separated account IDs. When omitted, all user-owned accounts are included. | [Optional] [Defaults to `undefined`] |
+| **topMerchantsLimit** | `number` |  | [Optional] [Defaults to `5`] |
+| **recentLimit** | `number` |  | [Optional] [Defaults to `7`] |
+
+### Return type
+
+[**TransactionInsightsResponse**](TransactionInsightsResponse.md)
+
+### Authorization
+
+[SessionCookieAuth](../README.md#SessionCookieAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Finance insights payload |  -  |
+| **400** | Bad request |  -  |
+| **401** | Unauthorized |  -  |
+| **403** | Forbidden |  -  |
+| **404** | Not found |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
 ## listAccounts
 
 > AccountListResponse listAccounts(limit, cursor)
@@ -508,11 +592,11 @@ List accounts for current authenticated user
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { ListAccountsRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ListAccountsRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -584,11 +668,11 @@ List balance snapshots for an account owned by the current authenticated user
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { ListBalancesRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ListBalancesRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -673,11 +757,11 @@ List transactions for an account owned by the current authenticated user
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { ListTransactionsRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ListTransactionsRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -783,11 +867,11 @@ List transactions across specified accounts owned by the current authenticated u
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { ListTransactionsForAccountsRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { ListTransactionsForAccountsRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -893,11 +977,11 @@ Patch account fields for current authenticated user
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { PatchAccountRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { PatchAccountRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -970,11 +1054,11 @@ Patch mutable transaction fields by ID for an owned account
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { PatchTransactionRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { PatchTransactionRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -1050,11 +1134,11 @@ Upsert a balance snapshot for an account owned by the current authenticated user
 import {
   Configuration,
   AccountsApi,
-} from '@penny/openapi-penny-client';
-import type { UpsertBalanceRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { UpsertBalanceRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",

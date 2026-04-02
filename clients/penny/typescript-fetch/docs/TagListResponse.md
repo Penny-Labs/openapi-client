@@ -12,7 +12,7 @@ Name | Type
 ## Example
 
 ```typescript
-import type { TagListResponse } from '@penny/openapi-penny-client'
+import type { TagListResponse } from '@penny-labs/openapi-penny-client'
 
 // TODO: Update the object below with actual values
 const example = {

@@ -7,15 +7,17 @@
 Name | Type
 ------------ | -------------
 `name` | string
+`parentCategoryId` | string
 
 ## Example
 
 ```typescript
-import type { CategoryPatchRequest } from '@penny/openapi-penny-client'
+import type { CategoryPatchRequest } from '@penny-labs/openapi-penny-client'
 
 // TODO: Update the object below with actual values
 const example = {
   "name": null,
+  "parentCategoryId": null,
 } satisfies CategoryPatchRequest
 
 console.log(example)

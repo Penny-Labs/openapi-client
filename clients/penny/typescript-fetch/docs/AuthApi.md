@@ -23,11 +23,11 @@ Get current authenticated user
 import {
   Configuration,
   AuthApi,
-} from '@penny/openapi-penny-client';
-import type { GetSessionUserRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { GetSessionUserRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const config = new Configuration({ 
     // To configure API key authorization: SessionCookieAuth
     apiKey: "YOUR API KEY",
@@ -86,11 +86,11 @@ Authenticate credentials and start session
 import {
   Configuration,
   AuthApi,
-} from '@penny/openapi-penny-client';
-import type { SigninRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { SigninRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const api = new AuthApi();
 
   const body = {
@@ -155,11 +155,11 @@ Revoke current session token and clear session cookie
 import {
   Configuration,
   AuthApi,
-} from '@penny/openapi-penny-client';
-import type { SignoutRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { SignoutRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const api = new AuthApi();
 
   try {
@@ -214,11 +214,11 @@ Create local credentials and start session
 import {
   Configuration,
   AuthApi,
-} from '@penny/openapi-penny-client';
-import type { SignupRequest } from '@penny/openapi-penny-client';
+} from '@penny-labs/openapi-penny-client';
+import type { SignupRequest } from '@penny-labs/openapi-penny-client';
 
 async function example() {
-  console.log("🚀 Testing @penny/openapi-penny-client SDK...");
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
   const api = new AuthApi();
 
   const body = {
