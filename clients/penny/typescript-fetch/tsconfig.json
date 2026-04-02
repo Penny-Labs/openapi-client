@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",

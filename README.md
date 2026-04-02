@@ -40,6 +40,9 @@ This command:
 - Runs `openapitools/openapi-generator-cli:v7.20.0` in Docker.
 - Generates `clients/penny/typescript-fetch`.
 - Sets generated package metadata to `@penny-labs/openapi-penny-client` and version `0.1.0`.
+- Applies Penny-specific post-generation normalization for `tsconfig.json`:
+  - `ignoreDeprecations: "5.0"` (compatible with TS 5.x and TS 6.x toolchains)
+  - `rootDir: "src"`
 - Sets publish registry metadata for GitHub Packages (`https://npm.pkg.github.com`).
 
 Use `OPENAPI_GENERATOR_IMAGE=<image>` to override the generator image.

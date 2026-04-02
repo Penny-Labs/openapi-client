@@ -44,8 +44,17 @@ docker run --rm \
 
 if [[ "${API_NAME}" == "penny" && "${GENERATOR}" == "typescript-fetch" ]]; then
   PACKAGE_JSON="${OUTPUT_DIR}/package.json"
+  TS_CONFIG="${OUTPUT_DIR}/tsconfig.json"
   perl -0pi -e 's#"url":\s*"https://github\.com/GIT_USER_ID/GIT_REPO_ID\.git"#"url": "'"${PENNY_REPO_URL}"'"#' "${PACKAGE_JSON}"
   perl -0pi -e 's#("repository":\s*\{[^}]*\}\s*,)#$1\n  "publishConfig": {\n    "registry": "'"${PENNY_REGISTRY_URL}"'"\n  },#s' "${PACKAGE_JSON}"
+  if grep -q '"ignoreDeprecations"' "${TS_CONFIG}"; then
+    perl -0pi -e 's#"ignoreDeprecations":\s*"[^"]+"#"ignoreDeprecations": "5.0"#' "${TS_CONFIG}"
+  else
+    perl -0pi -e 's#("declaration":\s*true,\n)#$1    "ignoreDeprecations": "5.0",\n#' "${TS_CONFIG}"
+  fi
+  if ! grep -q '"rootDir"' "${TS_CONFIG}"; then
+    perl -0pi -e 's#("moduleResolution":\s*"node",\n)#$1    "rootDir": "src",\n#' "${TS_CONFIG}"
+  fi
 fi
 
 echo "Synced spec to ${TARGET_SPEC}"
