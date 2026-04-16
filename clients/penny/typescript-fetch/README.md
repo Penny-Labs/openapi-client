@@ -87,6 +87,7 @@ All URIs are relative to *http://localhost:8080*
 *AccountsApi* | [**patchTransaction**](docs/AccountsApi.md#patchtransaction) | **PATCH** /v1/accounts/{accountID}/transactions/{transactionID} | Patch mutable transaction fields by ID for an owned account
 *AccountsApi* | [**upsertBalance**](docs/AccountsApi.md#upsertbalance) | **POST** /v1/accounts/{accountID}/balances | Upsert a balance snapshot for an account owned by the current authenticated user
 *AuthApi* | [**getSessionUser**](docs/AuthApi.md#getsessionuser) | **GET** /v1/auth/me | Get current authenticated user
+*AuthApi* | [**listSessionFeatures**](docs/AuthApi.md#listsessionfeatures) | **GET** /v1/auth/features | List resolved feature flags for the authenticated user
 *AuthApi* | [**signin**](docs/AuthApi.md#signin) | **POST** /v1/auth/signin | Authenticate credentials and start session
 *AuthApi* | [**signout**](docs/AuthApi.md#signout) | **POST** /v1/auth/signout | Revoke current session token and clear session cookie
 *AuthApi* | [**signup**](docs/AuthApi.md#signup) | **POST** /v1/auth/signup | Create local credentials and start session
@@ -116,6 +117,11 @@ All URIs are relative to *http://localhost:8080*
 *TagsApi* | [**listTags**](docs/TagsApi.md#listtags) | **GET** /v1/tags | List tags for current authenticated user
 *TagsApi* | [**patchTag**](docs/TagsApi.md#patchtag) | **PATCH** /v1/tags/{tagID} | Patch tag fields for current authenticated user
 *TagsApi* | [**replaceTransactionTags**](docs/TagsApi.md#replacetransactiontags) | **PUT** /v1/accounts/{accountID}/transactions/{transactionID}/tags | Replace all tags for a transaction owned by the current authenticated user
+*TransactionRulesApi* | [**createTransactionRule**](docs/TransactionRulesApi.md#createtransactionrule) | **POST** /v1/transactions/rules | Create a transaction rule for current authenticated user
+*TransactionRulesApi* | [**deleteTransactionRule**](docs/TransactionRulesApi.md#deletetransactionrule) | **DELETE** /v1/transactions/rules/{ruleID} | Delete transaction rule by ID for current authenticated user
+*TransactionRulesApi* | [**getTransactionRuleByID**](docs/TransactionRulesApi.md#gettransactionrulebyid) | **GET** /v1/transactions/rules/{ruleID} | Get transaction rule by ID for current authenticated user
+*TransactionRulesApi* | [**listTransactionRules**](docs/TransactionRulesApi.md#listtransactionrules) | **GET** /v1/transactions/rules | List transaction rules for current authenticated user
+*TransactionRulesApi* | [**patchTransactionRule**](docs/TransactionRulesApi.md#patchtransactionrule) | **PATCH** /v1/transactions/rules/{ruleID} | Patch transaction rule fields for current authenticated user
 *UsersApi* | [**createUser**](docs/UsersApi.md#createuser) | **POST** /v1/users | Create user
 *UsersApi* | [**getUserByID**](docs/UsersApi.md#getuserbyid) | **GET** /v1/users/{userID} | Get user by ID (self only)
 *UsersApi* | [**listUsers**](docs/UsersApi.md#listusers) | **GET** /v1/users | List users (admin only)
@@ -151,6 +157,8 @@ All URIs are relative to *http://localhost:8080*
 - [CategoryPatchRequest](docs/CategoryPatchRequest.md)
 - [CreateTransactionExportRequest](docs/CreateTransactionExportRequest.md)
 - [ErrorResponse](docs/ErrorResponse.md)
+- [FeatureListResponse](docs/FeatureListResponse.md)
+- [FeatureState](docs/FeatureState.md)
 - [SessionAuthResponse](docs/SessionAuthResponse.md)
 - [SignoutResponse](docs/SignoutResponse.md)
 - [Tag](docs/Tag.md)
@@ -175,6 +183,48 @@ All URIs are relative to *http://localhost:8080*
 - [TransactionListResponse](docs/TransactionListResponse.md)
 - [TransactionPatchRequest](docs/TransactionPatchRequest.md)
 - [TransactionPaymentChannel](docs/TransactionPaymentChannel.md)
+- [TransactionRule](docs/TransactionRule.md)
+- [TransactionRuleAction](docs/TransactionRuleAction.md)
+- [TransactionRuleActionInput](docs/TransactionRuleActionInput.md)
+- [TransactionRuleAddTagsAction](docs/TransactionRuleAddTagsAction.md)
+- [TransactionRuleAddTagsActionInput](docs/TransactionRuleAddTagsActionInput.md)
+- [TransactionRuleAddTagsActionInputOneOf](docs/TransactionRuleAddTagsActionInputOneOf.md)
+- [TransactionRuleAddTagsActionInputOneOf1](docs/TransactionRuleAddTagsActionInputOneOf1.md)
+- [TransactionRuleBooleanField](docs/TransactionRuleBooleanField.md)
+- [TransactionRuleBooleanInPredicate](docs/TransactionRuleBooleanInPredicate.md)
+- [TransactionRuleBooleanScalarPredicate](docs/TransactionRuleBooleanScalarPredicate.md)
+- [TransactionRuleClearCategoryAction](docs/TransactionRuleClearCategoryAction.md)
+- [TransactionRuleClearCategoryActionInput](docs/TransactionRuleClearCategoryActionInput.md)
+- [TransactionRuleConditionGroup](docs/TransactionRuleConditionGroup.md)
+- [TransactionRuleConditionNode](docs/TransactionRuleConditionNode.md)
+- [TransactionRuleCreateRequest](docs/TransactionRuleCreateRequest.md)
+- [TransactionRuleDateField](docs/TransactionRuleDateField.md)
+- [TransactionRuleDateInPredicate](docs/TransactionRuleDateInPredicate.md)
+- [TransactionRuleDateScalarPredicate](docs/TransactionRuleDateScalarPredicate.md)
+- [TransactionRuleDateValue](docs/TransactionRuleDateValue.md)
+- [TransactionRuleGroupNode](docs/TransactionRuleGroupNode.md)
+- [TransactionRuleGroupOperator](docs/TransactionRuleGroupOperator.md)
+- [TransactionRuleListResponse](docs/TransactionRuleListResponse.md)
+- [TransactionRuleNumberField](docs/TransactionRuleNumberField.md)
+- [TransactionRuleNumberInPredicate](docs/TransactionRuleNumberInPredicate.md)
+- [TransactionRuleNumberScalarPredicate](docs/TransactionRuleNumberScalarPredicate.md)
+- [TransactionRulePatchRequest](docs/TransactionRulePatchRequest.md)
+- [TransactionRulePredicate](docs/TransactionRulePredicate.md)
+- [TransactionRulePredicateNode](docs/TransactionRulePredicateNode.md)
+- [TransactionRuleRemoveTagsAction](docs/TransactionRuleRemoveTagsAction.md)
+- [TransactionRuleRemoveTagsActionInput](docs/TransactionRuleRemoveTagsActionInput.md)
+- [TransactionRuleReplaceTagsAction](docs/TransactionRuleReplaceTagsAction.md)
+- [TransactionRuleReplaceTagsActionInput](docs/TransactionRuleReplaceTagsActionInput.md)
+- [TransactionRuleSetCategoryAction](docs/TransactionRuleSetCategoryAction.md)
+- [TransactionRuleSetCategoryActionInput](docs/TransactionRuleSetCategoryActionInput.md)
+- [TransactionRuleSetCategoryActionInputOneOf](docs/TransactionRuleSetCategoryActionInputOneOf.md)
+- [TransactionRuleSetCategoryActionInputOneOf1](docs/TransactionRuleSetCategoryActionInputOneOf1.md)
+- [TransactionRuleSourceScope](docs/TransactionRuleSourceScope.md)
+- [TransactionRuleStatus](docs/TransactionRuleStatus.md)
+- [TransactionRuleTextField](docs/TransactionRuleTextField.md)
+- [TransactionRuleTextInPredicate](docs/TransactionRuleTextInPredicate.md)
+- [TransactionRuleTextRegexPredicate](docs/TransactionRuleTextRegexPredicate.md)
+- [TransactionRuleTextScalarPredicate](docs/TransactionRuleTextScalarPredicate.md)
 - [TransactionSpendingByCategoryPoint](docs/TransactionSpendingByCategoryPoint.md)
 - [TransactionSpendingByDayPoint](docs/TransactionSpendingByDayPoint.md)
 - [TransactionTagsReplaceRequest](docs/TransactionTagsReplaceRequest.md)

@@ -6,4 +6,5 @@ export * from './BudgetsApi';
 export * from './CategoriesApi';
 export * from './ExportsApi';
 export * from './TagsApi';
+export * from './TransactionRulesApi';
 export * from './UsersApi';

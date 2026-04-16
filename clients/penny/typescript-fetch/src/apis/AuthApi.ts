@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   AuthCredentialRequest,
   ErrorResponse,
+  FeatureListResponse,
   SessionAuthResponse,
   SignoutResponse,
   User,
@@ -26,6 +27,8 @@ import {
     AuthCredentialRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    FeatureListResponseFromJSON,
+    FeatureListResponseToJSON,
     SessionAuthResponseFromJSON,
     SessionAuthResponseToJSON,
     SignoutResponseFromJSON,
@@ -81,6 +84,43 @@ export class AuthApi extends runtime.BaseAPI {
      */
     async getSessionUser(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User> {
         const response = await this.getSessionUserRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for listSessionFeatures without sending the request
+     */
+    async listSessionFeaturesRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/v1/auth/features`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List resolved feature flags for the authenticated user
+     */
+    async listSessionFeaturesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FeatureListResponse>> {
+        const requestOptions = await this.listSessionFeaturesRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => FeatureListResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List resolved feature flags for the authenticated user
+     */
+    async listSessionFeatures(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FeatureListResponse> {
+        const response = await this.listSessionFeaturesRaw(initOverrides);
         return await response.value();
     }
 

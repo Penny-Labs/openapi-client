@@ -25,6 +25,8 @@ tags:
     description: User tag management and transaction tagging operations.
   - name: Exports
     description: User transaction export operations.
+  - name: Transaction Rules
+    description: User transaction rule management operations.
 paths:
   /v1/auth/signup:
     post:
@@ -111,6 +113,27 @@ paths:
                 $ref: "#/components/schemas/User"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/auth/features:
+    get:
+      tags: [Auth]
+      operationId: listSessionFeatures
+      summary: List resolved feature flags for the authenticated user
+      security:
+        - SessionCookieAuth: []
+      responses:
+        "200":
+          description: Resolved feature states
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeatureListResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
@@ -1054,6 +1077,170 @@ paths:
                 $ref: "#/components/schemas/TransactionInsightsResponse"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/transactions/rules:
+    post:
+      tags: [Transaction Rules]
+      operationId: createTransactionRule
+      summary: Create a transaction rule for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRuleCreateRequest"
+      responses:
+        "201":
+          description: Transaction rule created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionRule"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [Transaction Rules]
+      operationId: listTransactionRules
+      summary: List transaction rules for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: query
+          name: status
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/TransactionRuleStatus"
+          style: form
+          explode: false
+          description: Comma-separated status filters. Repeated query parameters are also accepted.
+        - in: query
+          name: source_scope
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/TransactionRuleSourceScope"
+          style: form
+          explode: false
+          description: Comma-separated source scope filters. Repeated query parameters are also accepted.
+      responses:
+        "200":
+          description: Transaction rule list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionRuleListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/transactions/rules/{ruleID}:
+    get:
+      tags: [Transaction Rules]
+      operationId: getTransactionRuleByID
+      summary: Get transaction rule by ID for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: ruleID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Transaction rule found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionRule"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    patch:
+      tags: [Transaction Rules]
+      operationId: patchTransactionRule
+      summary: Patch transaction rule fields for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: ruleID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRulePatchRequest"
+      responses:
+        "200":
+          description: Transaction rule updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionRule"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    delete:
+      tags: [Transaction Rules]
+      operationId: deleteTransactionRule
+      summary: Delete transaction rule by ID for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: ruleID
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Transaction rule deleted
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
         "403":
@@ -2022,6 +2209,45 @@ components:
       example:
         status: signed_out
 
+    FeatureState:
+      type: object
+      additionalProperties: false
+      properties:
+        key:
+          type: string
+        enabled:
+          type: boolean
+        default_enabled:
+          type: boolean
+        build_enabled:
+          type: boolean
+      required: [key, enabled, default_enabled, build_enabled]
+      example:
+        key: transactions.insights
+        enabled: true
+        default_enabled: true
+        build_enabled: true
+
+    FeatureListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeatureState"
+      required: [items]
+      example:
+        items:
+          - key: transactions.insights
+            enabled: true
+            default_enabled: true
+            build_enabled: true
+          - key: transactions.exports
+            enabled: false
+            default_enabled: true
+            build_enabled: false
+
     UserListResponse:
       type: object
       additionalProperties: false
@@ -2361,6 +2587,560 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Tag"
+        total:
+          type: integer
+          minimum: 0
+      required: [items, total]
+
+    TransactionRuleStatus:
+      type: string
+      enum: [draft, active, archived]
+
+    TransactionRuleSourceScope:
+      type: string
+      enum: [all, manual, import]
+
+    TransactionRuleGroupOperator:
+      type: string
+      enum: [and, or]
+
+    TransactionRuleTextField:
+      type: string
+      enum:
+        - description
+        - original_description
+        - notes
+        - transaction_id
+        - iso_currency_code
+        - unofficial_currency_code
+        - payment_channel
+        - merchant_id
+        - location_id
+        - account_id
+
+    TransactionRuleNumberField:
+      type: string
+      enum: [amount]
+
+    TransactionRuleBooleanField:
+      type: string
+      enum: [pending]
+
+    TransactionRuleDateField:
+      type: string
+      enum: [effective_date]
+
+    TransactionRuleDateValue:
+      oneOf:
+        - type: string
+          format: date
+        - type: string
+          format: date-time
+
+    TransactionRuleConditionGroup:
+      type: object
+      additionalProperties: false
+      properties:
+        operator:
+          $ref: "#/components/schemas/TransactionRuleGroupOperator"
+        children:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/TransactionRuleConditionNode"
+      required: [operator, children]
+
+    TransactionRuleTextScalarPredicate:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          $ref: "#/components/schemas/TransactionRuleTextField"
+        operator:
+          type: string
+          enum: [equals, not_equals, contains, starts_with, ends_with]
+        value:
+          type: string
+        case_sensitive:
+          type: boolean
+      required: [field, operator, value]
+
+    TransactionRuleTextInPredicate:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          $ref: "#/components/schemas/TransactionRuleTextField"
+        operator:
+          type: string
+          enum: [in]
+        value:
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required: [field, operator, value]
+
+    TransactionRuleTextRegexPredicate:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          $ref: "#/components/schemas/TransactionRuleTextField"
+        operator:
+          type: string
+          enum: [regex]
+        value:
+          type: string
+          minLength: 1
+          maxLength: 512
+      required: [field, operator, value]
+
+    TransactionRuleNumberScalarPredicate:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          $ref: "#/components/schemas/TransactionRuleNumberField"
+        operator:
+          type: string
+          enum: [equals, not_equals, greater_than, greater_than_or_equal, less_than, less_than_or_equal]
+        value:
+          type: number
+          format: double
+      required: [field, operator, value]
+
+    TransactionRuleNumberInPredicate:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          $ref: "#/components/schemas/TransactionRuleNumberField"
+        operator:
+          type: string
+          enum: [in]
+        value:
+          type: array
+          minItems: 1
+          items:
+            type: number
+            format: double
+      required: [field, operator, value]
+
+    TransactionRuleBooleanScalarPredicate:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          $ref: "#/components/schemas/TransactionRuleBooleanField"
+        operator:
+          type: string
+          enum: [equals, not_equals]
+        value:
+          type: boolean
+      required: [field, operator, value]
+
+    TransactionRuleBooleanInPredicate:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          $ref: "#/components/schemas/TransactionRuleBooleanField"
+        operator:
+          type: string
+          enum: [in]
+        value:
+          type: array
+          minItems: 1
+          items:
+            type: boolean
+      required: [field, operator, value]
+
+    TransactionRuleDateScalarPredicate:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          $ref: "#/components/schemas/TransactionRuleDateField"
+        operator:
+          type: string
+          enum: [equals, not_equals, before, after]
+        value:
+          $ref: "#/components/schemas/TransactionRuleDateValue"
+      required: [field, operator, value]
+
+    TransactionRuleDateInPredicate:
+      type: object
+      additionalProperties: false
+      properties:
+        field:
+          $ref: "#/components/schemas/TransactionRuleDateField"
+        operator:
+          type: string
+          enum: [in]
+        value:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/TransactionRuleDateValue"
+      required: [field, operator, value]
+
+    TransactionRulePredicate:
+      oneOf:
+        - $ref: "#/components/schemas/TransactionRuleTextScalarPredicate"
+        - $ref: "#/components/schemas/TransactionRuleTextInPredicate"
+        - $ref: "#/components/schemas/TransactionRuleTextRegexPredicate"
+        - $ref: "#/components/schemas/TransactionRuleNumberScalarPredicate"
+        - $ref: "#/components/schemas/TransactionRuleNumberInPredicate"
+        - $ref: "#/components/schemas/TransactionRuleBooleanScalarPredicate"
+        - $ref: "#/components/schemas/TransactionRuleBooleanInPredicate"
+        - $ref: "#/components/schemas/TransactionRuleDateScalarPredicate"
+        - $ref: "#/components/schemas/TransactionRuleDateInPredicate"
+
+    TransactionRuleGroupNode:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          const: group
+        group:
+          $ref: "#/components/schemas/TransactionRuleConditionGroup"
+      required: [kind, group]
+
+    TransactionRulePredicateNode:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          const: predicate
+        predicate:
+          $ref: "#/components/schemas/TransactionRulePredicate"
+      required: [kind, predicate]
+
+    TransactionRuleConditionNode:
+      oneOf:
+        - $ref: "#/components/schemas/TransactionRuleGroupNode"
+        - $ref: "#/components/schemas/TransactionRulePredicateNode"
+
+    TransactionRuleSetCategoryActionInput:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          const: set_category
+        category_id:
+          type: string
+        category_name:
+          type: string
+      required: [type]
+      oneOf:
+        - type: object
+          required: [category_id]
+          properties:
+            category_id:
+              type: string
+        - type: object
+          required: [category_name]
+          properties:
+            category_name:
+              type: string
+
+    TransactionRuleClearCategoryActionInput:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          const: clear_category
+      required: [type]
+
+    TransactionRuleAddTagsActionInput:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          const: add_tags
+        tag_ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        tag_names:
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required: [type]
+      oneOf:
+        - type: object
+          required: [tag_ids]
+          properties:
+            tag_ids:
+              type: array
+              minItems: 1
+              items:
+                type: string
+        - type: object
+          required: [tag_names]
+          properties:
+            tag_names:
+              type: array
+              minItems: 1
+              items:
+                type: string
+
+    TransactionRuleRemoveTagsActionInput:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          const: remove_tags
+        tag_ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        tag_names:
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required: [type]
+      oneOf:
+        - type: object
+          required: [tag_ids]
+          properties:
+            tag_ids:
+              type: array
+              minItems: 1
+              items:
+                type: string
+        - type: object
+          required: [tag_names]
+          properties:
+            tag_names:
+              type: array
+              minItems: 1
+              items:
+                type: string
+
+    TransactionRuleReplaceTagsActionInput:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          const: replace_tags
+        tag_ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        tag_names:
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required: [type]
+      oneOf:
+        - type: object
+          required: [tag_ids]
+          properties:
+            tag_ids:
+              type: array
+              minItems: 1
+              items:
+                type: string
+        - type: object
+          required: [tag_names]
+          properties:
+            tag_names:
+              type: array
+              minItems: 1
+              items:
+                type: string
+
+    TransactionRuleActionInput:
+      oneOf:
+        - $ref: "#/components/schemas/TransactionRuleSetCategoryActionInput"
+        - $ref: "#/components/schemas/TransactionRuleClearCategoryActionInput"
+        - $ref: "#/components/schemas/TransactionRuleAddTagsActionInput"
+        - $ref: "#/components/schemas/TransactionRuleRemoveTagsActionInput"
+        - $ref: "#/components/schemas/TransactionRuleReplaceTagsActionInput"
+
+    TransactionRuleSetCategoryAction:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          const: set_category
+        category_id:
+          type: string
+      required: [type, category_id]
+
+    TransactionRuleClearCategoryAction:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          const: clear_category
+      required: [type]
+
+    TransactionRuleAddTagsAction:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          const: add_tags
+        tag_ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required: [type, tag_ids]
+
+    TransactionRuleRemoveTagsAction:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          const: remove_tags
+        tag_ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required: [type, tag_ids]
+
+    TransactionRuleReplaceTagsAction:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          const: replace_tags
+        tag_ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required: [type, tag_ids]
+
+    TransactionRuleAction:
+      oneOf:
+        - $ref: "#/components/schemas/TransactionRuleSetCategoryAction"
+        - $ref: "#/components/schemas/TransactionRuleClearCategoryAction"
+        - $ref: "#/components/schemas/TransactionRuleAddTagsAction"
+        - $ref: "#/components/schemas/TransactionRuleRemoveTagsAction"
+        - $ref: "#/components/schemas/TransactionRuleReplaceTagsAction"
+
+    TransactionRuleCreateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        status:
+          $ref: "#/components/schemas/TransactionRuleStatus"
+        priority:
+          type: integer
+          minimum: 0
+          default: 100
+        source_scope:
+          $ref: "#/components/schemas/TransactionRuleSourceScope"
+        stop_processing:
+          type: boolean
+          default: false
+        dsl_version:
+          type: integer
+          minimum: 1
+          default: 1
+        condition_tree:
+          $ref: "#/components/schemas/TransactionRuleConditionNode"
+        actions:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/TransactionRuleActionInput"
+      required: [name, condition_tree, actions]
+
+    TransactionRulePatchRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name:
+          type: string
+        status:
+          $ref: "#/components/schemas/TransactionRuleStatus"
+        priority:
+          type: integer
+          minimum: 0
+        source_scope:
+          $ref: "#/components/schemas/TransactionRuleSourceScope"
+        stop_processing:
+          type: boolean
+        dsl_version:
+          type: integer
+          minimum: 1
+        condition_tree:
+          $ref: "#/components/schemas/TransactionRuleConditionNode"
+        actions:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/TransactionRuleActionInput"
+
+    TransactionRule:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+        name:
+          type: string
+        status:
+          $ref: "#/components/schemas/TransactionRuleStatus"
+        priority:
+          type: integer
+        source_scope:
+          $ref: "#/components/schemas/TransactionRuleSourceScope"
+        stop_processing:
+          type: boolean
+        dsl_version:
+          type: integer
+        condition_tree:
+          $ref: "#/components/schemas/TransactionRuleConditionNode"
+        actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionRuleAction"
+      required:
+        - id
+        - user_id
+        - date_added
+        - name
+        - status
+        - priority
+        - source_scope
+        - stop_processing
+        - dsl_version
+        - condition_tree
+        - actions
+
+    TransactionRuleListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionRule"
         total:
           type: integer
           minimum: 0
