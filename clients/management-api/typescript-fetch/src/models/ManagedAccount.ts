@@ -87,6 +87,42 @@ export interface ManagedAccount {
     subtype?: string | null;
     /**
      *
+     * @type {number}
+     * @memberof ManagedAccount
+     */
+    balanceAvailable?: number | null;
+    /**
+     *
+     * @type {number}
+     * @memberof ManagedAccount
+     */
+    balanceCurrent?: number | null;
+    /**
+     *
+     * @type {number}
+     * @memberof ManagedAccount
+     */
+    balanceLimit?: number | null;
+    /**
+     *
+     * @type {string}
+     * @memberof ManagedAccount
+     */
+    balanceIsoCurrencyCode?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof ManagedAccount
+     */
+    balanceUnofficialCurrencyCode?: string | null;
+    /**
+     *
+     * @type {Date}
+     * @memberof ManagedAccount
+     */
+    balanceLastUpdatedAt?: Date | null;
+    /**
+     *
      * @type {boolean}
      * @memberof ManagedAccount
      */
@@ -138,6 +174,12 @@ export function ManagedAccountFromJSONTyped(json: any, ignoreDiscriminator: bool
         'mask': json['mask'] == null ? undefined : json['mask'],
         'type': json['type'] == null ? undefined : json['type'],
         'subtype': json['subtype'] == null ? undefined : json['subtype'],
+        'balanceAvailable': json['balance_available'] == null ? undefined : json['balance_available'],
+        'balanceCurrent': json['balance_current'] == null ? undefined : json['balance_current'],
+        'balanceLimit': json['balance_limit'] == null ? undefined : json['balance_limit'],
+        'balanceIsoCurrencyCode': json['balance_iso_currency_code'] == null ? undefined : json['balance_iso_currency_code'],
+        'balanceUnofficialCurrencyCode': json['balance_unofficial_currency_code'] == null ? undefined : json['balance_unofficial_currency_code'],
+        'balanceLastUpdatedAt': json['balance_last_updated_at'] == null ? undefined : (new Date(json['balance_last_updated_at'])),
         'selected': json['selected'],
         'dateAdded': (new Date(json['date_added'])),
         'dateModified': json['date_modified'] == null ? undefined : (new Date(json['date_modified'])),
@@ -166,6 +208,12 @@ export function ManagedAccountToJSONTyped(value?: ManagedAccount | null, ignoreD
         'mask': value['mask'],
         'type': value['type'],
         'subtype': value['subtype'],
+        'balance_available': value['balanceAvailable'],
+        'balance_current': value['balanceCurrent'],
+        'balance_limit': value['balanceLimit'],
+        'balance_iso_currency_code': value['balanceIsoCurrencyCode'],
+        'balance_unofficial_currency_code': value['balanceUnofficialCurrencyCode'],
+        'balance_last_updated_at': value['balanceLastUpdatedAt'] == null ? value['balanceLastUpdatedAt'] : value['balanceLastUpdatedAt'].toISOString(),
         'selected': value['selected'],
         'date_added': value['dateAdded'].toISOString(),
         'date_modified': value['dateModified'] == null ? value['dateModified'] : value['dateModified'].toISOString(),

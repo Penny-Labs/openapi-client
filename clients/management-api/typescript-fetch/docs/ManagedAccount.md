@@ -17,6 +17,12 @@ Name | Type
 `mask` | string
 `type` | string
 `subtype` | string
+`balanceAvailable` | number
+`balanceCurrent` | number
+`balanceLimit` | number
+`balanceIsoCurrencyCode` | string
+`balanceUnofficialCurrencyCode` | string
+`balanceLastUpdatedAt` | Date
 `selected` | boolean
 `dateAdded` | Date
 `dateModified` | Date
@@ -39,6 +45,12 @@ const example = {
   "mask": null,
   "type": null,
   "subtype": null,
+  "balanceAvailable": null,
+  "balanceCurrent": null,
+  "balanceLimit": null,
+  "balanceIsoCurrencyCode": null,
+  "balanceUnofficialCurrencyCode": null,
+  "balanceLastUpdatedAt": null,
   "selected": null,
   "dateAdded": null,
   "dateModified": null,

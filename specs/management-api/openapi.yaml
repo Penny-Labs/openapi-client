@@ -1701,6 +1701,22 @@ components:
           type: [string, "null"]
         subtype:
           type: [string, "null"]
+        balance_available:
+          type: [number, "null"]
+          format: double
+        balance_current:
+          type: [number, "null"]
+          format: double
+        balance_limit:
+          type: [number, "null"]
+          format: double
+        balance_iso_currency_code:
+          type: [string, "null"]
+        balance_unofficial_currency_code:
+          type: [string, "null"]
+        balance_last_updated_at:
+          type: [string, "null"]
+          format: date-time
         selected:
           type: boolean
         date_added:
