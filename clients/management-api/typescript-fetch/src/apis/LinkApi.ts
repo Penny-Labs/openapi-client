@@ -34,6 +34,11 @@ import {
     ErrorResponseToJSON,
 } from '../models/ErrorResponse';
 import {
+    type ManagedAccountListResponse,
+    ManagedAccountListResponseFromJSON,
+    ManagedAccountListResponseToJSON,
+} from '../models/ManagedAccountListResponse';
+import {
     type ManagedTransactionListResponse,
     ManagedTransactionListResponseFromJSON,
     ManagedTransactionListResponseToJSON,
@@ -51,6 +56,10 @@ import {
 
 export interface ConnectLinkTokenOperationRequest {
     connectLinkTokenRequest: ConnectLinkTokenRequest;
+}
+
+export interface ListLinkAccountsRequest {
+    itemID: string;
 }
 
 export interface ListLinkTransactionsRequest {
@@ -170,6 +179,59 @@ export class LinkApi extends runtime.BaseAPI {
      */
     async createLinkToken(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateLinkTokenResponse> {
         const response = await this.createLinkTokenRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for listLinkAccounts without sending the request
+     */
+    async listLinkAccountsRequestOpts(requestParameters: ListLinkAccountsRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['itemID'] == null) {
+            throw new runtime.RequiredError(
+                'itemID',
+                'Required parameter "itemID" was null or undefined when calling listLinkAccounts().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("RuntimeBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/link/{itemID}/accounts`;
+        urlPath = urlPath.replace('{itemID}', encodeURIComponent(String(requestParameters['itemID'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List managed provider accounts for a connected item
+     */
+    async listLinkAccountsRaw(requestParameters: ListLinkAccountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedAccountListResponse>> {
+        const requestOptions = await this.listLinkAccountsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ManagedAccountListResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List managed provider accounts for a connected item
+     */
+    async listLinkAccounts(requestParameters: ListLinkAccountsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedAccountListResponse> {
+        const response = await this.listLinkAccountsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

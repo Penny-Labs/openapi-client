@@ -160,6 +160,39 @@ paths:
               schema:
                 type: string
 
+
+  /v1/link/{itemID}/accounts:
+    get:
+      tags: [Link]
+      operationId: listLinkAccounts
+      summary: List managed provider accounts for a connected item
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - in: path
+          name: itemID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Managed account list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedAccountListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
   /v1/link/{itemID}/transactions:
     get:
       tags: [Link]
@@ -1638,6 +1671,61 @@ components:
           format: uuid
       required: [accounts, connection_id]
 
+
+
+    ManagedAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        item_id:
+          type: string
+          format: uuid
+        provider:
+          type: string
+          example: plaid
+        provider_account_id:
+          type: [string, "null"]
+        institution_id:
+          type: [string, "null"]
+        institution_name:
+          type: [string, "null"]
+        name:
+          type: [string, "null"]
+        official_name:
+          type: [string, "null"]
+        mask:
+          type: [string, "null"]
+        type:
+          type: [string, "null"]
+        subtype:
+          type: [string, "null"]
+        selected:
+          type: boolean
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+      required:
+        - id
+        - item_id
+        - provider
+        - selected
+        - date_added
+
+    ManagedAccountListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ManagedAccount"
+        total:
+          type: integer
+      required: [items, total]
 
     ManagedTransaction:
       type: object

@@ -62,6 +62,7 @@ All URIs are relative to *http://localhost:8090*
 *LicensePublicApi* | [**validateLicense**](docs/LicensePublicApi.md#validatelicense) | **POST** /v1/license/validate | Validate license and refresh lease
 *LinkApi* | [**connectLinkToken**](docs/LinkApi.md#connectlinktokenoperation) | **POST** /v1/link/connect | Exchange public token and connect item
 *LinkApi* | [**createLinkToken**](docs/LinkApi.md#createlinktoken) | **PUT** /v1/link/token | Create Plaid link token
+*LinkApi* | [**listLinkAccounts**](docs/LinkApi.md#listlinkaccounts) | **GET** /v1/link/{itemID}/accounts | List managed provider accounts for a connected item
 *LinkApi* | [**listLinkTransactions**](docs/LinkApi.md#listlinktransactions) | **GET** /v1/link/{itemID}/transactions | List synced managed transactions for a connected item
 *LinkApi* | [**receivePlaidWebhook**](docs/LinkApi.md#receiveplaidwebhook) | **POST** /v1/plaid/webhook | Receive signed Plaid webhooks
 *LinkApi* | [**syncLinkTransactions**](docs/LinkApi.md#synclinktransactions) | **POST** /v1/link/{itemID}/transactions/sync | Sync Plaid transactions for a connected item
@@ -112,6 +113,8 @@ All URIs are relative to *http://localhost:8090*
 - [LinkInstitution](docs/LinkInstitution.md)
 - [MailingList](docs/MailingList.md)
 - [MailingListListResponse](docs/MailingListListResponse.md)
+- [ManagedAccount](docs/ManagedAccount.md)
+- [ManagedAccountListResponse](docs/ManagedAccountListResponse.md)
 - [ManagedTransaction](docs/ManagedTransaction.md)
 - [ManagedTransactionListResponse](docs/ManagedTransactionListResponse.md)
 - [NewsletterListResponse](docs/NewsletterListResponse.md)

@@ -6,6 +6,7 @@ All URIs are relative to *http://localhost:8090*
 |------------- | ------------- | -------------|
 | [**connectLinkToken**](LinkApi.md#connectlinktokenoperation) | **POST** /v1/link/connect | Exchange public token and connect item |
 | [**createLinkToken**](LinkApi.md#createlinktoken) | **PUT** /v1/link/token | Create Plaid link token |
+| [**listLinkAccounts**](LinkApi.md#listlinkaccounts) | **GET** /v1/link/{itemID}/accounts | List managed provider accounts for a connected item |
 | [**listLinkTransactions**](LinkApi.md#listlinktransactions) | **GET** /v1/link/{itemID}/transactions | List synced managed transactions for a connected item |
 | [**receivePlaidWebhook**](LinkApi.md#receiveplaidwebhook) | **POST** /v1/plaid/webhook | Receive signed Plaid webhooks |
 | [**syncLinkTransactions**](LinkApi.md#synclinktransactions) | **POST** /v1/link/{itemID}/transactions/sync | Sync Plaid transactions for a connected item |
@@ -143,6 +144,80 @@ This endpoint does not need any parameter.
 | **200** | Link token created |  -  |
 | **401** | Unauthorized |  -  |
 | **500** | Internal error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## listLinkAccounts
+
+> ManagedAccountListResponse listLinkAccounts(itemID)
+
+List managed provider accounts for a connected item
+
+### Example
+
+```ts
+import {
+  Configuration,
+  LinkApi,
+} from '@penny/openapi-management-api-client';
+import type { ListLinkAccountsRequest } from '@penny/openapi-management-api-client';
+
+async function example() {
+  console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
+  const config = new Configuration({
+    // Configure HTTP bearer authorization: RuntimeBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new LinkApi(config);
+
+  const body = {
+    // string
+    itemID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+  } satisfies ListLinkAccountsRequest;
+
+  try {
+    const data = await api.listLinkAccounts(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **itemID** | `string` |  | [Defaults to `undefined`] |
+
+### Return type
+
+[**ManagedAccountListResponse**](ManagedAccountListResponse.md)
+
+### Authorization
+
+[RuntimeBearer](../README.md#RuntimeBearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`, `text/plain`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Managed account list |  -  |
+| **400** | Bad request |  -  |
+| **401** | Unauthorized |  -  |
+| **403** | Forbidden |  -  |
+| **404** | Not found |  -  |
+| **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 

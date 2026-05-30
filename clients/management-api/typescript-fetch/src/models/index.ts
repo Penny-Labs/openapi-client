@@ -28,6 +28,8 @@ export * from './LinkAccount';
 export * from './LinkInstitution';
 export * from './MailingList';
 export * from './MailingListListResponse';
+export * from './ManagedAccount';
+export * from './ManagedAccountListResponse';
 export * from './ManagedTransaction';
 export * from './ManagedTransactionListResponse';
 export * from './NewsletterListResponse';
