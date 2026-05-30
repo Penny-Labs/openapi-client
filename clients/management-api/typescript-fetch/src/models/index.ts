@@ -29,6 +29,7 @@ export * from './LinkInstitution';
 export * from './MailingList';
 export * from './MailingListListResponse';
 export * from './ManagedAccount';
+export * from './ManagedAccountBalanceSyncResponse';
 export * from './ManagedAccountListResponse';
 export * from './ManagedTransaction';
 export * from './ManagedTransactionListResponse';

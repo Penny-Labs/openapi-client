@@ -65,6 +65,7 @@ All URIs are relative to *http://localhost:8090*
 *LinkApi* | [**listLinkAccounts**](docs/LinkApi.md#listlinkaccounts) | **GET** /v1/link/{itemID}/accounts | List managed provider accounts for a connected item
 *LinkApi* | [**listLinkTransactions**](docs/LinkApi.md#listlinktransactions) | **GET** /v1/link/{itemID}/transactions | List synced managed transactions for a connected item
 *LinkApi* | [**receivePlaidWebhook**](docs/LinkApi.md#receiveplaidwebhook) | **POST** /v1/plaid/webhook | Receive signed Plaid webhooks
+*LinkApi* | [**syncLinkAccountBalances**](docs/LinkApi.md#synclinkaccountbalances) | **POST** /v1/link/{itemID}/accounts/balances/sync | Refresh managed account balance snapshots for a connected item
 *LinkApi* | [**syncLinkTransactions**](docs/LinkApi.md#synclinktransactions) | **POST** /v1/link/{itemID}/transactions/sync | Sync Plaid transactions for a connected item
 *NewsletterApi* | [**listMailingLists**](docs/NewsletterApi.md#listmailinglists) | **GET** /v1/newsletter/mailing-lists | List mailing lists (admin)
 *NewsletterApi* | [**listNewsletters**](docs/NewsletterApi.md#listnewsletters) | **GET** /v1/newsletter/ | List newsletters (admin)
@@ -114,6 +115,7 @@ All URIs are relative to *http://localhost:8090*
 - [MailingList](docs/MailingList.md)
 - [MailingListListResponse](docs/MailingListListResponse.md)
 - [ManagedAccount](docs/ManagedAccount.md)
+- [ManagedAccountBalanceSyncResponse](docs/ManagedAccountBalanceSyncResponse.md)
 - [ManagedAccountListResponse](docs/ManagedAccountListResponse.md)
 - [ManagedTransaction](docs/ManagedTransaction.md)
 - [ManagedTransactionListResponse](docs/ManagedTransactionListResponse.md)

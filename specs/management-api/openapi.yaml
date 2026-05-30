@@ -193,6 +193,39 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
+
+  /v1/link/{itemID}/accounts/balances/sync:
+    post:
+      tags: [Link]
+      operationId: syncLinkAccountBalances
+      summary: Refresh managed account balance snapshots for a connected item
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - in: path
+          name: itemID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Account balances refreshed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedAccountBalanceSyncResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
   /v1/link/{itemID}/transactions:
     get:
       tags: [Link]
@@ -1742,6 +1775,19 @@ components:
         total:
           type: integer
       required: [items, total]
+
+
+    ManagedAccountBalanceSyncResponse:
+      type: object
+      properties:
+        item_id:
+          type: string
+          format: uuid
+        updated_count:
+          type: integer
+        request_id:
+          type: string
+      required: [item_id, updated_count]
 
     ManagedTransaction:
       type: object

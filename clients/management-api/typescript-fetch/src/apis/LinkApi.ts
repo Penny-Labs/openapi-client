@@ -34,6 +34,11 @@ import {
     ErrorResponseToJSON,
 } from '../models/ErrorResponse';
 import {
+    type ManagedAccountBalanceSyncResponse,
+    ManagedAccountBalanceSyncResponseFromJSON,
+    ManagedAccountBalanceSyncResponseToJSON,
+} from '../models/ManagedAccountBalanceSyncResponse';
+import {
     type ManagedAccountListResponse,
     ManagedAccountListResponseFromJSON,
     ManagedAccountListResponseToJSON,
@@ -71,6 +76,10 @@ export interface ListLinkTransactionsRequest {
 export interface ReceivePlaidWebhookRequest {
     plaidVerification: string;
     requestBody: { [key: string]: any; };
+}
+
+export interface SyncLinkAccountBalancesRequest {
+    itemID: string;
 }
 
 export interface SyncLinkTransactionsRequest {
@@ -351,6 +360,59 @@ export class LinkApi extends runtime.BaseAPI {
      */
     async receivePlaidWebhook(requestParameters: ReceivePlaidWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PlaidWebhookResponse> {
         const response = await this.receivePlaidWebhookRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for syncLinkAccountBalances without sending the request
+     */
+    async syncLinkAccountBalancesRequestOpts(requestParameters: SyncLinkAccountBalancesRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['itemID'] == null) {
+            throw new runtime.RequiredError(
+                'itemID',
+                'Required parameter "itemID" was null or undefined when calling syncLinkAccountBalances().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("RuntimeBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/link/{itemID}/accounts/balances/sync`;
+        urlPath = urlPath.replace('{itemID}', encodeURIComponent(String(requestParameters['itemID'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Refresh managed account balance snapshots for a connected item
+     */
+    async syncLinkAccountBalancesRaw(requestParameters: SyncLinkAccountBalancesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedAccountBalanceSyncResponse>> {
+        const requestOptions = await this.syncLinkAccountBalancesRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ManagedAccountBalanceSyncResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Refresh managed account balance snapshots for a connected item
+     */
+    async syncLinkAccountBalances(requestParameters: SyncLinkAccountBalancesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedAccountBalanceSyncResponse> {
+        const response = await this.syncLinkAccountBalancesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
