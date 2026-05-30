@@ -79,6 +79,11 @@ import {
     RuntimeCommandTypeToJSON,
 } from '../models/RuntimeCommandType';
 import {
+    type RuntimeEntitlementSnapshotResponse,
+    RuntimeEntitlementSnapshotResponseFromJSON,
+    RuntimeEntitlementSnapshotResponseToJSON,
+} from '../models/RuntimeEntitlementSnapshotResponse';
+import {
     type RuntimeInstanceListResponse,
     RuntimeInstanceListResponseFromJSON,
     RuntimeInstanceListResponseToJSON,
@@ -261,6 +266,51 @@ export class RuntimeApi extends runtime.BaseAPI {
      */
     async createRuntimeCommand(requestParameters: CreateRuntimeCommandRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RuntimeCommandCreateResponse> {
         const response = await this.createRuntimeCommandRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getCurrentRuntimeEntitlement without sending the request
+     */
+    async getCurrentRuntimeEntitlementRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("RuntimeBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/runtime/entitlement`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get current runtime license and entitlement snapshot
+     */
+    async getCurrentRuntimeEntitlementRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RuntimeEntitlementSnapshotResponse>> {
+        const requestOptions = await this.getCurrentRuntimeEntitlementRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RuntimeEntitlementSnapshotResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get current runtime license and entitlement snapshot
+     */
+    async getCurrentRuntimeEntitlement(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RuntimeEntitlementSnapshotResponse> {
+        const response = await this.getCurrentRuntimeEntitlementRaw(initOverrides);
         return await response.value();
     }
 

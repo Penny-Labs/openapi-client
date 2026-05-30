@@ -58,6 +58,8 @@ export * from './RuntimeCommandSummary';
 export * from './RuntimeCommandTarget';
 export * from './RuntimeCommandTargetScope';
 export * from './RuntimeCommandType';
+export * from './RuntimeEntitlementSnapshotResponse';
+export * from './RuntimeEntitlementSnapshotResponseCaps';
 export * from './RuntimeInstall';
 export * from './RuntimeInstanceListResponse';
 export * from './RuntimeInstanceStatus';

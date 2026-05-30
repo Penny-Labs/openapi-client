@@ -74,6 +74,7 @@ All URIs are relative to *http://localhost:8090*
 *NewsletterApi* | [**subscribeNewsletter**](docs/NewsletterApi.md#subscribenewsletter) | **POST** /v1/newsletter/subscribe | Subscribe email to a mailing list (admin)
 *RuntimeApi* | [**activateRuntimeInstall**](docs/RuntimeApi.md#activateruntimeinstall) | **POST** /v1/runtime/activate | Activate runtime install and issue lease JWT
 *RuntimeApi* | [**createRuntimeCommand**](docs/RuntimeApi.md#createruntimecommand) | **POST** /v1/runtime/commands | Dispatch runtime command to install/license/product target (admin)
+*RuntimeApi* | [**getCurrentRuntimeEntitlement**](docs/RuntimeApi.md#getcurrentruntimeentitlement) | **GET** /v1/runtime/entitlement | Get current runtime license and entitlement snapshot
 *RuntimeApi* | [**getRuntimeActivationOverview**](docs/RuntimeApi.md#getruntimeactivationoverview) | **GET** /v1/runtime/activations/overview | Get runtime activation KPI overview (admin)
 *RuntimeApi* | [**getRuntimeJwks**](docs/RuntimeApi.md#getruntimejwks) | **GET** /v1/runtime/jwks | Get active JWKS for lease JWT verification
 *RuntimeApi* | [**ingestRuntimeUsageBatch**](docs/RuntimeApi.md#ingestruntimeusagebatch) | **POST** /v1/runtime/usage/batch | Ingest usage events for billing meters
@@ -144,6 +145,8 @@ All URIs are relative to *http://localhost:8090*
 - [RuntimeCommandTarget](docs/RuntimeCommandTarget.md)
 - [RuntimeCommandTargetScope](docs/RuntimeCommandTargetScope.md)
 - [RuntimeCommandType](docs/RuntimeCommandType.md)
+- [RuntimeEntitlementSnapshotResponse](docs/RuntimeEntitlementSnapshotResponse.md)
+- [RuntimeEntitlementSnapshotResponseCaps](docs/RuntimeEntitlementSnapshotResponseCaps.md)
 - [RuntimeInstall](docs/RuntimeInstall.md)
 - [RuntimeInstanceListResponse](docs/RuntimeInstanceListResponse.md)
 - [RuntimeInstanceStatus](docs/RuntimeInstanceStatus.md)

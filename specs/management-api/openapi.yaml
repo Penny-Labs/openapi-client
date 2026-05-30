@@ -419,6 +419,27 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
+  /v1/runtime/entitlement:
+    get:
+      tags: [Runtime]
+      operationId: getCurrentRuntimeEntitlement
+      summary: Get current runtime license and entitlement snapshot
+      security:
+        - RuntimeBearer: []
+      responses:
+        "200":
+          description: Current runtime entitlement snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeEntitlementSnapshotResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
   /v1/runtime/usage/batch:
     post:
       tags: [Runtime]
@@ -2019,6 +2040,43 @@ components:
           additionalProperties:
             type: integer
       required: [lease_token, lease_expires_at, scopes, caps]
+
+    RuntimeEntitlementSnapshotResponse:
+      type: object
+      properties:
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          $ref: "#/components/schemas/ProductID"
+        install_id:
+          type: string
+          format: uuid
+        license_status:
+          $ref: "#/components/schemas/LicenseStatus"
+        entitlement_status:
+          type: string
+          enum: [active, suspended, revoked]
+        scopes:
+          type: array
+          items:
+            type: string
+        caps:
+          type: object
+          properties:
+            transactions_connected_accounts:
+              type: integer
+              nullable: true
+            recurring_connected_accounts:
+              type: integer
+              nullable: true
+            transactions_refresh_calls:
+              type: integer
+              nullable: true
+        lease_expires_at:
+          type: string
+          format: date-time
+      required: [license_id, product_id, install_id, license_status, entitlement_status, scopes, caps, lease_expires_at]
 
     RuntimeUsageEvent:
       type: object

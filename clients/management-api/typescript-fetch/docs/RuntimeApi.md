@@ -6,6 +6,7 @@ All URIs are relative to *http://localhost:8090*
 |------------- | ------------- | -------------|
 | [**activateRuntimeInstall**](RuntimeApi.md#activateruntimeinstall) | **POST** /v1/runtime/activate | Activate runtime install and issue lease JWT |
 | [**createRuntimeCommand**](RuntimeApi.md#createruntimecommand) | **POST** /v1/runtime/commands | Dispatch runtime command to install/license/product target (admin) |
+| [**getCurrentRuntimeEntitlement**](RuntimeApi.md#getcurrentruntimeentitlement) | **GET** /v1/runtime/entitlement | Get current runtime license and entitlement snapshot |
 | [**getRuntimeActivationOverview**](RuntimeApi.md#getruntimeactivationoverview) | **GET** /v1/runtime/activations/overview | Get runtime activation KPI overview (admin) |
 | [**getRuntimeJwks**](RuntimeApi.md#getruntimejwks) | **GET** /v1/runtime/jwks | Get active JWKS for lease JWT verification |
 | [**ingestRuntimeUsageBatch**](RuntimeApi.md#ingestruntimeusagebatch) | **POST** /v1/runtime/usage/batch | Ingest usage events for billing meters |
@@ -154,6 +155,70 @@ example().catch(console.error);
 |-------------|-------------|------------------|
 | **201** | Runtime command created |  -  |
 | **400** | Bad request |  -  |
+| **401** | Unauthorized |  -  |
+| **404** | Not found |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## getCurrentRuntimeEntitlement
+
+> RuntimeEntitlementSnapshotResponse getCurrentRuntimeEntitlement()
+
+Get current runtime license and entitlement snapshot
+
+### Example
+
+```ts
+import {
+  Configuration,
+  RuntimeApi,
+} from '@penny/openapi-management-api-client';
+import type { GetCurrentRuntimeEntitlementRequest } from '@penny/openapi-management-api-client';
+
+async function example() {
+  console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
+  const config = new Configuration({
+    // Configure HTTP bearer authorization: RuntimeBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new RuntimeApi(config);
+
+  try {
+    const data = await api.getCurrentRuntimeEntitlement();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+[**RuntimeEntitlementSnapshotResponse**](RuntimeEntitlementSnapshotResponse.md)
+
+### Authorization
+
+[RuntimeBearer](../README.md#RuntimeBearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`, `text/plain`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Current runtime entitlement snapshot |  -  |
 | **401** | Unauthorized |  -  |
 | **404** | Not found |  -  |
 | **500** | Internal server error |  -  |
