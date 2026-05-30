@@ -109,6 +109,7 @@ All URIs are relative to *http://localhost:8080*
 *ExportsApi* | [**createTransactionExport**](docs/ExportsApi.md#createtransactionexportoperation) | **POST** /v1/exports/transactions | Create a transactions export job
 *ExportsApi* | [**downloadTransactionExport**](docs/ExportsApi.md#downloadtransactionexport) | **GET** /v1/exports/transactions/{exportID}/download | Download a completed transaction export
 *ExportsApi* | [**getTransactionExportByID**](docs/ExportsApi.md#gettransactionexportbyid) | **GET** /v1/exports/transactions/{exportID} | Get transaction export job status
+*RuntimeApi* | [**getRuntimeEntitlementSnapshot**](docs/RuntimeApi.md#getruntimeentitlementsnapshot) | **GET** /v1/runtime/entitlement | Get the local runtime entitlement snapshot
 *TagsApi* | [**attachTagToTransaction**](docs/TagsApi.md#attachtagtotransaction) | **PUT** /v1/accounts/{accountID}/transactions/{transactionID}/tags/{tagID} | Attach a tag to a transaction owned by the current authenticated user
 *TagsApi* | [**createTag**](docs/TagsApi.md#createtag) | **POST** /v1/tags | Create a tag for current authenticated user
 *TagsApi* | [**deleteTag**](docs/TagsApi.md#deletetag) | **DELETE** /v1/tags/{tagID} | Delete tag by ID for current authenticated user
@@ -159,6 +160,7 @@ All URIs are relative to *http://localhost:8080*
 - [ErrorResponse](docs/ErrorResponse.md)
 - [FeatureListResponse](docs/FeatureListResponse.md)
 - [FeatureState](docs/FeatureState.md)
+- [RuntimeEntitlementSnapshotResponse](docs/RuntimeEntitlementSnapshotResponse.md)
 - [SessionAuthResponse](docs/SessionAuthResponse.md)
 - [SignoutResponse](docs/SignoutResponse.md)
 - [Tag](docs/Tag.md)

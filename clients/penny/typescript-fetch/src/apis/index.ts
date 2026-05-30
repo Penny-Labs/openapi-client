@@ -5,6 +5,7 @@ export * from './AuthApi';
 export * from './BudgetsApi';
 export * from './CategoriesApi';
 export * from './ExportsApi';
+export * from './RuntimeApi';
 export * from './TagsApi';
 export * from './TransactionRulesApi';
 export * from './UsersApi';

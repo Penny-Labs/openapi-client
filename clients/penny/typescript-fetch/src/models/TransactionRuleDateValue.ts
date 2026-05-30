@@ -44,12 +44,6 @@ export function TransactionRuleDateValueToJSONTyped(value?: TransactionRuleDateV
     if (value == null) {
         return value;
     }
-    if (value instanceof Date) {
-        return value == null ? undefined : ((value).toISOString());
-    }
-    if (value instanceof Date) {
-        return ((value).toISOString().substring(0,10));
-    }
-    return {};
+    return value.toISOString();
 }
 

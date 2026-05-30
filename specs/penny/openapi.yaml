@@ -13,6 +13,8 @@ servers:
 tags:
   - name: Auth
     description: Local authentication and session lifecycle operations.
+  - name: Runtime
+    description: Local runtime management and entitlement snapshot operations.
   - name: Users
     description: User creation and retrieval operations.
   - name: Accounts
@@ -130,6 +132,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FeatureListResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/runtime/entitlement:
+    get:
+      tags: [Runtime]
+      operationId: getRuntimeEntitlementSnapshot
+      summary: Get the local runtime entitlement snapshot
+      security:
+        - SessionCookieAuth: []
+      responses:
+        "200":
+          description: Runtime entitlement snapshot state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeEntitlementSnapshotResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
         "403":
@@ -2247,6 +2270,46 @@ components:
             enabled: false
             default_enabled: true
             build_enabled: false
+
+    RuntimeEntitlementSnapshotResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        configured:
+          type: boolean
+          description: Whether a local runtime entitlement snapshot has been persisted.
+        license_status:
+          type: string
+        plan:
+          type: string
+        features:
+          type: array
+          items:
+            type: string
+        entitlements:
+          type: object
+          additionalProperties: true
+        last_synced_at:
+          type: string
+          format: date-time
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+      required: [configured]
+      example:
+        configured: true
+        license_status: active
+        plan: pennyos
+        features: [link:write, usage:write]
+        entitlements:
+          entitlement_status: active
+          product_id: pennyos
+        last_synced_at: "2026-05-30T16:00:00Z"
+        date_added: "2026-05-30T15:59:00Z"
+        date_modified: null
 
     UserListResponse:
       type: object

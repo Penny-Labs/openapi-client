@@ -30,6 +30,7 @@ export * from './CreateTransactionExportRequest';
 export * from './ErrorResponse';
 export * from './FeatureListResponse';
 export * from './FeatureState';
+export * from './RuntimeEntitlementSnapshotResponse';
 export * from './SessionAuthResponse';
 export * from './SignoutResponse';
 export * from './Tag';

@@ -34,6 +34,14 @@ import {
  */
 export type TransactionRuleReplaceTagsActionInput = TransactionRuleAddTagsActionInputOneOf | TransactionRuleAddTagsActionInputOneOf1;
 
+
+/**
+ * Check if a given object implements the TransactionRuleReplaceTagsActionInput interface.
+ */
+export function instanceOfTransactionRuleReplaceTagsActionInput(value: object): value is TransactionRuleReplaceTagsActionInput {
+    return instanceOfTransactionRuleAddTagsActionInputOneOf(value) || instanceOfTransactionRuleAddTagsActionInputOneOf1(value);
+}
+
 export function TransactionRuleReplaceTagsActionInputFromJSON(json: any): TransactionRuleReplaceTagsActionInput {
     return TransactionRuleReplaceTagsActionInputFromJSONTyped(json, false);
 }
