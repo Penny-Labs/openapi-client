@@ -33,7 +33,7 @@ import type { CreateLicenseAdminRequest } from '@penny/openapi-management-api-cl
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
-  const config = new Configuration({ 
+  const config = new Configuration({
     // Configure HTTP bearer authorization: AdminBearer
     accessToken: "YOUR BEARER TOKEN",
   });
@@ -89,7 +89,7 @@ example().catch(console.error);
 
 ## listLicenseBillingMonthly
 
-> BillingMonthlyListResponse listLicenseBillingMonthly(licenseID, productId, month)
+> BillingMonthlyListResponse listLicenseBillingMonthly(licenseID, productId, month, limit, cursor)
 
 List monthly billing lines for a license/product (admin)
 
@@ -104,7 +104,7 @@ import type { ListLicenseBillingMonthlyRequest } from '@penny/openapi-management
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
-  const config = new Configuration({ 
+  const config = new Configuration({
     // Configure HTTP bearer authorization: AdminBearer
     accessToken: "YOUR BEARER TOKEN",
   });
@@ -113,10 +113,14 @@ async function example() {
   const body = {
     // string
     licenseID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
-    // string
-    productId: productId_example,
+    // ProductID
+    productId: ...,
     // string
     month: month_example,
+    // number (optional)
+    limit: 56,
+    // string (optional)
+    cursor: cursor_example,
   } satisfies ListLicenseBillingMonthlyRequest;
 
   try {
@@ -137,8 +141,10 @@ example().catch(console.error);
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **licenseID** | `string` |  | [Defaults to `undefined`] |
-| **productId** | `string` |  | [Defaults to `undefined`] |
+| **productId** | `ProductID` |  | [Defaults to `undefined`] [Enum: pennyos, openchat] |
 | **month** | `string` |  | [Defaults to `undefined`] |
+| **limit** | `number` |  | [Optional] [Defaults to `25`] |
+| **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
@@ -167,7 +173,7 @@ example().catch(console.error);
 
 ## listLicenseEntitlements
 
-> EntitlementListResponse listLicenseEntitlements(licenseID)
+> EntitlementListResponse listLicenseEntitlements(licenseID, limit, cursor)
 
 List product entitlements for a license (admin)
 
@@ -182,7 +188,7 @@ import type { ListLicenseEntitlementsRequest } from '@penny/openapi-management-a
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
-  const config = new Configuration({ 
+  const config = new Configuration({
     // Configure HTTP bearer authorization: AdminBearer
     accessToken: "YOUR BEARER TOKEN",
   });
@@ -191,6 +197,10 @@ async function example() {
   const body = {
     // string
     licenseID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // number (optional)
+    limit: 56,
+    // string (optional)
+    cursor: cursor_example,
   } satisfies ListLicenseEntitlementsRequest;
 
   try {
@@ -211,6 +221,8 @@ example().catch(console.error);
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **licenseID** | `string` |  | [Defaults to `undefined`] |
+| **limit** | `number` |  | [Optional] [Defaults to `25`] |
+| **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
@@ -239,7 +251,7 @@ example().catch(console.error);
 
 ## listLicenseInstalls
 
-> InstallListResponse listLicenseInstalls(licenseID)
+> InstallListResponse listLicenseInstalls(licenseID, limit, cursor)
 
 List runtime installs for a license (admin)
 
@@ -254,7 +266,7 @@ import type { ListLicenseInstallsRequest } from '@penny/openapi-management-api-c
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
-  const config = new Configuration({ 
+  const config = new Configuration({
     // Configure HTTP bearer authorization: AdminBearer
     accessToken: "YOUR BEARER TOKEN",
   });
@@ -263,6 +275,10 @@ async function example() {
   const body = {
     // string
     licenseID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // number (optional)
+    limit: 56,
+    // string (optional)
+    cursor: cursor_example,
   } satisfies ListLicenseInstallsRequest;
 
   try {
@@ -283,6 +299,8 @@ example().catch(console.error);
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **licenseID** | `string` |  | [Defaults to `undefined`] |
+| **limit** | `number` |  | [Optional] [Defaults to `25`] |
+| **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
@@ -311,7 +329,7 @@ example().catch(console.error);
 
 ## listLicenseTransfers
 
-> TransferListResponse listLicenseTransfers(licenseID)
+> TransferListResponse listLicenseTransfers(licenseID, limit, cursor)
 
 List runtime transfer history for a license (admin)
 
@@ -326,7 +344,7 @@ import type { ListLicenseTransfersRequest } from '@penny/openapi-management-api-
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
-  const config = new Configuration({ 
+  const config = new Configuration({
     // Configure HTTP bearer authorization: AdminBearer
     accessToken: "YOUR BEARER TOKEN",
   });
@@ -335,6 +353,10 @@ async function example() {
   const body = {
     // string
     licenseID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // number (optional)
+    limit: 56,
+    // string (optional)
+    cursor: cursor_example,
   } satisfies ListLicenseTransfersRequest;
 
   try {
@@ -355,6 +377,8 @@ example().catch(console.error);
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **licenseID** | `string` |  | [Defaults to `undefined`] |
+| **limit** | `number` |  | [Optional] [Defaults to `25`] |
+| **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
@@ -383,7 +407,7 @@ example().catch(console.error);
 
 ## listLicenseUsageDaily
 
-> UsageDailyListResponse listLicenseUsageDaily(licenseID, productId, from, to)
+> UsageDailyListResponse listLicenseUsageDaily(licenseID, productId, from, to, limit, cursor)
 
 List daily usage aggregates for a license/product (admin)
 
@@ -398,7 +422,7 @@ import type { ListLicenseUsageDailyRequest } from '@penny/openapi-management-api
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
-  const config = new Configuration({ 
+  const config = new Configuration({
     // Configure HTTP bearer authorization: AdminBearer
     accessToken: "YOUR BEARER TOKEN",
   });
@@ -407,12 +431,16 @@ async function example() {
   const body = {
     // string
     licenseID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
-    // string
-    productId: productId_example,
+    // ProductID
+    productId: ...,
     // Date (optional)
     from: 2013-10-20,
     // Date (optional)
     to: 2013-10-20,
+    // number (optional)
+    limit: 56,
+    // string (optional)
+    cursor: cursor_example,
   } satisfies ListLicenseUsageDailyRequest;
 
   try {
@@ -433,9 +461,11 @@ example().catch(console.error);
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **licenseID** | `string` |  | [Defaults to `undefined`] |
-| **productId** | `string` |  | [Defaults to `undefined`] |
+| **productId** | `ProductID` |  | [Defaults to `undefined`] [Enum: pennyos, openchat] |
 | **from** | `Date` |  | [Optional] [Defaults to `undefined`] |
 | **to** | `Date` |  | [Optional] [Defaults to `undefined`] |
+| **limit** | `number` |  | [Optional] [Defaults to `25`] |
+| **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
@@ -464,7 +494,7 @@ example().catch(console.error);
 
 ## listLicenses
 
-> LicenseListResponse listLicenses(q, status, limit, offset)
+> LicenseListResponse listLicenses(q, status, limit, cursor)
 
 List licenses (admin)
 
@@ -479,7 +509,7 @@ import type { ListLicensesRequest } from '@penny/openapi-management-api-client';
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
-  const config = new Configuration({ 
+  const config = new Configuration({
     // Configure HTTP bearer authorization: AdminBearer
     accessToken: "YOUR BEARER TOKEN",
   });
@@ -492,8 +522,8 @@ async function example() {
     status: ...,
     // number (optional)
     limit: 56,
-    // number (optional)
-    offset: 56,
+    // string (optional)
+    cursor: cursor_example,
   } satisfies ListLicensesRequest;
 
   try {
@@ -516,7 +546,7 @@ example().catch(console.error);
 | **q** | `string` | Search by id or key suffix | [Optional] [Defaults to `undefined`] |
 | **status** | `LicenseStatus` |  | [Optional] [Defaults to `undefined`] [Enum: active, pending, revoked, suspended, expired] |
 | **limit** | `number` |  | [Optional] [Defaults to `25`] |
-| **offset** | `number` |  | [Optional] [Defaults to `0`] |
+| **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
@@ -560,7 +590,7 @@ import type { PatchLicenseOperationRequest } from '@penny/openapi-management-api
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
-  const config = new Configuration({ 
+  const config = new Configuration({
     // Configure HTTP bearer authorization: AdminBearer
     accessToken: "YOUR BEARER TOKEN",
   });
@@ -636,7 +666,7 @@ import type { UpsertLicenseEntitlementRequest } from '@penny/openapi-management-
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
-  const config = new Configuration({ 
+  const config = new Configuration({
     // Configure HTTP bearer authorization: AdminBearer
     accessToken: "YOUR BEARER TOKEN",
   });

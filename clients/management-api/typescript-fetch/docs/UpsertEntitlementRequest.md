@@ -6,7 +6,7 @@
 
 Name | Type
 ------------ | -------------
-`productId` | string
+`productId` | [ProductID](ProductID.md)
 `status` | string
 `scopes` | string
 `capTransactionsConnectedAccounts` | number

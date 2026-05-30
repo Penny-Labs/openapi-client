@@ -7,7 +7,7 @@
 Name | Type
 ------------ | -------------
 `licenseId` | string
-`productId` | string
+`productId` | [ProductID](ProductID.md)
 `installId` | string
 `leaseToken` | string
 `leaseExpiresAt` | Date

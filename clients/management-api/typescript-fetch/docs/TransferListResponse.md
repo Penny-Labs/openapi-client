@@ -7,6 +7,8 @@
 Name | Type
 ------------ | -------------
 `items` | [Array&lt;RuntimeTransfer&gt;](RuntimeTransfer.md)
+`total` | number
+`nextCursor` | string
 
 ## Example
 
@@ -16,6 +18,8 @@ import type { TransferListResponse } from '@penny/openapi-management-api-client'
 // TODO: Update the object below with actual values
 const example = {
   "items": null,
+  "total": null,
+  "nextCursor": null,
 } satisfies TransferListResponse
 
 console.log(example)

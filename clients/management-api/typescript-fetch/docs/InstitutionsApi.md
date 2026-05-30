@@ -10,7 +10,7 @@ All URIs are relative to *http://localhost:8090*
 
 ## listInstitutions
 
-> Array&lt;Institution&gt; listInstitutions()
+> InstitutionListResponse listInstitutions(q, limit, cursor)
 
 List institutions
 
@@ -27,8 +27,17 @@ async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
   const api = new InstitutionsApi();
 
+  const body = {
+    // string (optional)
+    q: q_example,
+    // number (optional)
+    limit: 56,
+    // string (optional)
+    cursor: cursor_example,
+  } satisfies ListInstitutionsRequest;
+
   try {
-    const data = await api.listInstitutions();
+    const data = await api.listInstitutions(body);
     console.log(data);
   } catch (error) {
     console.error(error);
@@ -41,11 +50,16 @@ example().catch(console.error);
 
 ### Parameters
 
-This endpoint does not need any parameter.
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **q** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **limit** | `number` |  | [Optional] [Defaults to `25`] |
+| **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
-[**Array&lt;Institution&gt;**](Institution.md)
+[**InstitutionListResponse**](InstitutionListResponse.md)
 
 ### Authorization
 
@@ -61,6 +75,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Institution list |  -  |
+| **400** | Bad request |  -  |
 | **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)

@@ -9,7 +9,7 @@ Name | Type
 `id` | string
 `usageDate` | Date
 `licenseId` | string
-`productId` | string
+`productId` | [ProductID](ProductID.md)
 `meterType` | string
 `quantity` | number
 

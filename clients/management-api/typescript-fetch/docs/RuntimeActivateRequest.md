@@ -7,7 +7,7 @@
 Name | Type
 ------------ | -------------
 `licenseKey` | string
-`productId` | string
+`productId` | [ProductID](ProductID.md)
 `installId` | string
 `installPublicKey` | string
 `challenge` | string

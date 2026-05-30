@@ -7,6 +7,8 @@
 Name | Type
 ------------ | -------------
 `items` | [Array&lt;Entitlement&gt;](Entitlement.md)
+`total` | number
+`nextCursor` | string
 
 ## Example
 
@@ -16,6 +18,8 @@ import type { EntitlementListResponse } from '@penny/openapi-management-api-clie
 // TODO: Update the object below with actual values
 const example = {
   "items": null,
+  "total": null,
+  "nextCursor": null,
 } satisfies EntitlementListResponse
 
 console.log(example)

@@ -62,10 +62,23 @@ All URIs are relative to *http://localhost:8090*
 *LicensePublicApi* | [**validateLicense**](docs/LicensePublicApi.md#validatelicense) | **POST** /v1/license/validate | Validate license and refresh lease
 *LinkApi* | [**connectLinkToken**](docs/LinkApi.md#connectlinktokenoperation) | **POST** /v1/link/connect | Exchange public token and connect item
 *LinkApi* | [**createLinkToken**](docs/LinkApi.md#createlinktoken) | **PUT** /v1/link/token | Create Plaid link token
+*LinkApi* | [**listLinkTransactions**](docs/LinkApi.md#listlinktransactions) | **GET** /v1/link/{itemID}/transactions | List synced managed transactions for a connected item
+*LinkApi* | [**receivePlaidWebhook**](docs/LinkApi.md#receiveplaidwebhook) | **POST** /v1/plaid/webhook | Receive signed Plaid webhooks
+*LinkApi* | [**syncLinkTransactions**](docs/LinkApi.md#synclinktransactions) | **POST** /v1/link/{itemID}/transactions/sync | Sync Plaid transactions for a connected item
+*NewsletterApi* | [**listMailingLists**](docs/NewsletterApi.md#listmailinglists) | **GET** /v1/newsletter/mailing-lists | List mailing lists (admin)
+*NewsletterApi* | [**listNewsletters**](docs/NewsletterApi.md#listnewsletters) | **GET** /v1/newsletter/ | List newsletters (admin)
+*NewsletterApi* | [**listSubscribers**](docs/NewsletterApi.md#listsubscribers) | **GET** /v1/newsletter/subscribers | List subscribers (admin)
+*NewsletterApi* | [**sendNewsletter**](docs/NewsletterApi.md#sendnewsletter) | **POST** /v1/newsletter/send | Publish newsletter to subscribed recipients (admin)
 *NewsletterApi* | [**subscribeNewsletter**](docs/NewsletterApi.md#subscribenewsletter) | **POST** /v1/newsletter/subscribe | Subscribe email to a mailing list (admin)
 *RuntimeApi* | [**activateRuntimeInstall**](docs/RuntimeApi.md#activateruntimeinstall) | **POST** /v1/runtime/activate | Activate runtime install and issue lease JWT
+*RuntimeApi* | [**createRuntimeCommand**](docs/RuntimeApi.md#createruntimecommand) | **POST** /v1/runtime/commands | Dispatch runtime command to install/license/product target (admin)
+*RuntimeApi* | [**getRuntimeActivationOverview**](docs/RuntimeApi.md#getruntimeactivationoverview) | **GET** /v1/runtime/activations/overview | Get runtime activation KPI overview (admin)
 *RuntimeApi* | [**getRuntimeJwks**](docs/RuntimeApi.md#getruntimejwks) | **GET** /v1/runtime/jwks | Get active JWKS for lease JWT verification
 *RuntimeApi* | [**ingestRuntimeUsageBatch**](docs/RuntimeApi.md#ingestruntimeusagebatch) | **POST** /v1/runtime/usage/batch | Ingest usage events for billing meters
+*RuntimeApi* | [**listRuntimeActivationHistory**](docs/RuntimeApi.md#listruntimeactivationhistory) | **GET** /v1/runtime/activations/history | List runtime activation history by day (admin)
+*RuntimeApi* | [**listRuntimeCommandDeliveries**](docs/RuntimeApi.md#listruntimecommanddeliveries) | **GET** /v1/runtime/commands/{commandID}/deliveries | List runtime command delivery states and acknowledgements (admin)
+*RuntimeApi* | [**listRuntimeCommands**](docs/RuntimeApi.md#listruntimecommands) | **GET** /v1/runtime/commands | List runtime commands with delivery status counters (admin)
+*RuntimeApi* | [**listRuntimeInstances**](docs/RuntimeApi.md#listruntimeinstances) | **GET** /v1/runtime/instances | List runtime instances and websocket connection state (admin)
 *RuntimeApi* | [**renewRuntimeLease**](docs/RuntimeApi.md#renewruntimelease) | **POST** /v1/runtime/lease/renew | Renew runtime lease JWT
 
 
@@ -83,6 +96,7 @@ All URIs are relative to *http://localhost:8090*
 - [ErrorResponse](docs/ErrorResponse.md)
 - [InstallListResponse](docs/InstallListResponse.md)
 - [Institution](docs/Institution.md)
+- [InstitutionListResponse](docs/InstitutionListResponse.md)
 - [JwkKey](docs/JwkKey.md)
 - [JwksResponse](docs/JwksResponse.md)
 - [License](docs/License.md)
@@ -96,16 +110,46 @@ All URIs are relative to *http://localhost:8090*
 - [LicenseValidateResponse](docs/LicenseValidateResponse.md)
 - [LinkAccount](docs/LinkAccount.md)
 - [LinkInstitution](docs/LinkInstitution.md)
+- [MailingList](docs/MailingList.md)
+- [MailingListListResponse](docs/MailingListListResponse.md)
+- [ManagedTransaction](docs/ManagedTransaction.md)
+- [ManagedTransactionListResponse](docs/ManagedTransactionListResponse.md)
+- [NewsletterListResponse](docs/NewsletterListResponse.md)
+- [NewsletterSendRequest](docs/NewsletterSendRequest.md)
+- [NewsletterSendResponse](docs/NewsletterSendResponse.md)
+- [NewsletterStatus](docs/NewsletterStatus.md)
 - [NewsletterSubscribeRequest](docs/NewsletterSubscribeRequest.md)
+- [NewsletterSummary](docs/NewsletterSummary.md)
 - [PatchLicenseRequest](docs/PatchLicenseRequest.md)
+- [PlaidTransactionsSyncResult](docs/PlaidTransactionsSyncResult.md)
+- [PlaidWebhookResponse](docs/PlaidWebhookResponse.md)
+- [ProductID](docs/ProductID.md)
 - [RuntimeActivateRequest](docs/RuntimeActivateRequest.md)
 - [RuntimeActivateResponse](docs/RuntimeActivateResponse.md)
+- [RuntimeActivationDaily](docs/RuntimeActivationDaily.md)
+- [RuntimeActivationHistoryListResponse](docs/RuntimeActivationHistoryListResponse.md)
+- [RuntimeActivationOverviewResponse](docs/RuntimeActivationOverviewResponse.md)
+- [RuntimeCommandCreateRequest](docs/RuntimeCommandCreateRequest.md)
+- [RuntimeCommandCreateResponse](docs/RuntimeCommandCreateResponse.md)
+- [RuntimeCommandDelivery](docs/RuntimeCommandDelivery.md)
+- [RuntimeCommandDeliveryListResponse](docs/RuntimeCommandDeliveryListResponse.md)
+- [RuntimeCommandListResponse](docs/RuntimeCommandListResponse.md)
+- [RuntimeCommandStatus](docs/RuntimeCommandStatus.md)
+- [RuntimeCommandSummary](docs/RuntimeCommandSummary.md)
+- [RuntimeCommandTarget](docs/RuntimeCommandTarget.md)
+- [RuntimeCommandTargetScope](docs/RuntimeCommandTargetScope.md)
+- [RuntimeCommandType](docs/RuntimeCommandType.md)
 - [RuntimeInstall](docs/RuntimeInstall.md)
+- [RuntimeInstanceListResponse](docs/RuntimeInstanceListResponse.md)
+- [RuntimeInstanceStatus](docs/RuntimeInstanceStatus.md)
 - [RuntimeRenewResponse](docs/RuntimeRenewResponse.md)
 - [RuntimeTransfer](docs/RuntimeTransfer.md)
 - [RuntimeUsageBatchRequest](docs/RuntimeUsageBatchRequest.md)
 - [RuntimeUsageBatchResponse](docs/RuntimeUsageBatchResponse.md)
 - [RuntimeUsageEvent](docs/RuntimeUsageEvent.md)
+- [SubscriberListResponse](docs/SubscriberListResponse.md)
+- [SubscriberMailingListMembership](docs/SubscriberMailingListMembership.md)
+- [SubscriberSummary](docs/SubscriberSummary.md)
 - [TransferConfirmationRequiredResponse](docs/TransferConfirmationRequiredResponse.md)
 - [TransferListResponse](docs/TransferListResponse.md)
 - [UpsertEntitlementRequest](docs/UpsertEntitlementRequest.md)
@@ -156,7 +200,7 @@ and is automatically generated by the
 
 - API version: `v1`
 - Package version: `0.1.0`
-- Generator version: `7.20.0`
+- Generator version: `7.22.0`
 - Build package: `org.openapitools.codegen.languages.TypeScriptFetchClientCodegen`
 
 The generated npm module supports the following:

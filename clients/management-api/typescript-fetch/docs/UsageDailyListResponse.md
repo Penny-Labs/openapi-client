@@ -7,6 +7,8 @@
 Name | Type
 ------------ | -------------
 `items` | [Array&lt;UsageDailyAgg&gt;](UsageDailyAgg.md)
+`total` | number
+`nextCursor` | string
 
 ## Example
 
@@ -16,6 +18,8 @@ import type { UsageDailyListResponse } from '@penny/openapi-management-api-clien
 // TODO: Update the object below with actual values
 const example = {
   "items": null,
+  "total": null,
+  "nextCursor": null,
 } satisfies UsageDailyListResponse
 
 console.log(example)

@@ -63,15 +63,33 @@ paths:
       tags: [Institutions]
       operationId: listInstitutions
       summary: List institutions
+      parameters:
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: Institution list
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Institution"
+                $ref: "#/components/schemas/InstitutionListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
@@ -141,6 +159,126 @@ paths:
             text/plain:
               schema:
                 type: string
+
+  /v1/link/{itemID}/transactions:
+    get:
+      tags: [Link]
+      operationId: listLinkTransactions
+      summary: List synced managed transactions for a connected item
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - in: path
+          name: itemID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Managed transaction list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedTransactionListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/link/{itemID}/transactions/sync:
+    post:
+      tags: [Link]
+      operationId: syncLinkTransactions
+      summary: Sync Plaid transactions for a connected item
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - in: path
+          name: itemID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Transactions synced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaidTransactionsSyncResult"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/plaid/webhook:
+    post:
+      tags: [Link]
+      operationId: receivePlaidWebhook
+      summary: Receive signed Plaid webhooks
+      parameters:
+        - in: header
+          name: Plaid-Verification
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: Duplicate webhook accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaidWebhookResponse"
+        "202":
+          description: Webhook accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaidWebhookResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "413":
+          description: Payload too large
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
 
   /v1/runtime/jwks:
     get:
@@ -235,6 +373,292 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RuntimeUsageBatchResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/runtime/instances:
+    get:
+      tags: [Runtime]
+      operationId: listRuntimeInstances
+      summary: List runtime instances and websocket connection state (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: query
+          name: product_id
+          required: false
+          schema:
+            $ref: "#/components/schemas/ProductID"
+        - in: query
+          name: license_id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: install_id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: connected
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Runtime instance list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeInstanceListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/runtime/activations/overview:
+    get:
+      tags: [Runtime]
+      operationId: getRuntimeActivationOverview
+      summary: Get runtime activation KPI overview (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: query
+          name: product_id
+          required: false
+          schema:
+            $ref: "#/components/schemas/ProductID"
+        - in: query
+          name: license_id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: from
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Runtime activation overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeActivationOverviewResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/runtime/activations/history:
+    get:
+      tags: [Runtime]
+      operationId: listRuntimeActivationHistory
+      summary: List runtime activation history by day (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: query
+          name: product_id
+          required: false
+          schema:
+            $ref: "#/components/schemas/ProductID"
+        - in: query
+          name: license_id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: from
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Runtime activation history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeActivationHistoryListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/runtime/commands:
+    post:
+      tags: [Runtime]
+      operationId: createRuntimeCommand
+      summary: Dispatch runtime command to install/license/product target (admin)
+      security:
+        - AdminBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RuntimeCommandCreateRequest"
+      responses:
+        "201":
+          description: Runtime command created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeCommandCreateResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [Runtime]
+      operationId: listRuntimeCommands
+      summary: List runtime commands with delivery status counters (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: query
+          name: product_id
+          required: false
+          schema:
+            $ref: "#/components/schemas/ProductID"
+        - in: query
+          name: license_id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: install_id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: status
+          required: false
+          schema:
+            $ref: "#/components/schemas/RuntimeCommandStatus"
+        - in: query
+          name: command_type
+          required: false
+          schema:
+            $ref: "#/components/schemas/RuntimeCommandType"
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Runtime command list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeCommandListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/runtime/commands/{commandID}/deliveries:
+    get:
+      tags: [Runtime]
+      operationId: listRuntimeCommandDeliveries
+      summary: List runtime command delivery states and acknowledgements (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: commandID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Runtime command delivery list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeCommandDeliveryListResponse"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -348,11 +772,9 @@ paths:
             default: 25
           required: false
         - in: query
-          name: offset
+          name: cursor
           schema:
-            type: integer
-            minimum: 0
-            default: 0
+            type: string
           required: false
       responses:
         "200":
@@ -443,6 +865,18 @@ paths:
           schema:
             type: string
             format: uuid
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: Entitlements list
@@ -509,6 +943,18 @@ paths:
           schema:
             type: string
             format: uuid
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: Installs list
@@ -537,6 +983,18 @@ paths:
           schema:
             type: string
             format: uuid
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: Transfers list
@@ -582,6 +1040,18 @@ paths:
           schema:
             type: string
             format: date
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: Daily usage list
@@ -621,6 +1091,18 @@ paths:
           schema:
             type: string
             pattern: '^\d{4}-\d{2}$'
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: Monthly billing lines
@@ -628,6 +1110,135 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BillingMonthlyListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/newsletter/:
+    get:
+      tags: [Newsletter]
+      operationId: listNewsletters
+      summary: List newsletters (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: query
+          name: mailing_list_id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: status
+          required: false
+          schema:
+            $ref: "#/components/schemas/NewsletterStatus"
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Newsletter list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsletterListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/newsletter/subscribers:
+    get:
+      tags: [Newsletter]
+      operationId: listSubscribers
+      summary: List subscribers (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: mailing_list_id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Subscriber list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriberListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/newsletter/mailing-lists:
+    get:
+      tags: [Newsletter]
+      operationId: listMailingLists
+      summary: List mailing lists (admin)
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Mailing lists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MailingListListResponse"
         "400":
           $ref: "#/components/responses/BadRequestResponse"
         "401":
@@ -655,6 +1266,35 @@ paths:
           $ref: "#/components/responses/BadRequestResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/newsletter/send:
+    post:
+      tags: [Newsletter]
+      operationId: sendNewsletter
+      summary: Publish newsletter to subscribed recipients (admin)
+      security:
+        - AdminBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewsletterSendRequest"
+      responses:
+        "200":
+          description: Newsletter send result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsletterSendResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
@@ -769,11 +1409,9 @@ components:
             $ref: "#/components/schemas/License"
         total:
           type: integer
-        limit:
-          type: integer
-        offset:
-          type: integer
-      required: [items, total, limit, offset]
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
 
     CreateLicenseResponse:
       type: object
@@ -920,6 +1558,19 @@ components:
           format: uri
       required: [ID, name, country_code]
 
+    InstitutionListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Institution"
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
     CreateLinkTokenResponse:
       type: object
       properties:
@@ -986,6 +1637,136 @@ components:
           type: string
           format: uuid
       required: [accounts, connection_id]
+
+
+    ManagedTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        item_id:
+          type: string
+          format: uuid
+        provider:
+          type: string
+          example: plaid
+        provider_transaction_id:
+          type: string
+        provider_account_id:
+          type: string
+        transaction_date:
+          type: string
+          format: date
+        authorized_date:
+          type: [string, "null"]
+          format: date
+        name:
+          type: string
+        merchant_name:
+          type: [string, "null"]
+        amount:
+          type: number
+          format: double
+        iso_currency_code:
+          type: [string, "null"]
+        pending:
+          type: boolean
+        removed:
+          type: boolean
+        raw:
+          type: object
+          additionalProperties: true
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: [string, "null"]
+          format: date-time
+      required:
+        - id
+        - item_id
+        - provider
+        - provider_transaction_id
+        - provider_account_id
+        - transaction_date
+        - name
+        - amount
+        - pending
+        - removed
+        - raw
+        - date_added
+
+    ManagedTransactionListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ManagedTransaction"
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
+    PlaidTransactionsSyncResult:
+      type: object
+      properties:
+        item_id:
+          type: string
+          format: uuid
+        next_cursor:
+          type: string
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        pages:
+          type: integer
+        added_count:
+          type: integer
+        modified_count:
+          type: integer
+        removed_count:
+          type: integer
+        request_id:
+          type: string
+        had_more:
+          type: boolean
+      required:
+        - item_id
+        - next_cursor
+        - started_at
+        - completed_at
+        - pages
+        - added_count
+        - modified_count
+        - removed_count
+        - had_more
+
+    PlaidWebhookResponse:
+      type: object
+      properties:
+        duplicate:
+          type: boolean
+        event_key:
+          type: string
+        kid:
+          type: string
+        ignored:
+          type: boolean
+        reason:
+          type: string
+        command_created:
+          type: boolean
+        command_id:
+          type: string
+        warning:
+          type: string
+      required: [duplicate, event_key]
 
     JwkKey:
       type: object
@@ -1131,6 +1912,329 @@ components:
           type: integer
       required: [accepted, ignored]
 
+    RuntimeCommandStatus:
+      type: string
+      enum: [queued, sent, acked, expired, failed]
+
+    RuntimeCommandType:
+      type: string
+      enum: [pull_data, notify, license_enforce, license_resync]
+
+    RuntimeCommandTargetScope:
+      type: string
+      enum: [install, license_product, product]
+
+    RuntimeCommandTarget:
+      type: object
+      properties:
+        scope:
+          $ref: "#/components/schemas/RuntimeCommandTargetScope"
+        product_id:
+          $ref: "#/components/schemas/ProductID"
+        license_id:
+          type: string
+          format: uuid
+        install_id:
+          type: string
+          format: uuid
+      required: [scope, product_id]
+
+    RuntimeCommandCreateRequest:
+      type: object
+      properties:
+        command_type:
+          $ref: "#/components/schemas/RuntimeCommandType"
+        target:
+          $ref: "#/components/schemas/RuntimeCommandTarget"
+        payload:
+          type: object
+          additionalProperties: true
+        expires_at:
+          type: string
+          format: date-time
+        expires_in_seconds:
+          type: integer
+          minimum: 1
+        retry_interval_seconds:
+          type: integer
+          minimum: 1
+        max_attempts:
+          type: integer
+          minimum: 1
+      required: [command_type, target]
+      additionalProperties: false
+
+    RuntimeCommandCreateResponse:
+      type: object
+      properties:
+        command_id:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/RuntimeCommandStatus"
+        target_count:
+          type: integer
+        expires_at:
+          type: string
+          format: date-time
+      required: [command_id, status, target_count, expires_at]
+
+    RuntimeCommandSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        command_type:
+          $ref: "#/components/schemas/RuntimeCommandType"
+        target_scope:
+          $ref: "#/components/schemas/RuntimeCommandTargetScope"
+        product_id:
+          $ref: "#/components/schemas/ProductID"
+        license_id:
+          type: [string, "null"]
+          format: uuid
+        install_id:
+          type: [string, "null"]
+          format: uuid
+        payload:
+          type: object
+          additionalProperties: true
+        status:
+          $ref: "#/components/schemas/RuntimeCommandStatus"
+        issued_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+        retry_interval_seconds:
+          type: integer
+        max_attempts:
+          type: integer
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: string
+          format: date-time
+        total_targets:
+          type: integer
+        acked_count:
+          type: integer
+        sent_count:
+          type: integer
+        queued_count:
+          type: integer
+        failed_count:
+          type: integer
+        expired_count:
+          type: integer
+      required:
+        - id
+        - command_type
+        - target_scope
+        - product_id
+        - payload
+        - status
+        - issued_at
+        - expires_at
+        - retry_interval_seconds
+        - max_attempts
+        - date_added
+        - date_modified
+        - total_targets
+        - acked_count
+        - sent_count
+        - queued_count
+        - failed_count
+        - expired_count
+
+    RuntimeCommandListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuntimeCommandSummary"
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
+    RuntimeCommandDelivery:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        command_id:
+          type: string
+          format: uuid
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          $ref: "#/components/schemas/ProductID"
+        install_id:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/RuntimeCommandStatus"
+        attempt_count:
+          type: integer
+        last_attempt_at:
+          type: [string, "null"]
+          format: date-time
+        next_attempt_at:
+          type: string
+          format: date-time
+        acked_at:
+          type: [string, "null"]
+          format: date-time
+        received_at:
+          type: [string, "null"]
+          format: date-time
+        ack_details:
+          type: object
+          additionalProperties: true
+        last_error:
+          type: [string, "null"]
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: string
+          format: date-time
+      required:
+        - id
+        - command_id
+        - license_id
+        - product_id
+        - install_id
+        - status
+        - attempt_count
+        - next_attempt_at
+        - ack_details
+        - date_added
+        - date_modified
+
+    RuntimeCommandDeliveryListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuntimeCommandDelivery"
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
+    RuntimeInstanceStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          $ref: "#/components/schemas/ProductID"
+        install_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        activated_at:
+          type: string
+          format: date-time
+        transferred_at:
+          type: [string, "null"]
+          format: date-time
+        last_seen_at:
+          type: [string, "null"]
+          format: date-time
+        last_seen_ip:
+          type: [string, "null"]
+        connected:
+          type: boolean
+        client_id:
+          type: [string, "null"]
+        connected_at:
+          type: [string, "null"]
+          format: date-time
+        disconnected_at:
+          type: [string, "null"]
+          format: date-time
+      required:
+        - id
+        - license_id
+        - product_id
+        - install_id
+        - status
+        - activated_at
+        - connected
+
+    RuntimeInstanceListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuntimeInstanceStatus"
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
+    RuntimeActivationOverviewResponse:
+      type: object
+      properties:
+        product_id:
+          type: string
+        license_id:
+          type: [string, "null"]
+          format: uuid
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        current_active_installs:
+          type: integer
+        historical_activations:
+          type: integer
+      required: [from, to, current_active_installs, historical_activations]
+
+    RuntimeActivationDaily:
+      type: object
+      properties:
+        event_date:
+          type: string
+          format: date
+        activations:
+          type: integer
+      required: [event_date, activations]
+
+    RuntimeActivationHistoryListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuntimeActivationDaily"
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
     Entitlement:
       type: object
       properties:
@@ -1162,7 +2266,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Entitlement"
-      required: [items]
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
 
     UpsertEntitlementRequest:
       type: object
@@ -1219,7 +2327,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/RuntimeInstall"
-      required: [items]
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
 
     RuntimeTransfer:
       type: object
@@ -1257,7 +2369,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/RuntimeTransfer"
-      required: [items]
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
 
     UsageDailyAgg:
       type: object
@@ -1286,7 +2402,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/UsageDailyAgg"
-      required: [items]
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
 
     BillingMonthlyLine:
       type: object
@@ -1321,7 +2441,180 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/BillingMonthlyLine"
-      required: [items]
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
+    NewsletterStatus:
+      type: string
+      enum: [draft, scheduled, published, canceled]
+
+    NewsletterSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        mailing_list_id:
+          type: string
+          format: uuid
+        mailing_list:
+          type: string
+        date_added:
+          type: string
+          format: date-time
+        date_published:
+          type: string
+          format: date-time
+        date_completed:
+          type: [string, "null"]
+          format: date-time
+        status:
+          $ref: "#/components/schemas/NewsletterStatus"
+        title:
+          type: string
+        content:
+          type: string
+        recipient_count:
+          type: integer
+        sent_count:
+          type: integer
+        failed_count:
+          type: integer
+        pending_count:
+          type: integer
+      required: [id, mailing_list_id, mailing_list, date_added, date_published, status, title, content, recipient_count, sent_count, failed_count, pending_count]
+
+    NewsletterListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewsletterSummary"
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
+    NewsletterSendRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        mailing_list_id:
+          type: string
+          format: uuid
+      required: [title, content, mailing_list_id]
+      additionalProperties: false
+
+    NewsletterSendResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        mailing_list_id:
+          type: string
+          format: uuid
+        mailing_list:
+          type: string
+        recipient_count:
+          type: integer
+        sent_count:
+          type: integer
+        failed_count:
+          type: integer
+        pending_count:
+          type: integer
+        status:
+          $ref: "#/components/schemas/NewsletterStatus"
+        date_published:
+          type: string
+          format: date-time
+      required: [id, mailing_list_id, mailing_list, recipient_count, sent_count, failed_count, pending_count, status, date_published]
+
+    SubscriberMailingListMembership:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+      required: [id, name, status]
+
+    SubscriberSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        date_added:
+          type: string
+          format: date-time
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        mailing_lists:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubscriberMailingListMembership"
+      required: [id, date_added, email, name, mailing_lists]
+
+    SubscriberListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubscriberSummary"
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
+
+    MailingList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+        date_added:
+          type: string
+          format: date-time
+        subscriber_count:
+          type: integer
+      required: [id, name, status, date_added, subscriber_count]
+
+    MailingListListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MailingList"
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total]
 
     NewsletterSubscribeRequest:
       type: object

@@ -7,6 +7,8 @@
 Name | Type
 ------------ | -------------
 `items` | [Array&lt;RuntimeInstall&gt;](RuntimeInstall.md)
+`total` | number
+`nextCursor` | string
 
 ## Example
 
@@ -16,6 +18,8 @@ import type { InstallListResponse } from '@penny/openapi-management-api-client'
 // TODO: Update the object below with actual values
 const example = {
   "items": null,
+  "total": null,
+  "nextCursor": null,
 } satisfies InstallListResponse
 
 console.log(example)

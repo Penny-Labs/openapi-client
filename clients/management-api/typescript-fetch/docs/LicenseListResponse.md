@@ -8,8 +8,7 @@ Name | Type
 ------------ | -------------
 `items` | [Array&lt;License&gt;](License.md)
 `total` | number
-`limit` | number
-`offset` | number
+`nextCursor` | string
 
 ## Example
 
@@ -20,8 +19,7 @@ import type { LicenseListResponse } from '@penny/openapi-management-api-client'
 const example = {
   "items": null,
   "total": null,
-  "limit": null,
-  "offset": null,
+  "nextCursor": null,
 } satisfies LicenseListResponse
 
 console.log(example)

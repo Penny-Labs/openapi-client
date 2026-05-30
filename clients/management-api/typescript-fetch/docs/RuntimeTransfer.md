@@ -8,7 +8,7 @@ Name | Type
 ------------ | -------------
 `id` | string
 `licenseId` | string
-`productId` | string
+`productId` | [ProductID](ProductID.md)
 `fromInstallId` | string
 `toInstallId` | string
 `transferredAt` | Date
