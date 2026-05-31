@@ -15,9 +15,11 @@
 import * as runtime from '../runtime';
 import type {
   RuntimeEntitlementSnapshotResponse,
+  RuntimeStatusResponse,
 } from '../models/index';
 import {
     RuntimeEntitlementSnapshotResponseFromJSON,
+    RuntimeStatusResponseFromJSON,
 } from '../models/index';
 
 /**
@@ -59,6 +61,43 @@ export class RuntimeApi extends runtime.BaseAPI {
      */
     async getRuntimeEntitlementSnapshot(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RuntimeEntitlementSnapshotResponse> {
         const response = await this.getRuntimeEntitlementSnapshotRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getRuntimeStatus without sending the request
+     */
+    async getRuntimeStatusRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/v1/runtime/status`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get redacted local runtime and managed sync status
+     */
+    async getRuntimeStatusRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RuntimeStatusResponse>> {
+        const requestOptions = await this.getRuntimeStatusRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RuntimeStatusResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get redacted local runtime and managed sync status
+     */
+    async getRuntimeStatus(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RuntimeStatusResponse> {
+        const response = await this.getRuntimeStatusRaw(initOverrides);
         return await response.value();
     }
 

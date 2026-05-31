@@ -160,6 +160,28 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
+  /v1/runtime/status:
+    get:
+      tags: [Runtime]
+      operationId: getRuntimeStatus
+      summary: Get redacted local runtime and managed sync status
+      description: Returns read-only managed-runtime readiness, lease metadata, and current-user managed connection status without exposing bearer tokens or secret material.
+      security:
+        - SessionCookieAuth: []
+      responses:
+        "200":
+          description: Redacted runtime status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeStatusResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
   /v1/users:
     post:
       tags: [Users]
@@ -2310,6 +2332,139 @@ components:
         last_synced_at: "2026-05-30T16:00:00Z"
         date_added: "2026-05-30T15:59:00Z"
         date_modified: null
+
+    RuntimeStatusResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        entitlement:
+          $ref: "#/components/schemas/RuntimeStatusEntitlement"
+        management:
+          $ref: "#/components/schemas/RuntimeStatusManagement"
+        websocket:
+          $ref: "#/components/schemas/RuntimeStatusWebsocket"
+        lease:
+          $ref: "#/components/schemas/RuntimeStatusLease"
+        connections:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuntimeConnectionStatus"
+      required: [entitlement, management, websocket, lease, connections]
+
+    RuntimeStatusEntitlement:
+      type: object
+      additionalProperties: false
+      properties:
+        configured:
+          type: boolean
+        license_status:
+          type: string
+        entitlement_status:
+          type: string
+        product_id:
+          type: string
+        plan:
+          type: string
+        features:
+          type: array
+          items:
+            type: string
+        last_synced_at:
+          type: string
+          format: date-time
+      required: [configured]
+
+    RuntimeStatusManagement:
+      type: object
+      additionalProperties: false
+      properties:
+        mode:
+          type: string
+          enum: [disabled, optional, required]
+        api_configured:
+          type: boolean
+          description: True only when both management API URL and token are configured.
+        api_url_configured:
+          type: boolean
+        api_token_configured:
+          type: boolean
+        runtime_secret_dir_configured:
+          type: boolean
+      required: [mode, api_configured, api_url_configured, api_token_configured, runtime_secret_dir_configured]
+
+    RuntimeStatusWebsocket:
+      type: object
+      additionalProperties: false
+      properties:
+        enabled:
+          type: boolean
+        configured:
+          type: boolean
+        endpoint_configured:
+          type: boolean
+        status:
+          type: string
+          enum: [disabled, configured, missing_requirements]
+      required: [enabled, configured, endpoint_configured, status]
+
+    RuntimeStatusLease:
+      type: object
+      additionalProperties: false
+      properties:
+        token_present:
+          type: boolean
+        expired:
+          type: boolean
+        issued_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+        scopes:
+          type: array
+          items:
+            type: string
+        activation_id:
+          type: string
+          description: Redacted activation identifier.
+        install_id:
+          type: string
+          description: Redacted install identifier.
+        token_fingerprint:
+          type: string
+          description: Short token fingerprint only; never a bearer token or full hash.
+      required: [token_present, expired]
+
+    RuntimeConnectionStatus:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Redacted local connection identifier.
+        managed_item_id:
+          type: string
+          description: Redacted managed item identifier.
+        status:
+          type: string
+          enum: [connected, syncing, stale, error, revoked]
+        last_sync_started_at:
+          type: string
+          format: date-time
+        last_sync_completed_at:
+          type: string
+          format: date-time
+        last_sync_error:
+          type: string
+          description: Sanitized short error string.
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: string
+          format: date-time
+      required: [id, managed_item_id, status, date_added]
 
     UserListResponse:
       type: object
