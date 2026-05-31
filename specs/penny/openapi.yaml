@@ -415,6 +415,37 @@ paths:
           $ref: "#/components/responses/ForbiddenResponse"
         "404":
           $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/categories/{categoryID}/delete-impact:
+    get:
+      tags: [Categories]
+      operationId: getCategoryDeleteImpact
+      summary: Preview category delete impact for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: categoryID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Category delete impact
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryDeleteImpact"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
@@ -882,6 +913,37 @@ paths:
       responses:
         "204":
           description: Tag deleted
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/tags/{tagID}/delete-impact:
+    get:
+      tags: [Tags]
+      operationId: getTagDeleteImpact
+      summary: Preview tag delete impact for current authenticated user
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: tagID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tag delete impact
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagDeleteImpact"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
         "403":
@@ -2590,6 +2652,44 @@ components:
           minimum: 0
       required: [items, total]
 
+    CategoryDeleteDependencyCounts:
+      type: object
+      additionalProperties: false
+      properties:
+        child_categories:
+          type: integer
+          minimum: 0
+        transactions:
+          type: integer
+          minimum: 0
+        budget_period_allocations:
+          type: integer
+          minimum: 0
+        transaction_rules:
+          type: integer
+          minimum: 0
+      required: [child_categories, transactions, budget_period_allocations, transaction_rules]
+
+    CategoryDeleteImpact:
+      type: object
+      additionalProperties: false
+      properties:
+        category_id:
+          type: string
+        mode:
+          type: string
+          enum: [block]
+        can_delete:
+          type: boolean
+        dependency_counts:
+          $ref: "#/components/schemas/CategoryDeleteDependencyCounts"
+        blocking_reasons:
+          type: array
+          items:
+            type: string
+            enum: [child_categories, transactions, budget_period_allocations, transaction_rules]
+      required: [category_id, mode, can_delete, dependency_counts, blocking_reasons]
+
     BudgetPeriodStatus:
       type: string
       enum: [draft, active, closed]
@@ -2840,6 +2940,38 @@ components:
           type: integer
           minimum: 0
       required: [items, total]
+
+    TagDeleteDependencyCounts:
+      type: object
+      additionalProperties: false
+      properties:
+        transactions:
+          type: integer
+          minimum: 0
+        transaction_rules:
+          type: integer
+          minimum: 0
+      required: [transactions, transaction_rules]
+
+    TagDeleteImpact:
+      type: object
+      additionalProperties: false
+      properties:
+        tag_id:
+          type: string
+        mode:
+          type: string
+          enum: [block]
+        can_delete:
+          type: boolean
+        dependency_counts:
+          $ref: "#/components/schemas/TagDeleteDependencyCounts"
+        blocking_reasons:
+          type: array
+          items:
+            type: string
+            enum: [transactions, transaction_rules]
+      required: [tag_id, mode, can_delete, dependency_counts, blocking_reasons]
 
     TransactionRuleStatus:
       type: string

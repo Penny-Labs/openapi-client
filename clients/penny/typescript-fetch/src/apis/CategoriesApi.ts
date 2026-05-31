@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   Category,
   CategoryCreateRequest,
+  CategoryDeleteImpact,
   CategoryListResponse,
   CategoryPatchRequest,
   ErrorResponse,
@@ -26,6 +27,8 @@ import {
     CategoryToJSON,
     CategoryCreateRequestFromJSON,
     CategoryCreateRequestToJSON,
+    CategoryDeleteImpactFromJSON,
+    CategoryDeleteImpactToJSON,
     CategoryListResponseFromJSON,
     CategoryListResponseToJSON,
     CategoryPatchRequestFromJSON,
@@ -43,6 +46,10 @@ export interface DeleteCategoryRequest {
 }
 
 export interface GetCategoryByIDRequest {
+    categoryID: string;
+}
+
+export interface GetCategoryDeleteImpactRequest {
     categoryID: string;
 }
 
@@ -189,6 +196,51 @@ export class CategoriesApi extends runtime.BaseAPI {
      */
     async getCategoryByID(requestParameters: GetCategoryByIDRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Category> {
         const response = await this.getCategoryByIDRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getCategoryDeleteImpact without sending the request
+     */
+    async getCategoryDeleteImpactRequestOpts(requestParameters: GetCategoryDeleteImpactRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['categoryID'] == null) {
+            throw new runtime.RequiredError(
+                'categoryID',
+                'Required parameter "categoryID" was null or undefined when calling getCategoryDeleteImpact().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/v1/categories/{categoryID}/delete-impact`;
+        urlPath = urlPath.replace(`{${"categoryID"}}`, encodeURIComponent(String(requestParameters['categoryID'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Preview category delete impact for current authenticated user
+     */
+    async getCategoryDeleteImpactRaw(requestParameters: GetCategoryDeleteImpactRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CategoryDeleteImpact>> {
+        const requestOptions = await this.getCategoryDeleteImpactRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CategoryDeleteImpactFromJSON(jsonValue));
+    }
+
+    /**
+     * Preview category delete impact for current authenticated user
+     */
+    async getCategoryDeleteImpact(requestParameters: GetCategoryDeleteImpactRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CategoryDeleteImpact> {
+        const response = await this.getCategoryDeleteImpactRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

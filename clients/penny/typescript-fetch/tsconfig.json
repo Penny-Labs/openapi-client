@@ -3,7 +3,7 @@
     "declaration": true,
     "ignoreDeprecations": "5.0",
     "target": "es5",
-    "module": "commonjs",
+    "module": "es2020",
     "moduleResolution": "node",
     "rootDir": "src",
     "outDir": "dist",

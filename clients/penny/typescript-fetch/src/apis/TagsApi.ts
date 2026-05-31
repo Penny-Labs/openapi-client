@@ -18,6 +18,7 @@ import type {
   ErrorResponse,
   Tag,
   TagCreateRequest,
+  TagDeleteImpact,
   TagListResponse,
   TagPatchRequest,
   Transaction,
@@ -30,6 +31,8 @@ import {
     TagToJSON,
     TagCreateRequestFromJSON,
     TagCreateRequestToJSON,
+    TagDeleteImpactFromJSON,
+    TagDeleteImpactToJSON,
     TagListResponseFromJSON,
     TagListResponseToJSON,
     TagPatchRequestFromJSON,
@@ -61,6 +64,10 @@ export interface DetachTagFromTransactionRequest {
 }
 
 export interface GetTagByIDRequest {
+    tagID: string;
+}
+
+export interface GetTagDeleteImpactRequest {
     tagID: string;
 }
 
@@ -335,6 +342,51 @@ export class TagsApi extends runtime.BaseAPI {
      */
     async getTagByID(requestParameters: GetTagByIDRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Tag> {
         const response = await this.getTagByIDRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getTagDeleteImpact without sending the request
+     */
+    async getTagDeleteImpactRequestOpts(requestParameters: GetTagDeleteImpactRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tagID'] == null) {
+            throw new runtime.RequiredError(
+                'tagID',
+                'Required parameter "tagID" was null or undefined when calling getTagDeleteImpact().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/v1/tags/{tagID}/delete-impact`;
+        urlPath = urlPath.replace(`{${"tagID"}}`, encodeURIComponent(String(requestParameters['tagID'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Preview tag delete impact for current authenticated user
+     */
+    async getTagDeleteImpactRaw(requestParameters: GetTagDeleteImpactRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TagDeleteImpact>> {
+        const requestOptions = await this.getTagDeleteImpactRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TagDeleteImpactFromJSON(jsonValue));
+    }
+
+    /**
+     * Preview tag delete impact for current authenticated user
+     */
+    async getTagDeleteImpact(requestParameters: GetTagDeleteImpactRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TagDeleteImpact> {
+        const response = await this.getTagDeleteImpactRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

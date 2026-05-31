@@ -28,10 +28,10 @@ export function TransactionRuleDateValueFromJSONTyped(json: any, ignoreDiscrimin
         return json;
     }
     if (!(isNaN(new Date(json).getTime()))) {
-        return json == null ? undefined : (new Date(json));
+        return new Date(json);
     }
     if (!(isNaN(new Date(json).getTime()))) {
-        return json == null ? undefined : (new Date(json));
+        return new Date(json);
     }
     return {} as any;
 }
