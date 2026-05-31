@@ -22,6 +22,8 @@ import type {
   TransactionRulePatchRequest,
   TransactionRuleSourceScope,
   TransactionRuleStatus,
+  TransactionRuleTestApplyRequest,
+  TransactionRuleTestApplyResponse,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
@@ -38,6 +40,10 @@ import {
     TransactionRuleSourceScopeToJSON,
     TransactionRuleStatusFromJSON,
     TransactionRuleStatusToJSON,
+    TransactionRuleTestApplyRequestFromJSON,
+    TransactionRuleTestApplyRequestToJSON,
+    TransactionRuleTestApplyResponseFromJSON,
+    TransactionRuleTestApplyResponseToJSON,
 } from '../models/index';
 
 export interface CreateTransactionRuleRequest {
@@ -60,6 +66,10 @@ export interface ListTransactionRulesRequest {
 export interface PatchTransactionRuleRequest {
     ruleID: string;
     transactionRulePatchRequest: TransactionRulePatchRequest;
+}
+
+export interface TestApplyTransactionRuleRequest {
+    transactionRuleTestApplyRequest: TransactionRuleTestApplyRequest;
 }
 
 /**
@@ -300,6 +310,53 @@ export class TransactionRulesApi extends runtime.BaseAPI {
      */
     async patchTransactionRule(requestParameters: PatchTransactionRuleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TransactionRule> {
         const response = await this.patchTransactionRuleRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for testApplyTransactionRule without sending the request
+     */
+    async testApplyTransactionRuleRequestOpts(requestParameters: TestApplyTransactionRuleRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['transactionRuleTestApplyRequest'] == null) {
+            throw new runtime.RequiredError(
+                'transactionRuleTestApplyRequest',
+                'Required parameter "transactionRuleTestApplyRequest" was null or undefined when calling testApplyTransactionRule().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/v1/transactions/rules/test-apply`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: TransactionRuleTestApplyRequestToJSON(requestParameters['transactionRuleTestApplyRequest']),
+        };
+    }
+
+    /**
+     * Preview a transaction rule against user-owned transactions without changing data
+     */
+    async testApplyTransactionRuleRaw(requestParameters: TestApplyTransactionRuleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TransactionRuleTestApplyResponse>> {
+        const requestOptions = await this.testApplyTransactionRuleRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TransactionRuleTestApplyResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Preview a transaction rule against user-owned transactions without changing data
+     */
+    async testApplyTransactionRule(requestParameters: TestApplyTransactionRuleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TransactionRuleTestApplyResponse> {
+        const response = await this.testApplyTransactionRuleRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

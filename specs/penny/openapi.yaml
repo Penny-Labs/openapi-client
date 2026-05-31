@@ -1206,6 +1206,37 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
+  /v1/transactions/rules/test-apply:
+    post:
+      tags: [Transaction Rules]
+      operationId: testApplyTransactionRule
+      summary: Preview a transaction rule against user-owned transactions without changing data
+      security:
+        - SessionCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRuleTestApplyRequest"
+      responses:
+        "200":
+          description: Read-only transaction rule application preview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionRuleTestApplyResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
   /v1/transactions/rules/{ruleID}:
     get:
       tags: [Transaction Rules]
@@ -3249,6 +3280,10 @@ components:
         - $ref: "#/components/schemas/TransactionRuleRemoveTagsAction"
         - $ref: "#/components/schemas/TransactionRuleReplaceTagsAction"
 
+    TransactionRuleActionType:
+      type: string
+      enum: [set_category, clear_category, add_tags, remove_tags, replace_tags]
+
     TransactionRuleCreateRequest:
       type: object
       additionalProperties: false
@@ -3363,6 +3398,140 @@ components:
           type: integer
           minimum: 0
       required: [items, total]
+
+    TransactionRuleTestApplyFilter:
+      type: object
+      additionalProperties: false
+      properties:
+        account_ids:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: string
+          description: User-owned account IDs to evaluate. Required to keep previews bounded and scoped.
+        q:
+          type: string
+        pending:
+          type: boolean
+        date_from:
+          type: string
+          format: date-time
+        date_to:
+          type: string
+          format: date-time
+        amount_min:
+          type: number
+          format: double
+        amount_max:
+          type: number
+          format: double
+        category_id:
+          type: string
+        tag_ids:
+          type: array
+          items:
+            type: string
+        tag_mode:
+          type: string
+          enum: [any, all]
+          default: any
+      required: [account_ids]
+
+    TransactionRuleTestApplyRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        rule_id:
+          type: string
+          description: Existing user-owned rule to preview. Provide exactly one of rule_id or rule.
+        rule:
+          allOf:
+            - $ref: "#/components/schemas/TransactionRuleCreateRequest"
+          description: Draft rule definition to preview. Provide exactly one of rule_id or rule.
+        filter:
+          $ref: "#/components/schemas/TransactionRuleTestApplyFilter"
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+          description: Maximum number of matched sample rows returned.
+      required: [filter]
+
+    TransactionRuleTestApplyMatch:
+      type: object
+      additionalProperties: false
+      properties:
+        transaction_id:
+          type: string
+        bank_account_id:
+          type: string
+        effective_date:
+          type: string
+          format: date-time
+        description:
+          type: string
+        amount:
+          type: number
+          format: double
+        current_category_id:
+          type: [string, "null"]
+        proposed_category_id:
+          type: [string, "null"]
+        current_tag_ids:
+          type: array
+          items:
+            type: string
+        proposed_tag_ids:
+          type: array
+          items:
+            type: string
+        applied_action_types:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionRuleActionType"
+        skipped_reasons:
+          type: array
+          items:
+            type: string
+        conflict_reasons:
+          type: array
+          items:
+            type: string
+      required:
+        - transaction_id
+        - bank_account_id
+        - description
+        - amount
+        - current_tag_ids
+        - proposed_tag_ids
+        - applied_action_types
+
+    TransactionRuleTestApplyResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        rule_id:
+          type: string
+        matched_count:
+          type: integer
+          minimum: 0
+        scanned_count:
+          type: integer
+          minimum: 0
+          description: Number of filtered transactions evaluated before returning the preview. If truncated is true, more transactions may remain unchecked.
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionRuleTestApplyMatch"
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        truncated:
+          type: boolean
+      required: [matched_count, scanned_count, items, limit, truncated]
 
     BalanceCreateRequest:
       type: object
