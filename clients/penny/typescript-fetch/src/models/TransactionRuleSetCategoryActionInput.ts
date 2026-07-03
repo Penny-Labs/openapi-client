@@ -34,14 +34,6 @@ import {
  */
 export type TransactionRuleSetCategoryActionInput = TransactionRuleSetCategoryActionInputOneOf | TransactionRuleSetCategoryActionInputOneOf1;
 
-
-/**
- * Check if a given object implements the TransactionRuleSetCategoryActionInput interface.
- */
-export function instanceOfTransactionRuleSetCategoryActionInput(value: object): value is TransactionRuleSetCategoryActionInput {
-    return instanceOfTransactionRuleSetCategoryActionInputOneOf(value) || instanceOfTransactionRuleSetCategoryActionInputOneOf1(value);
-}
-
 export function TransactionRuleSetCategoryActionInputFromJSON(json: any): TransactionRuleSetCategoryActionInput {
     return TransactionRuleSetCategoryActionInputFromJSONTyped(json, false);
 }

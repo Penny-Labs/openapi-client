@@ -13,19 +13,41 @@
  */
 
 import { mapValues } from '../runtime';
-
 /**
  * 
  * @export
  * @interface CategoryDeleteDependencyCounts
  */
 export interface CategoryDeleteDependencyCounts {
+    /**
+     * 
+     * @type {number}
+     * @memberof CategoryDeleteDependencyCounts
+     */
     childCategories: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CategoryDeleteDependencyCounts
+     */
     transactions: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CategoryDeleteDependencyCounts
+     */
     budgetPeriodAllocations: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CategoryDeleteDependencyCounts
+     */
     transactionRules: number;
 }
 
+/**
+ * Check if a given object implements the CategoryDeleteDependencyCounts interface.
+ */
 export function instanceOfCategoryDeleteDependencyCounts(value: object): value is CategoryDeleteDependencyCounts {
     if (!('childCategories' in value) || value['childCategories'] === undefined) return false;
     if (!('transactions' in value) || value['transactions'] === undefined) return false;
@@ -43,6 +65,7 @@ export function CategoryDeleteDependencyCountsFromJSONTyped(json: any, ignoreDis
         return json;
     }
     return {
+        
         'childCategories': json['child_categories'],
         'transactions': json['transactions'],
         'budgetPeriodAllocations': json['budget_period_allocations'],
@@ -60,9 +83,11 @@ export function CategoryDeleteDependencyCountsToJSONTyped(value?: CategoryDelete
     }
 
     return {
+        
         'child_categories': value['childCategories'],
         'transactions': value['transactions'],
         'budget_period_allocations': value['budgetPeriodAllocations'],
         'transaction_rules': value['transactionRules'],
     };
 }
+

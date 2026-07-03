@@ -9,6 +9,7 @@ All URIs are relative to *http://localhost:8080*
 | [**deleteTag**](TagsApi.md#deletetag) | **DELETE** /v1/tags/{tagID} | Delete tag by ID for current authenticated user |
 | [**detachTagFromTransaction**](TagsApi.md#detachtagfromtransaction) | **DELETE** /v1/accounts/{accountID}/transactions/{transactionID}/tags/{tagID} | Detach a tag from a transaction owned by the current authenticated user |
 | [**getTagByID**](TagsApi.md#gettagbyid) | **GET** /v1/tags/{tagID} | Get tag by ID for current authenticated user |
+| [**getTagDeleteImpact**](TagsApi.md#gettagdeleteimpact) | **GET** /v1/tags/{tagID}/delete-impact | Preview tag delete impact for current authenticated user |
 | [**listTags**](TagsApi.md#listtags) | **GET** /v1/tags | List tags for current authenticated user |
 | [**patchTag**](TagsApi.md#patchtag) | **PATCH** /v1/tags/{tagID} | Patch tag fields for current authenticated user |
 | [**replaceTransactionTags**](TagsApi.md#replacetransactiontags) | **PUT** /v1/accounts/{accountID}/transactions/{transactionID}/tags | Replace all tags for a transaction owned by the current authenticated user |
@@ -236,6 +237,7 @@ example().catch(console.error);
 | **401** | Unauthorized |  -  |
 | **403** | Forbidden |  -  |
 | **404** | Not found |  -  |
+| **409** | Conflict |  -  |
 | **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
@@ -385,6 +387,79 @@ example().catch(console.error);
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Tag found |  -  |
+| **401** | Unauthorized |  -  |
+| **403** | Forbidden |  -  |
+| **404** | Not found |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## getTagDeleteImpact
+
+> TagDeleteImpact getTagDeleteImpact(tagID)
+
+Preview tag delete impact for current authenticated user
+
+### Example
+
+```ts
+import {
+  Configuration,
+  TagsApi,
+} from '@penny-labs/openapi-penny-client';
+import type { GetTagDeleteImpactRequest } from '@penny-labs/openapi-penny-client';
+
+async function example() {
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
+  const config = new Configuration({ 
+    // To configure API key authorization: SessionCookieAuth
+    apiKey: "YOUR API KEY",
+  });
+  const api = new TagsApi(config);
+
+  const body = {
+    // string
+    tagID: tagID_example,
+  } satisfies GetTagDeleteImpactRequest;
+
+  try {
+    const data = await api.getTagDeleteImpact(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **tagID** | `string` |  | [Defaults to `undefined`] |
+
+### Return type
+
+[**TagDeleteImpact**](TagDeleteImpact.md)
+
+### Authorization
+
+[SessionCookieAuth](../README.md#SessionCookieAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Tag delete impact |  -  |
 | **401** | Unauthorized |  -  |
 | **403** | Forbidden |  -  |
 | **404** | Not found |  -  |

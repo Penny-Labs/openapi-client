@@ -13,17 +13,29 @@
  */
 
 import { mapValues } from '../runtime';
-
 /**
  * 
  * @export
  * @interface TagDeleteDependencyCounts
  */
 export interface TagDeleteDependencyCounts {
+    /**
+     * 
+     * @type {number}
+     * @memberof TagDeleteDependencyCounts
+     */
     transactions: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TagDeleteDependencyCounts
+     */
     transactionRules: number;
 }
 
+/**
+ * Check if a given object implements the TagDeleteDependencyCounts interface.
+ */
 export function instanceOfTagDeleteDependencyCounts(value: object): value is TagDeleteDependencyCounts {
     if (!('transactions' in value) || value['transactions'] === undefined) return false;
     if (!('transactionRules' in value) || value['transactionRules'] === undefined) return false;
@@ -39,6 +51,7 @@ export function TagDeleteDependencyCountsFromJSONTyped(json: any, ignoreDiscrimi
         return json;
     }
     return {
+        
         'transactions': json['transactions'],
         'transactionRules': json['transaction_rules'],
     };
@@ -54,7 +67,9 @@ export function TagDeleteDependencyCountsToJSONTyped(value?: TagDeleteDependency
     }
 
     return {
+        
         'transactions': value['transactions'],
         'transaction_rules': value['transactionRules'],
     };
 }
+

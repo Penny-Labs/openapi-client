@@ -9,6 +9,7 @@ All URIs are relative to *http://localhost:8080*
 | [**getTransactionRuleByID**](TransactionRulesApi.md#gettransactionrulebyid) | **GET** /v1/transactions/rules/{ruleID} | Get transaction rule by ID for current authenticated user |
 | [**listTransactionRules**](TransactionRulesApi.md#listtransactionrules) | **GET** /v1/transactions/rules | List transaction rules for current authenticated user |
 | [**patchTransactionRule**](TransactionRulesApi.md#patchtransactionrule) | **PATCH** /v1/transactions/rules/{ruleID} | Patch transaction rule fields for current authenticated user |
+| [**testApplyTransactionRule**](TransactionRulesApi.md#testapplytransactionrule) | **POST** /v1/transactions/rules/test-apply | Preview a transaction rule against user-owned transactions without changing data |
 
 
 
@@ -382,6 +383,80 @@ example().catch(console.error);
 | **403** | Forbidden |  -  |
 | **404** | Not found |  -  |
 | **409** | Conflict |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## testApplyTransactionRule
+
+> TransactionRuleTestApplyResponse testApplyTransactionRule(transactionRuleTestApplyRequest)
+
+Preview a transaction rule against user-owned transactions without changing data
+
+### Example
+
+```ts
+import {
+  Configuration,
+  TransactionRulesApi,
+} from '@penny-labs/openapi-penny-client';
+import type { TestApplyTransactionRuleRequest } from '@penny-labs/openapi-penny-client';
+
+async function example() {
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
+  const config = new Configuration({ 
+    // To configure API key authorization: SessionCookieAuth
+    apiKey: "YOUR API KEY",
+  });
+  const api = new TransactionRulesApi(config);
+
+  const body = {
+    // TransactionRuleTestApplyRequest
+    transactionRuleTestApplyRequest: ...,
+  } satisfies TestApplyTransactionRuleRequest;
+
+  try {
+    const data = await api.testApplyTransactionRule(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **transactionRuleTestApplyRequest** | [TransactionRuleTestApplyRequest](TransactionRuleTestApplyRequest.md) |  | |
+
+### Return type
+
+[**TransactionRuleTestApplyResponse**](TransactionRuleTestApplyResponse.md)
+
+### Authorization
+
+[SessionCookieAuth](../README.md#SessionCookieAuth)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Read-only transaction rule application preview |  -  |
+| **400** | Bad request |  -  |
+| **401** | Unauthorized |  -  |
+| **403** | Forbidden |  -  |
+| **404** | Not found |  -  |
 | **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)

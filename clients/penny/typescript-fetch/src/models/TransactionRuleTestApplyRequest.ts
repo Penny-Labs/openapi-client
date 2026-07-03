@@ -12,15 +12,20 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 import type { TransactionRuleCreateRequest } from './TransactionRuleCreateRequest';
 import {
     TransactionRuleCreateRequestFromJSON,
+    TransactionRuleCreateRequestFromJSONTyped,
     TransactionRuleCreateRequestToJSON,
+    TransactionRuleCreateRequestToJSONTyped,
 } from './TransactionRuleCreateRequest';
 import type { TransactionRuleTestApplyFilter } from './TransactionRuleTestApplyFilter';
 import {
     TransactionRuleTestApplyFilterFromJSON,
+    TransactionRuleTestApplyFilterFromJSONTyped,
     TransactionRuleTestApplyFilterToJSON,
+    TransactionRuleTestApplyFilterToJSONTyped,
 } from './TransactionRuleTestApplyFilter';
 
 /**
@@ -29,12 +34,35 @@ import {
  * @interface TransactionRuleTestApplyRequest
  */
 export interface TransactionRuleTestApplyRequest {
+    /**
+     * Existing user-owned rule to preview. Provide exactly one of rule_id or rule.
+     * @type {string}
+     * @memberof TransactionRuleTestApplyRequest
+     */
     ruleId?: string;
+    /**
+     * Draft rule definition to preview. Provide exactly one of rule_id or rule.
+     * @type {TransactionRuleCreateRequest}
+     * @memberof TransactionRuleTestApplyRequest
+     */
     rule?: TransactionRuleCreateRequest;
+    /**
+     * 
+     * @type {TransactionRuleTestApplyFilter}
+     * @memberof TransactionRuleTestApplyRequest
+     */
     filter: TransactionRuleTestApplyFilter;
+    /**
+     * Maximum number of matched sample rows returned.
+     * @type {number}
+     * @memberof TransactionRuleTestApplyRequest
+     */
     limit?: number;
 }
 
+/**
+ * Check if a given object implements the TransactionRuleTestApplyRequest interface.
+ */
 export function instanceOfTransactionRuleTestApplyRequest(value: object): value is TransactionRuleTestApplyRequest {
     if (!('filter' in value) || value['filter'] === undefined) return false;
     return true;
@@ -49,6 +77,7 @@ export function TransactionRuleTestApplyRequestFromJSONTyped(json: any, ignoreDi
         return json;
     }
     return {
+        
         'ruleId': json['rule_id'] == null ? undefined : json['rule_id'],
         'rule': json['rule'] == null ? undefined : TransactionRuleCreateRequestFromJSON(json['rule']),
         'filter': TransactionRuleTestApplyFilterFromJSON(json['filter']),
@@ -66,9 +95,11 @@ export function TransactionRuleTestApplyRequestToJSONTyped(value?: TransactionRu
     }
 
     return {
+        
         'rule_id': value['ruleId'],
         'rule': TransactionRuleCreateRequestToJSON(value['rule']),
         'filter': TransactionRuleTestApplyFilterToJSON(value['filter']),
         'limit': value['limit'],
     };
 }
+

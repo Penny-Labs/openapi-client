@@ -28,10 +28,10 @@ export function TransactionRuleDateValueFromJSONTyped(json: any, ignoreDiscrimin
         return json;
     }
     if (!(isNaN(new Date(json).getTime()))) {
-        return new Date(json);
+        return json == null ? undefined : (new Date(json));
     }
     if (!(isNaN(new Date(json).getTime()))) {
-        return new Date(json);
+        return json == null ? undefined : (new Date(json));
     }
     return {} as any;
 }
@@ -44,6 +44,12 @@ export function TransactionRuleDateValueToJSONTyped(value?: TransactionRuleDateV
     if (value == null) {
         return value;
     }
-    return value.toISOString();
+    if (value instanceof Date) {
+        return value == null ? undefined : ((value).toISOString());
+    }
+    if (value instanceof Date) {
+        return ((value).toISOString().substring(0,10));
+    }
+    return {};
 }
 

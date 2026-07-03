@@ -7,6 +7,7 @@ All URIs are relative to *http://localhost:8080*
 | [**createCategory**](CategoriesApi.md#createcategory) | **POST** /v1/categories | Create a category for current authenticated user |
 | [**deleteCategory**](CategoriesApi.md#deletecategory) | **DELETE** /v1/categories/{categoryID} | Delete category by ID for current authenticated user |
 | [**getCategoryByID**](CategoriesApi.md#getcategorybyid) | **GET** /v1/categories/{categoryID} | Get category by ID for current authenticated user |
+| [**getCategoryDeleteImpact**](CategoriesApi.md#getcategorydeleteimpact) | **GET** /v1/categories/{categoryID}/delete-impact | Preview category delete impact for current authenticated user |
 | [**listCategories**](CategoriesApi.md#listcategories) | **GET** /v1/categories | List categories for current authenticated user |
 | [**patchCategory**](CategoriesApi.md#patchcategory) | **PATCH** /v1/categories/{categoryID} | Patch category fields for current authenticated user |
 
@@ -154,6 +155,7 @@ example().catch(console.error);
 | **401** | Unauthorized |  -  |
 | **403** | Forbidden |  -  |
 | **404** | Not found |  -  |
+| **409** | Conflict |  -  |
 | **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
@@ -224,6 +226,79 @@ example().catch(console.error);
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Category found |  -  |
+| **401** | Unauthorized |  -  |
+| **403** | Forbidden |  -  |
+| **404** | Not found |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## getCategoryDeleteImpact
+
+> CategoryDeleteImpact getCategoryDeleteImpact(categoryID)
+
+Preview category delete impact for current authenticated user
+
+### Example
+
+```ts
+import {
+  Configuration,
+  CategoriesApi,
+} from '@penny-labs/openapi-penny-client';
+import type { GetCategoryDeleteImpactRequest } from '@penny-labs/openapi-penny-client';
+
+async function example() {
+  console.log("🚀 Testing @penny-labs/openapi-penny-client SDK...");
+  const config = new Configuration({ 
+    // To configure API key authorization: SessionCookieAuth
+    apiKey: "YOUR API KEY",
+  });
+  const api = new CategoriesApi(config);
+
+  const body = {
+    // string
+    categoryID: categoryID_example,
+  } satisfies GetCategoryDeleteImpactRequest;
+
+  try {
+    const data = await api.getCategoryDeleteImpact(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **categoryID** | `string` |  | [Defaults to `undefined`] |
+
+### Return type
+
+[**CategoryDeleteImpact**](CategoryDeleteImpact.md)
+
+### Authorization
+
+[SessionCookieAuth](../README.md#SessionCookieAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Category delete impact |  -  |
 | **401** | Unauthorized |  -  |
 | **403** | Forbidden |  -  |
 | **404** | Not found |  -  |

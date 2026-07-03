@@ -27,23 +27,60 @@ import {
  * @interface TagDeleteImpact
  */
 export interface TagDeleteImpact {
+    /**
+     * 
+     * @type {string}
+     * @memberof TagDeleteImpact
+     */
     tagId: string;
+    /**
+     * 
+     * @type {TagDeleteImpactModeEnum}
+     * @memberof TagDeleteImpact
+     */
     mode: TagDeleteImpactModeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TagDeleteImpact
+     */
     canDelete: boolean;
+    /**
+     * 
+     * @type {TagDeleteDependencyCounts}
+     * @memberof TagDeleteImpact
+     */
     dependencyCounts: TagDeleteDependencyCounts;
+    /**
+     * 
+     * @type {Array<TagDeleteImpactBlockingReasonsEnum>}
+     * @memberof TagDeleteImpact
+     */
     blockingReasons: Array<TagDeleteImpactBlockingReasonsEnum>;
 }
 
+
+/**
+ * @export
+ */
 export const TagDeleteImpactModeEnum = {
     Block: 'block'
 } as const;
 export type TagDeleteImpactModeEnum = typeof TagDeleteImpactModeEnum[keyof typeof TagDeleteImpactModeEnum];
+
+/**
+ * @export
+ */
 export const TagDeleteImpactBlockingReasonsEnum = {
     Transactions: 'transactions',
     TransactionRules: 'transaction_rules'
 } as const;
 export type TagDeleteImpactBlockingReasonsEnum = typeof TagDeleteImpactBlockingReasonsEnum[keyof typeof TagDeleteImpactBlockingReasonsEnum];
 
+
+/**
+ * Check if a given object implements the TagDeleteImpact interface.
+ */
 export function instanceOfTagDeleteImpact(value: object): value is TagDeleteImpact {
     if (!('tagId' in value) || value['tagId'] === undefined) return false;
     if (!('mode' in value) || value['mode'] === undefined) return false;
@@ -62,6 +99,7 @@ export function TagDeleteImpactFromJSONTyped(json: any, ignoreDiscriminator: boo
         return json;
     }
     return {
+        
         'tagId': json['tag_id'],
         'mode': json['mode'],
         'canDelete': json['can_delete'],
@@ -80,6 +118,7 @@ export function TagDeleteImpactToJSONTyped(value?: TagDeleteImpact | null, ignor
     }
 
     return {
+        
         'tag_id': value['tagId'],
         'mode': value['mode'],
         'can_delete': value['canDelete'],
@@ -87,3 +126,4 @@ export function TagDeleteImpactToJSONTyped(value?: TagDeleteImpact | null, ignor
         'blocking_reasons': value['blockingReasons'],
     };
 }
+

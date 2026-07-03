@@ -12,7 +12,9 @@
  * Do not edit the class manually.
  */
 
+
 /**
+ * 
  * @export
  */
 export const TransactionRuleActionType = {
@@ -23,6 +25,18 @@ export const TransactionRuleActionType = {
     ReplaceTags: 'replace_tags'
 } as const;
 export type TransactionRuleActionType = typeof TransactionRuleActionType[keyof typeof TransactionRuleActionType];
+
+
+export function instanceOfTransactionRuleActionType(value: any): boolean {
+    for (const key in TransactionRuleActionType) {
+        if (Object.prototype.hasOwnProperty.call(TransactionRuleActionType, key)) {
+            if (TransactionRuleActionType[key as keyof typeof TransactionRuleActionType] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 export function TransactionRuleActionTypeFromJSON(json: any): TransactionRuleActionType {
     return TransactionRuleActionTypeFromJSONTyped(json, false);
@@ -39,3 +53,4 @@ export function TransactionRuleActionTypeToJSON(value?: TransactionRuleActionTyp
 export function TransactionRuleActionTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): TransactionRuleActionType {
     return value as TransactionRuleActionType;
 }
+

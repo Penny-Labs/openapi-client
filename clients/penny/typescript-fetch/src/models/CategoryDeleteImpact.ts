@@ -27,17 +27,50 @@ import {
  * @interface CategoryDeleteImpact
  */
 export interface CategoryDeleteImpact {
+    /**
+     * 
+     * @type {string}
+     * @memberof CategoryDeleteImpact
+     */
     categoryId: string;
+    /**
+     * 
+     * @type {CategoryDeleteImpactModeEnum}
+     * @memberof CategoryDeleteImpact
+     */
     mode: CategoryDeleteImpactModeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CategoryDeleteImpact
+     */
     canDelete: boolean;
+    /**
+     * 
+     * @type {CategoryDeleteDependencyCounts}
+     * @memberof CategoryDeleteImpact
+     */
     dependencyCounts: CategoryDeleteDependencyCounts;
+    /**
+     * 
+     * @type {Array<CategoryDeleteImpactBlockingReasonsEnum>}
+     * @memberof CategoryDeleteImpact
+     */
     blockingReasons: Array<CategoryDeleteImpactBlockingReasonsEnum>;
 }
 
+
+/**
+ * @export
+ */
 export const CategoryDeleteImpactModeEnum = {
     Block: 'block'
 } as const;
 export type CategoryDeleteImpactModeEnum = typeof CategoryDeleteImpactModeEnum[keyof typeof CategoryDeleteImpactModeEnum];
+
+/**
+ * @export
+ */
 export const CategoryDeleteImpactBlockingReasonsEnum = {
     ChildCategories: 'child_categories',
     Transactions: 'transactions',
@@ -46,6 +79,10 @@ export const CategoryDeleteImpactBlockingReasonsEnum = {
 } as const;
 export type CategoryDeleteImpactBlockingReasonsEnum = typeof CategoryDeleteImpactBlockingReasonsEnum[keyof typeof CategoryDeleteImpactBlockingReasonsEnum];
 
+
+/**
+ * Check if a given object implements the CategoryDeleteImpact interface.
+ */
 export function instanceOfCategoryDeleteImpact(value: object): value is CategoryDeleteImpact {
     if (!('categoryId' in value) || value['categoryId'] === undefined) return false;
     if (!('mode' in value) || value['mode'] === undefined) return false;
@@ -64,6 +101,7 @@ export function CategoryDeleteImpactFromJSONTyped(json: any, ignoreDiscriminator
         return json;
     }
     return {
+        
         'categoryId': json['category_id'],
         'mode': json['mode'],
         'canDelete': json['can_delete'],
@@ -82,6 +120,7 @@ export function CategoryDeleteImpactToJSONTyped(value?: CategoryDeleteImpact | n
     }
 
     return {
+        
         'category_id': value['categoryId'],
         'mode': value['mode'],
         'can_delete': value['canDelete'],
@@ -89,3 +128,4 @@ export function CategoryDeleteImpactToJSONTyped(value?: CategoryDeleteImpact | n
         'blocking_reasons': value['blockingReasons'],
     };
 }
+

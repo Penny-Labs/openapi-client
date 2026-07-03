@@ -12,10 +12,13 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 import type { TransactionRuleTestApplyMatch } from './TransactionRuleTestApplyMatch';
 import {
     TransactionRuleTestApplyMatchFromJSON,
+    TransactionRuleTestApplyMatchFromJSONTyped,
     TransactionRuleTestApplyMatchToJSON,
+    TransactionRuleTestApplyMatchToJSONTyped,
 } from './TransactionRuleTestApplyMatch';
 
 /**
@@ -24,14 +27,47 @@ import {
  * @interface TransactionRuleTestApplyResponse
  */
 export interface TransactionRuleTestApplyResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleTestApplyResponse
+     */
     ruleId?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransactionRuleTestApplyResponse
+     */
     matchedCount: number;
+    /**
+     * Number of filtered transactions evaluated before returning the preview. If truncated is true, more transactions may remain unchecked.
+     * @type {number}
+     * @memberof TransactionRuleTestApplyResponse
+     */
     scannedCount: number;
+    /**
+     * 
+     * @type {Array<TransactionRuleTestApplyMatch>}
+     * @memberof TransactionRuleTestApplyResponse
+     */
     items: Array<TransactionRuleTestApplyMatch>;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransactionRuleTestApplyResponse
+     */
     limit: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TransactionRuleTestApplyResponse
+     */
     truncated: boolean;
 }
 
+/**
+ * Check if a given object implements the TransactionRuleTestApplyResponse interface.
+ */
 export function instanceOfTransactionRuleTestApplyResponse(value: object): value is TransactionRuleTestApplyResponse {
     if (!('matchedCount' in value) || value['matchedCount'] === undefined) return false;
     if (!('scannedCount' in value) || value['scannedCount'] === undefined) return false;
@@ -50,6 +86,7 @@ export function TransactionRuleTestApplyResponseFromJSONTyped(json: any, ignoreD
         return json;
     }
     return {
+        
         'ruleId': json['rule_id'] == null ? undefined : json['rule_id'],
         'matchedCount': json['matched_count'],
         'scannedCount': json['scanned_count'],
@@ -69,6 +106,7 @@ export function TransactionRuleTestApplyResponseToJSONTyped(value?: TransactionR
     }
 
     return {
+        
         'rule_id': value['ruleId'],
         'matched_count': value['matchedCount'],
         'scanned_count': value['scannedCount'],
@@ -77,3 +115,4 @@ export function TransactionRuleTestApplyResponseToJSONTyped(value?: TransactionR
         'truncated': value['truncated'],
     };
 }
+

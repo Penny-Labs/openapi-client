@@ -12,10 +12,13 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 import type { TransactionRuleActionType } from './TransactionRuleActionType';
 import {
     TransactionRuleActionTypeFromJSON,
+    TransactionRuleActionTypeFromJSONTyped,
     TransactionRuleActionTypeToJSON,
+    TransactionRuleActionTypeToJSONTyped,
 } from './TransactionRuleActionType';
 
 /**
@@ -24,20 +27,83 @@ import {
  * @interface TransactionRuleTestApplyMatch
  */
 export interface TransactionRuleTestApplyMatch {
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     transactionId: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     bankAccountId: string;
+    /**
+     * 
+     * @type {Date}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     effectiveDate?: Date;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     description: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     amount: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     currentCategoryId?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     proposedCategoryId?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     currentTagIds: Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     proposedTagIds: Array<string>;
+    /**
+     * 
+     * @type {Array<TransactionRuleActionType>}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     appliedActionTypes: Array<TransactionRuleActionType>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     skippedReasons?: Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof TransactionRuleTestApplyMatch
+     */
     conflictReasons?: Array<string>;
 }
 
+/**
+ * Check if a given object implements the TransactionRuleTestApplyMatch interface.
+ */
 export function instanceOfTransactionRuleTestApplyMatch(value: object): value is TransactionRuleTestApplyMatch {
     if (!('transactionId' in value) || value['transactionId'] === undefined) return false;
     if (!('bankAccountId' in value) || value['bankAccountId'] === undefined) return false;
@@ -58,13 +124,14 @@ export function TransactionRuleTestApplyMatchFromJSONTyped(json: any, ignoreDisc
         return json;
     }
     return {
+        
         'transactionId': json['transaction_id'],
         'bankAccountId': json['bank_account_id'],
         'effectiveDate': json['effective_date'] == null ? undefined : (new Date(json['effective_date'])),
         'description': json['description'],
         'amount': json['amount'],
-        'currentCategoryId': json['current_category_id'] == null ? json['current_category_id'] : json['current_category_id'],
-        'proposedCategoryId': json['proposed_category_id'] == null ? json['proposed_category_id'] : json['proposed_category_id'],
+        'currentCategoryId': json['current_category_id'] == null ? undefined : json['current_category_id'],
+        'proposedCategoryId': json['proposed_category_id'] == null ? undefined : json['proposed_category_id'],
         'currentTagIds': json['current_tag_ids'],
         'proposedTagIds': json['proposed_tag_ids'],
         'appliedActionTypes': ((json['applied_action_types'] as Array<any>).map(TransactionRuleActionTypeFromJSON)),
@@ -83,9 +150,10 @@ export function TransactionRuleTestApplyMatchToJSONTyped(value?: TransactionRule
     }
 
     return {
+        
         'transaction_id': value['transactionId'],
         'bank_account_id': value['bankAccountId'],
-        'effective_date': value['effectiveDate'] == null ? undefined : ((value['effectiveDate'] as any).toISOString()),
+        'effective_date': value['effectiveDate'] == null ? value['effectiveDate'] : value['effectiveDate'].toISOString(),
         'description': value['description'],
         'amount': value['amount'],
         'current_category_id': value['currentCategoryId'],
@@ -97,3 +165,4 @@ export function TransactionRuleTestApplyMatchToJSONTyped(value?: TransactionRule
         'conflict_reasons': value['conflictReasons'],
     };
 }
+

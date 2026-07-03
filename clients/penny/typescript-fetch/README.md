@@ -104,17 +104,20 @@ All URIs are relative to *http://localhost:8080*
 *CategoriesApi* | [**createCategory**](docs/CategoriesApi.md#createcategory) | **POST** /v1/categories | Create a category for current authenticated user
 *CategoriesApi* | [**deleteCategory**](docs/CategoriesApi.md#deletecategory) | **DELETE** /v1/categories/{categoryID} | Delete category by ID for current authenticated user
 *CategoriesApi* | [**getCategoryByID**](docs/CategoriesApi.md#getcategorybyid) | **GET** /v1/categories/{categoryID} | Get category by ID for current authenticated user
+*CategoriesApi* | [**getCategoryDeleteImpact**](docs/CategoriesApi.md#getcategorydeleteimpact) | **GET** /v1/categories/{categoryID}/delete-impact | Preview category delete impact for current authenticated user
 *CategoriesApi* | [**listCategories**](docs/CategoriesApi.md#listcategories) | **GET** /v1/categories | List categories for current authenticated user
 *CategoriesApi* | [**patchCategory**](docs/CategoriesApi.md#patchcategory) | **PATCH** /v1/categories/{categoryID} | Patch category fields for current authenticated user
 *ExportsApi* | [**createTransactionExport**](docs/ExportsApi.md#createtransactionexportoperation) | **POST** /v1/exports/transactions | Create a transactions export job
 *ExportsApi* | [**downloadTransactionExport**](docs/ExportsApi.md#downloadtransactionexport) | **GET** /v1/exports/transactions/{exportID}/download | Download a completed transaction export
 *ExportsApi* | [**getTransactionExportByID**](docs/ExportsApi.md#gettransactionexportbyid) | **GET** /v1/exports/transactions/{exportID} | Get transaction export job status
 *RuntimeApi* | [**getRuntimeEntitlementSnapshot**](docs/RuntimeApi.md#getruntimeentitlementsnapshot) | **GET** /v1/runtime/entitlement | Get the local runtime entitlement snapshot
+*RuntimeApi* | [**getRuntimeStatus**](docs/RuntimeApi.md#getruntimestatus) | **GET** /v1/runtime/status | Get redacted local runtime and managed sync status
 *TagsApi* | [**attachTagToTransaction**](docs/TagsApi.md#attachtagtotransaction) | **PUT** /v1/accounts/{accountID}/transactions/{transactionID}/tags/{tagID} | Attach a tag to a transaction owned by the current authenticated user
 *TagsApi* | [**createTag**](docs/TagsApi.md#createtag) | **POST** /v1/tags | Create a tag for current authenticated user
 *TagsApi* | [**deleteTag**](docs/TagsApi.md#deletetag) | **DELETE** /v1/tags/{tagID} | Delete tag by ID for current authenticated user
 *TagsApi* | [**detachTagFromTransaction**](docs/TagsApi.md#detachtagfromtransaction) | **DELETE** /v1/accounts/{accountID}/transactions/{transactionID}/tags/{tagID} | Detach a tag from a transaction owned by the current authenticated user
 *TagsApi* | [**getTagByID**](docs/TagsApi.md#gettagbyid) | **GET** /v1/tags/{tagID} | Get tag by ID for current authenticated user
+*TagsApi* | [**getTagDeleteImpact**](docs/TagsApi.md#gettagdeleteimpact) | **GET** /v1/tags/{tagID}/delete-impact | Preview tag delete impact for current authenticated user
 *TagsApi* | [**listTags**](docs/TagsApi.md#listtags) | **GET** /v1/tags | List tags for current authenticated user
 *TagsApi* | [**patchTag**](docs/TagsApi.md#patchtag) | **PATCH** /v1/tags/{tagID} | Patch tag fields for current authenticated user
 *TagsApi* | [**replaceTransactionTags**](docs/TagsApi.md#replacetransactiontags) | **PUT** /v1/accounts/{accountID}/transactions/{transactionID}/tags | Replace all tags for a transaction owned by the current authenticated user
@@ -123,6 +126,7 @@ All URIs are relative to *http://localhost:8080*
 *TransactionRulesApi* | [**getTransactionRuleByID**](docs/TransactionRulesApi.md#gettransactionrulebyid) | **GET** /v1/transactions/rules/{ruleID} | Get transaction rule by ID for current authenticated user
 *TransactionRulesApi* | [**listTransactionRules**](docs/TransactionRulesApi.md#listtransactionrules) | **GET** /v1/transactions/rules | List transaction rules for current authenticated user
 *TransactionRulesApi* | [**patchTransactionRule**](docs/TransactionRulesApi.md#patchtransactionrule) | **PATCH** /v1/transactions/rules/{ruleID} | Patch transaction rule fields for current authenticated user
+*TransactionRulesApi* | [**testApplyTransactionRule**](docs/TransactionRulesApi.md#testapplytransactionrule) | **POST** /v1/transactions/rules/test-apply | Preview a transaction rule against user-owned transactions without changing data
 *UsersApi* | [**createUser**](docs/UsersApi.md#createuser) | **POST** /v1/users | Create user
 *UsersApi* | [**getUserByID**](docs/UsersApi.md#getuserbyid) | **GET** /v1/users/{userID} | Get user by ID (self only)
 *UsersApi* | [**listUsers**](docs/UsersApi.md#listusers) | **GET** /v1/users | List users (admin only)
@@ -154,17 +158,27 @@ All URIs are relative to *http://localhost:8080*
 - [BudgetPeriodStatus](docs/BudgetPeriodStatus.md)
 - [Category](docs/Category.md)
 - [CategoryCreateRequest](docs/CategoryCreateRequest.md)
+- [CategoryDeleteDependencyCounts](docs/CategoryDeleteDependencyCounts.md)
+- [CategoryDeleteImpact](docs/CategoryDeleteImpact.md)
 - [CategoryListResponse](docs/CategoryListResponse.md)
 - [CategoryPatchRequest](docs/CategoryPatchRequest.md)
 - [CreateTransactionExportRequest](docs/CreateTransactionExportRequest.md)
 - [ErrorResponse](docs/ErrorResponse.md)
 - [FeatureListResponse](docs/FeatureListResponse.md)
 - [FeatureState](docs/FeatureState.md)
+- [RuntimeConnectionStatus](docs/RuntimeConnectionStatus.md)
 - [RuntimeEntitlementSnapshotResponse](docs/RuntimeEntitlementSnapshotResponse.md)
+- [RuntimeStatusEntitlement](docs/RuntimeStatusEntitlement.md)
+- [RuntimeStatusLease](docs/RuntimeStatusLease.md)
+- [RuntimeStatusManagement](docs/RuntimeStatusManagement.md)
+- [RuntimeStatusResponse](docs/RuntimeStatusResponse.md)
+- [RuntimeStatusWebsocket](docs/RuntimeStatusWebsocket.md)
 - [SessionAuthResponse](docs/SessionAuthResponse.md)
 - [SignoutResponse](docs/SignoutResponse.md)
 - [Tag](docs/Tag.md)
 - [TagCreateRequest](docs/TagCreateRequest.md)
+- [TagDeleteDependencyCounts](docs/TagDeleteDependencyCounts.md)
+- [TagDeleteImpact](docs/TagDeleteImpact.md)
 - [TagListResponse](docs/TagListResponse.md)
 - [TagPatchRequest](docs/TagPatchRequest.md)
 - [Transaction](docs/Transaction.md)
@@ -188,6 +202,7 @@ All URIs are relative to *http://localhost:8080*
 - [TransactionRule](docs/TransactionRule.md)
 - [TransactionRuleAction](docs/TransactionRuleAction.md)
 - [TransactionRuleActionInput](docs/TransactionRuleActionInput.md)
+- [TransactionRuleActionType](docs/TransactionRuleActionType.md)
 - [TransactionRuleAddTagsAction](docs/TransactionRuleAddTagsAction.md)
 - [TransactionRuleAddTagsActionInput](docs/TransactionRuleAddTagsActionInput.md)
 - [TransactionRuleAddTagsActionInputOneOf](docs/TransactionRuleAddTagsActionInputOneOf.md)
@@ -223,6 +238,10 @@ All URIs are relative to *http://localhost:8080*
 - [TransactionRuleSetCategoryActionInputOneOf1](docs/TransactionRuleSetCategoryActionInputOneOf1.md)
 - [TransactionRuleSourceScope](docs/TransactionRuleSourceScope.md)
 - [TransactionRuleStatus](docs/TransactionRuleStatus.md)
+- [TransactionRuleTestApplyFilter](docs/TransactionRuleTestApplyFilter.md)
+- [TransactionRuleTestApplyMatch](docs/TransactionRuleTestApplyMatch.md)
+- [TransactionRuleTestApplyRequest](docs/TransactionRuleTestApplyRequest.md)
+- [TransactionRuleTestApplyResponse](docs/TransactionRuleTestApplyResponse.md)
 - [TransactionRuleTextField](docs/TransactionRuleTextField.md)
 - [TransactionRuleTextInPredicate](docs/TransactionRuleTextInPredicate.md)
 - [TransactionRuleTextRegexPredicate](docs/TransactionRuleTextRegexPredicate.md)

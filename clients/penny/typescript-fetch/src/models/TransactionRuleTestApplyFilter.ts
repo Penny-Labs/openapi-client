@@ -12,30 +12,89 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
  * @interface TransactionRuleTestApplyFilter
  */
 export interface TransactionRuleTestApplyFilter {
+    /**
+     * User-owned account IDs to evaluate. Required to keep previews bounded and scoped.
+     * @type {Array<string>}
+     * @memberof TransactionRuleTestApplyFilter
+     */
     accountIds: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleTestApplyFilter
+     */
     q?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TransactionRuleTestApplyFilter
+     */
     pending?: boolean;
+    /**
+     * 
+     * @type {Date}
+     * @memberof TransactionRuleTestApplyFilter
+     */
     dateFrom?: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof TransactionRuleTestApplyFilter
+     */
     dateTo?: Date;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransactionRuleTestApplyFilter
+     */
     amountMin?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransactionRuleTestApplyFilter
+     */
     amountMax?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleTestApplyFilter
+     */
     categoryId?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof TransactionRuleTestApplyFilter
+     */
     tagIds?: Array<string>;
+    /**
+     * 
+     * @type {TransactionRuleTestApplyFilterTagModeEnum}
+     * @memberof TransactionRuleTestApplyFilter
+     */
     tagMode?: TransactionRuleTestApplyFilterTagModeEnum;
 }
 
+
+/**
+ * @export
+ */
 export const TransactionRuleTestApplyFilterTagModeEnum = {
     Any: 'any',
     All: 'all'
 } as const;
 export type TransactionRuleTestApplyFilterTagModeEnum = typeof TransactionRuleTestApplyFilterTagModeEnum[keyof typeof TransactionRuleTestApplyFilterTagModeEnum];
 
+
+/**
+ * Check if a given object implements the TransactionRuleTestApplyFilter interface.
+ */
 export function instanceOfTransactionRuleTestApplyFilter(value: object): value is TransactionRuleTestApplyFilter {
     if (!('accountIds' in value) || value['accountIds'] === undefined) return false;
     return true;
@@ -50,6 +109,7 @@ export function TransactionRuleTestApplyFilterFromJSONTyped(json: any, ignoreDis
         return json;
     }
     return {
+        
         'accountIds': json['account_ids'],
         'q': json['q'] == null ? undefined : json['q'],
         'pending': json['pending'] == null ? undefined : json['pending'],
@@ -73,11 +133,12 @@ export function TransactionRuleTestApplyFilterToJSONTyped(value?: TransactionRul
     }
 
     return {
+        
         'account_ids': value['accountIds'],
         'q': value['q'],
         'pending': value['pending'],
-        'date_from': value['dateFrom'] == null ? undefined : ((value['dateFrom'] as any).toISOString()),
-        'date_to': value['dateTo'] == null ? undefined : ((value['dateTo'] as any).toISOString()),
+        'date_from': value['dateFrom'] == null ? value['dateFrom'] : value['dateFrom'].toISOString(),
+        'date_to': value['dateTo'] == null ? value['dateTo'] : value['dateTo'].toISOString(),
         'amount_min': value['amountMin'],
         'amount_max': value['amountMax'],
         'category_id': value['categoryId'],
@@ -85,3 +146,4 @@ export function TransactionRuleTestApplyFilterToJSONTyped(value?: TransactionRul
         'tag_mode': value['tagMode'],
     };
 }
+

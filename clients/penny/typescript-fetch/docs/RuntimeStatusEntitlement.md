@@ -1,5 +1,5 @@
 
-# RuntimeEntitlementSnapshotResponse
+# RuntimeStatusEntitlement
 
 
 ## Properties
@@ -8,29 +8,27 @@ Name | Type
 ------------ | -------------
 `configured` | boolean
 `licenseStatus` | string
+`entitlementStatus` | string
+`productId` | string
 `plan` | string
 `features` | Array&lt;string&gt;
-`entitlements` | { [key: string]: any; }
 `lastSyncedAt` | Date
-`dateAdded` | Date
-`dateModified` | Date
 
 ## Example
 
 ```typescript
-import type { RuntimeEntitlementSnapshotResponse } from '@penny-labs/openapi-penny-client'
+import type { RuntimeStatusEntitlement } from '@penny-labs/openapi-penny-client'
 
 // TODO: Update the object below with actual values
 const example = {
   "configured": null,
   "licenseStatus": null,
+  "entitlementStatus": null,
+  "productId": null,
   "plan": null,
   "features": null,
-  "entitlements": null,
   "lastSyncedAt": null,
-  "dateAdded": null,
-  "dateModified": null,
-} satisfies RuntimeEntitlementSnapshotResponse
+} satisfies RuntimeStatusEntitlement
 
 console.log(example)
 
@@ -39,7 +37,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as RuntimeEntitlementSnapshotResponse
+const exampleParsed = JSON.parse(exampleJSON) as RuntimeStatusEntitlement
 console.log(exampleParsed)
 ```
 
