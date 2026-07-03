@@ -13,13 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { TransactionRuleDateValue } from './TransactionRuleDateValue';
-import {
-    TransactionRuleDateValueFromJSON,
-    TransactionRuleDateValueFromJSONTyped,
-    TransactionRuleDateValueToJSON,
-    TransactionRuleDateValueToJSONTyped,
-} from './TransactionRuleDateValue';
 import type { TransactionRuleDateField } from './TransactionRuleDateField';
 import {
     TransactionRuleDateFieldFromJSON,
@@ -48,10 +41,10 @@ export interface TransactionRuleDateInPredicate {
     operator: TransactionRuleDateInPredicateOperatorEnum;
     /**
      * 
-     * @type {Array<TransactionRuleDateValue>}
+     * @type {Array<string>}
      * @memberof TransactionRuleDateInPredicate
      */
-    value: Array<TransactionRuleDateValue>;
+    value: Array<string>;
 }
 
 
@@ -86,7 +79,7 @@ export function TransactionRuleDateInPredicateFromJSONTyped(json: any, ignoreDis
         
         'field': TransactionRuleDateFieldFromJSON(json['field']),
         'operator': json['operator'],
-        'value': ((json['value'] as Array<any>).map(TransactionRuleDateValueFromJSON)),
+        'value': json['value'],
     };
 }
 
@@ -103,7 +96,7 @@ export function TransactionRuleDateInPredicateToJSONTyped(value?: TransactionRul
         
         'field': TransactionRuleDateFieldToJSON(value['field']),
         'operator': value['operator'],
-        'value': ((value['value'] as Array<any>).map(TransactionRuleDateValueToJSON)),
+        'value': value['value'],
     };
 }
 

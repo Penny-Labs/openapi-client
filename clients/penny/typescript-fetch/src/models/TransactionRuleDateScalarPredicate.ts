@@ -13,13 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { TransactionRuleDateValue } from './TransactionRuleDateValue';
-import {
-    TransactionRuleDateValueFromJSON,
-    TransactionRuleDateValueFromJSONTyped,
-    TransactionRuleDateValueToJSON,
-    TransactionRuleDateValueToJSONTyped,
-} from './TransactionRuleDateValue';
 import type { TransactionRuleDateField } from './TransactionRuleDateField';
 import {
     TransactionRuleDateFieldFromJSON,
@@ -47,11 +40,11 @@ export interface TransactionRuleDateScalarPredicate {
      */
     operator: TransactionRuleDateScalarPredicateOperatorEnum;
     /**
-     * 
-     * @type {TransactionRuleDateValue}
+     * Date predicate value. Penny accepts either YYYY-MM-DD dates or RFC3339 timestamps.
+     * @type {string}
      * @memberof TransactionRuleDateScalarPredicate
      */
-    value: TransactionRuleDateValue;
+    value: string;
 }
 
 
@@ -89,7 +82,7 @@ export function TransactionRuleDateScalarPredicateFromJSONTyped(json: any, ignor
         
         'field': TransactionRuleDateFieldFromJSON(json['field']),
         'operator': json['operator'],
-        'value': TransactionRuleDateValueFromJSON(json['value']),
+        'value': json['value'],
     };
 }
 
@@ -106,7 +99,7 @@ export function TransactionRuleDateScalarPredicateToJSONTyped(value?: Transactio
         
         'field': TransactionRuleDateFieldToJSON(value['field']),
         'operator': value['operator'],
-        'value': TransactionRuleDateValueToJSON(value['value']),
+        'value': value['value'],
     };
 }
 

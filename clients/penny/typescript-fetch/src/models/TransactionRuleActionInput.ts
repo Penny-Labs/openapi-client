@@ -12,48 +12,63 @@
  * Do not edit the class manually.
  */
 
-import type { TransactionRuleAddTagsActionInput } from './TransactionRuleAddTagsActionInput';
+import { mapValues } from '../runtime';
+import type { TransactionRuleActionType } from './TransactionRuleActionType';
 import {
-    instanceOfTransactionRuleAddTagsActionInput,
-    TransactionRuleAddTagsActionInputFromJSON,
-    TransactionRuleAddTagsActionInputFromJSONTyped,
-    TransactionRuleAddTagsActionInputToJSON,
-} from './TransactionRuleAddTagsActionInput';
-import type { TransactionRuleClearCategoryActionInput } from './TransactionRuleClearCategoryActionInput';
-import {
-    instanceOfTransactionRuleClearCategoryActionInput,
-    TransactionRuleClearCategoryActionInputFromJSON,
-    TransactionRuleClearCategoryActionInputFromJSONTyped,
-    TransactionRuleClearCategoryActionInputToJSON,
-} from './TransactionRuleClearCategoryActionInput';
-import type { TransactionRuleRemoveTagsActionInput } from './TransactionRuleRemoveTagsActionInput';
-import {
-    instanceOfTransactionRuleRemoveTagsActionInput,
-    TransactionRuleRemoveTagsActionInputFromJSON,
-    TransactionRuleRemoveTagsActionInputFromJSONTyped,
-    TransactionRuleRemoveTagsActionInputToJSON,
-} from './TransactionRuleRemoveTagsActionInput';
-import type { TransactionRuleReplaceTagsActionInput } from './TransactionRuleReplaceTagsActionInput';
-import {
-    instanceOfTransactionRuleReplaceTagsActionInput,
-    TransactionRuleReplaceTagsActionInputFromJSON,
-    TransactionRuleReplaceTagsActionInputFromJSONTyped,
-    TransactionRuleReplaceTagsActionInputToJSON,
-} from './TransactionRuleReplaceTagsActionInput';
-import type { TransactionRuleSetCategoryActionInput } from './TransactionRuleSetCategoryActionInput';
-import {
-    instanceOfTransactionRuleSetCategoryActionInput,
-    TransactionRuleSetCategoryActionInputFromJSON,
-    TransactionRuleSetCategoryActionInputFromJSONTyped,
-    TransactionRuleSetCategoryActionInputToJSON,
-} from './TransactionRuleSetCategoryActionInput';
+    TransactionRuleActionTypeFromJSON,
+    TransactionRuleActionTypeFromJSONTyped,
+    TransactionRuleActionTypeToJSON,
+    TransactionRuleActionTypeToJSONTyped,
+} from './TransactionRuleActionType';
 
 /**
- * @type TransactionRuleActionInput
+ * Transaction rule action input. Server validation applies action-specific requirements: set_category requires exactly one of category_id or category_name; clear_category does not accept category or tag references; add_tags and remove_tags require at least one tag reference; replace_tags accepts the provided tag references and may be empty to clear all tags.
  * 
  * @export
+ * @interface TransactionRuleActionInput
  */
-export type TransactionRuleActionInput = TransactionRuleAddTagsActionInput | TransactionRuleClearCategoryActionInput | TransactionRuleRemoveTagsActionInput | TransactionRuleReplaceTagsActionInput | TransactionRuleSetCategoryActionInput;
+export interface TransactionRuleActionInput {
+    /**
+     * 
+     * @type {TransactionRuleActionType}
+     * @memberof TransactionRuleActionInput
+     */
+    type: TransactionRuleActionType;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleActionInput
+     */
+    categoryId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleActionInput
+     */
+    categoryName?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof TransactionRuleActionInput
+     */
+    tagIds?: Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof TransactionRuleActionInput
+     */
+    tagNames?: Array<string>;
+}
+
+
+
+/**
+ * Check if a given object implements the TransactionRuleActionInput interface.
+ */
+export function instanceOfTransactionRuleActionInput(value: object): value is TransactionRuleActionInput {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    return true;
+}
 
 export function TransactionRuleActionInputFromJSON(json: any): TransactionRuleActionInput {
     return TransactionRuleActionInputFromJSONTyped(json, false);
@@ -63,28 +78,17 @@ export function TransactionRuleActionInputFromJSONTyped(json: any, ignoreDiscrim
     if (json == null) {
         return json;
     }
-    if (typeof json !== 'object') {
-        return json;
-    }
-    if (instanceOfTransactionRuleAddTagsActionInput(json)) {
-        return TransactionRuleAddTagsActionInputFromJSONTyped(json, true);
-    }
-    if (instanceOfTransactionRuleClearCategoryActionInput(json)) {
-        return TransactionRuleClearCategoryActionInputFromJSONTyped(json, true);
-    }
-    if (instanceOfTransactionRuleRemoveTagsActionInput(json)) {
-        return TransactionRuleRemoveTagsActionInputFromJSONTyped(json, true);
-    }
-    if (instanceOfTransactionRuleReplaceTagsActionInput(json)) {
-        return TransactionRuleReplaceTagsActionInputFromJSONTyped(json, true);
-    }
-    if (instanceOfTransactionRuleSetCategoryActionInput(json)) {
-        return TransactionRuleSetCategoryActionInputFromJSONTyped(json, true);
-    }
-    return {} as any;
+    return {
+        
+        'type': TransactionRuleActionTypeFromJSON(json['type']),
+        'categoryId': json['category_id'] == null ? undefined : json['category_id'],
+        'categoryName': json['category_name'] == null ? undefined : json['category_name'],
+        'tagIds': json['tag_ids'] == null ? undefined : json['tag_ids'],
+        'tagNames': json['tag_names'] == null ? undefined : json['tag_names'],
+    };
 }
 
-export function TransactionRuleActionInputToJSON(json: any): any {
+export function TransactionRuleActionInputToJSON(json: any): TransactionRuleActionInput {
     return TransactionRuleActionInputToJSONTyped(json, false);
 }
 
@@ -92,24 +96,14 @@ export function TransactionRuleActionInputToJSONTyped(value?: TransactionRuleAct
     if (value == null) {
         return value;
     }
-    if (typeof value !== 'object') {
-        return value;
-    }
-    if (instanceOfTransactionRuleAddTagsActionInput(value)) {
-        return TransactionRuleAddTagsActionInputToJSON(value as TransactionRuleAddTagsActionInput);
-    }
-    if (instanceOfTransactionRuleClearCategoryActionInput(value)) {
-        return TransactionRuleClearCategoryActionInputToJSON(value as TransactionRuleClearCategoryActionInput);
-    }
-    if (instanceOfTransactionRuleRemoveTagsActionInput(value)) {
-        return TransactionRuleRemoveTagsActionInputToJSON(value as TransactionRuleRemoveTagsActionInput);
-    }
-    if (instanceOfTransactionRuleReplaceTagsActionInput(value)) {
-        return TransactionRuleReplaceTagsActionInputToJSON(value as TransactionRuleReplaceTagsActionInput);
-    }
-    if (instanceOfTransactionRuleSetCategoryActionInput(value)) {
-        return TransactionRuleSetCategoryActionInputToJSON(value as TransactionRuleSetCategoryActionInput);
-    }
-    return {};
+
+    return {
+        
+        'type': TransactionRuleActionTypeToJSON(value['type']),
+        'category_id': value['categoryId'],
+        'category_name': value['categoryName'],
+        'tag_ids': value['tagIds'],
+        'tag_names': value['tagNames'],
+    };
 }
 

@@ -1,12 +1,13 @@
 
 # TransactionRuleActionInput
 
+Transaction rule action input. Server validation applies action-specific requirements: set_category requires exactly one of category_id or category_name; clear_category does not accept category or tag references; add_tags and remove_tags require at least one tag reference; replace_tags accepts the provided tag references and may be empty to clear all tags. 
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`type` | any
+`type` | [TransactionRuleActionType](TransactionRuleActionType.md)
 `categoryId` | string
 `categoryName` | string
 `tagIds` | Array&lt;string&gt;

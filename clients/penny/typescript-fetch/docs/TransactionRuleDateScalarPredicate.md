@@ -8,7 +8,7 @@ Name | Type
 ------------ | -------------
 `field` | [TransactionRuleDateField](TransactionRuleDateField.md)
 `operator` | string
-`value` | [TransactionRuleDateValue](TransactionRuleDateValue.md)
+`value` | string
 
 ## Example
 

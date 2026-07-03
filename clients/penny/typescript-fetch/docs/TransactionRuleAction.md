@@ -1,12 +1,13 @@
 
 # TransactionRuleAction
 
+Canonical transaction rule action returned by Penny. Name-based references are resolved to IDs.
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`type` | any
+`type` | [TransactionRuleActionType](TransactionRuleActionType.md)
 `categoryId` | string
 `tagIds` | Array&lt;string&gt;
 

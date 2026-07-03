@@ -3012,11 +3012,11 @@ components:
       enum: [effective_date]
 
     TransactionRuleDateValue:
-      oneOf:
-        - type: string
-          format: date
-        - type: string
-          format: date-time
+      type: string
+      description: Date predicate value. Penny accepts either YYYY-MM-DD dates or RFC3339 timestamps.
+      examples:
+        - "2026-07-03"
+        - "2026-07-03T12:00:00Z"
 
     TransactionRuleConditionGroup:
       type: object
@@ -3203,214 +3203,46 @@ components:
         - $ref: "#/components/schemas/TransactionRuleGroupNode"
         - $ref: "#/components/schemas/TransactionRulePredicateNode"
 
-    TransactionRuleSetCategoryActionInput:
+    TransactionRuleActionInput:
       type: object
       additionalProperties: false
+      description: >
+        Transaction rule action input. Server validation applies action-specific requirements:
+        set_category requires exactly one of category_id or category_name; clear_category
+        does not accept category or tag references; add_tags and remove_tags require at
+        least one tag reference; replace_tags accepts the provided tag references and
+        may be empty to clear all tags.
       properties:
         type:
-          const: set_category
+          $ref: "#/components/schemas/TransactionRuleActionType"
         category_id:
           type: string
         category_name:
           type: string
-      required: [type]
-      oneOf:
-        - type: object
-          required: [category_id]
-          properties:
-            category_id:
-              type: string
-        - type: object
-          required: [category_name]
-          properties:
-            category_name:
-              type: string
-
-    TransactionRuleClearCategoryActionInput:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          const: clear_category
-      required: [type]
-
-    TransactionRuleAddTagsActionInput:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          const: add_tags
         tag_ids:
           type: array
-          minItems: 1
           items:
             type: string
         tag_names:
           type: array
-          minItems: 1
           items:
             type: string
       required: [type]
-      oneOf:
-        - type: object
-          required: [tag_ids]
-          properties:
-            tag_ids:
-              type: array
-              minItems: 1
-              items:
-                type: string
-        - type: object
-          required: [tag_names]
-          properties:
-            tag_names:
-              type: array
-              minItems: 1
-              items:
-                type: string
-
-    TransactionRuleRemoveTagsActionInput:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          const: remove_tags
-        tag_ids:
-          type: array
-          minItems: 1
-          items:
-            type: string
-        tag_names:
-          type: array
-          minItems: 1
-          items:
-            type: string
-      required: [type]
-      oneOf:
-        - type: object
-          required: [tag_ids]
-          properties:
-            tag_ids:
-              type: array
-              minItems: 1
-              items:
-                type: string
-        - type: object
-          required: [tag_names]
-          properties:
-            tag_names:
-              type: array
-              minItems: 1
-              items:
-                type: string
-
-    TransactionRuleReplaceTagsActionInput:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          const: replace_tags
-        tag_ids:
-          type: array
-          minItems: 1
-          items:
-            type: string
-        tag_names:
-          type: array
-          minItems: 1
-          items:
-            type: string
-      required: [type]
-      oneOf:
-        - type: object
-          required: [tag_ids]
-          properties:
-            tag_ids:
-              type: array
-              minItems: 1
-              items:
-                type: string
-        - type: object
-          required: [tag_names]
-          properties:
-            tag_names:
-              type: array
-              minItems: 1
-              items:
-                type: string
-
-    TransactionRuleActionInput:
-      oneOf:
-        - $ref: "#/components/schemas/TransactionRuleSetCategoryActionInput"
-        - $ref: "#/components/schemas/TransactionRuleClearCategoryActionInput"
-        - $ref: "#/components/schemas/TransactionRuleAddTagsActionInput"
-        - $ref: "#/components/schemas/TransactionRuleRemoveTagsActionInput"
-        - $ref: "#/components/schemas/TransactionRuleReplaceTagsActionInput"
-
-    TransactionRuleSetCategoryAction:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          const: set_category
-        category_id:
-          type: string
-      required: [type, category_id]
-
-    TransactionRuleClearCategoryAction:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          const: clear_category
-      required: [type]
-
-    TransactionRuleAddTagsAction:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          const: add_tags
-        tag_ids:
-          type: array
-          minItems: 1
-          items:
-            type: string
-      required: [type, tag_ids]
-
-    TransactionRuleRemoveTagsAction:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          const: remove_tags
-        tag_ids:
-          type: array
-          minItems: 1
-          items:
-            type: string
-      required: [type, tag_ids]
-
-    TransactionRuleReplaceTagsAction:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          const: replace_tags
-        tag_ids:
-          type: array
-          minItems: 1
-          items:
-            type: string
-      required: [type, tag_ids]
 
     TransactionRuleAction:
-      oneOf:
-        - $ref: "#/components/schemas/TransactionRuleSetCategoryAction"
-        - $ref: "#/components/schemas/TransactionRuleClearCategoryAction"
-        - $ref: "#/components/schemas/TransactionRuleAddTagsAction"
-        - $ref: "#/components/schemas/TransactionRuleRemoveTagsAction"
-        - $ref: "#/components/schemas/TransactionRuleReplaceTagsAction"
+      type: object
+      additionalProperties: false
+      description: Canonical transaction rule action returned by Penny. Name-based references are resolved to IDs.
+      properties:
+        type:
+          $ref: "#/components/schemas/TransactionRuleActionType"
+        category_id:
+          type: string
+        tag_ids:
+          type: array
+          items:
+            type: string
+      required: [type]
 
     TransactionRuleActionType:
       type: string

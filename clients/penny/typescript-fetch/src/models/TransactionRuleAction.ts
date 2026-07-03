@@ -12,48 +12,50 @@
  * Do not edit the class manually.
  */
 
-import type { TransactionRuleAddTagsAction } from './TransactionRuleAddTagsAction';
+import { mapValues } from '../runtime';
+import type { TransactionRuleActionType } from './TransactionRuleActionType';
 import {
-    instanceOfTransactionRuleAddTagsAction,
-    TransactionRuleAddTagsActionFromJSON,
-    TransactionRuleAddTagsActionFromJSONTyped,
-    TransactionRuleAddTagsActionToJSON,
-} from './TransactionRuleAddTagsAction';
-import type { TransactionRuleClearCategoryAction } from './TransactionRuleClearCategoryAction';
-import {
-    instanceOfTransactionRuleClearCategoryAction,
-    TransactionRuleClearCategoryActionFromJSON,
-    TransactionRuleClearCategoryActionFromJSONTyped,
-    TransactionRuleClearCategoryActionToJSON,
-} from './TransactionRuleClearCategoryAction';
-import type { TransactionRuleRemoveTagsAction } from './TransactionRuleRemoveTagsAction';
-import {
-    instanceOfTransactionRuleRemoveTagsAction,
-    TransactionRuleRemoveTagsActionFromJSON,
-    TransactionRuleRemoveTagsActionFromJSONTyped,
-    TransactionRuleRemoveTagsActionToJSON,
-} from './TransactionRuleRemoveTagsAction';
-import type { TransactionRuleReplaceTagsAction } from './TransactionRuleReplaceTagsAction';
-import {
-    instanceOfTransactionRuleReplaceTagsAction,
-    TransactionRuleReplaceTagsActionFromJSON,
-    TransactionRuleReplaceTagsActionFromJSONTyped,
-    TransactionRuleReplaceTagsActionToJSON,
-} from './TransactionRuleReplaceTagsAction';
-import type { TransactionRuleSetCategoryAction } from './TransactionRuleSetCategoryAction';
-import {
-    instanceOfTransactionRuleSetCategoryAction,
-    TransactionRuleSetCategoryActionFromJSON,
-    TransactionRuleSetCategoryActionFromJSONTyped,
-    TransactionRuleSetCategoryActionToJSON,
-} from './TransactionRuleSetCategoryAction';
+    TransactionRuleActionTypeFromJSON,
+    TransactionRuleActionTypeFromJSONTyped,
+    TransactionRuleActionTypeToJSON,
+    TransactionRuleActionTypeToJSONTyped,
+} from './TransactionRuleActionType';
 
 /**
- * @type TransactionRuleAction
- * 
+ * Canonical transaction rule action returned by Penny. Name-based references are resolved to IDs.
  * @export
+ * @interface TransactionRuleAction
  */
-export type TransactionRuleAction = TransactionRuleAddTagsAction | TransactionRuleClearCategoryAction | TransactionRuleRemoveTagsAction | TransactionRuleReplaceTagsAction | TransactionRuleSetCategoryAction;
+export interface TransactionRuleAction {
+    /**
+     * 
+     * @type {TransactionRuleActionType}
+     * @memberof TransactionRuleAction
+     */
+    type: TransactionRuleActionType;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionRuleAction
+     */
+    categoryId?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof TransactionRuleAction
+     */
+    tagIds?: Array<string>;
+}
+
+
+
+/**
+ * Check if a given object implements the TransactionRuleAction interface.
+ */
+export function instanceOfTransactionRuleAction(value: object): value is TransactionRuleAction {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    return true;
+}
 
 export function TransactionRuleActionFromJSON(json: any): TransactionRuleAction {
     return TransactionRuleActionFromJSONTyped(json, false);
@@ -63,28 +65,15 @@ export function TransactionRuleActionFromJSONTyped(json: any, ignoreDiscriminato
     if (json == null) {
         return json;
     }
-    if (typeof json !== 'object') {
-        return json;
-    }
-    if (instanceOfTransactionRuleAddTagsAction(json)) {
-        return TransactionRuleAddTagsActionFromJSONTyped(json, true);
-    }
-    if (instanceOfTransactionRuleClearCategoryAction(json)) {
-        return TransactionRuleClearCategoryActionFromJSONTyped(json, true);
-    }
-    if (instanceOfTransactionRuleRemoveTagsAction(json)) {
-        return TransactionRuleRemoveTagsActionFromJSONTyped(json, true);
-    }
-    if (instanceOfTransactionRuleReplaceTagsAction(json)) {
-        return TransactionRuleReplaceTagsActionFromJSONTyped(json, true);
-    }
-    if (instanceOfTransactionRuleSetCategoryAction(json)) {
-        return TransactionRuleSetCategoryActionFromJSONTyped(json, true);
-    }
-    return {} as any;
+    return {
+        
+        'type': TransactionRuleActionTypeFromJSON(json['type']),
+        'categoryId': json['category_id'] == null ? undefined : json['category_id'],
+        'tagIds': json['tag_ids'] == null ? undefined : json['tag_ids'],
+    };
 }
 
-export function TransactionRuleActionToJSON(json: any): any {
+export function TransactionRuleActionToJSON(json: any): TransactionRuleAction {
     return TransactionRuleActionToJSONTyped(json, false);
 }
 
@@ -92,24 +81,12 @@ export function TransactionRuleActionToJSONTyped(value?: TransactionRuleAction |
     if (value == null) {
         return value;
     }
-    if (typeof value !== 'object') {
-        return value;
-    }
-    if (instanceOfTransactionRuleAddTagsAction(value)) {
-        return TransactionRuleAddTagsActionToJSON(value as TransactionRuleAddTagsAction);
-    }
-    if (instanceOfTransactionRuleClearCategoryAction(value)) {
-        return TransactionRuleClearCategoryActionToJSON(value as TransactionRuleClearCategoryAction);
-    }
-    if (instanceOfTransactionRuleRemoveTagsAction(value)) {
-        return TransactionRuleRemoveTagsActionToJSON(value as TransactionRuleRemoveTagsAction);
-    }
-    if (instanceOfTransactionRuleReplaceTagsAction(value)) {
-        return TransactionRuleReplaceTagsActionToJSON(value as TransactionRuleReplaceTagsAction);
-    }
-    if (instanceOfTransactionRuleSetCategoryAction(value)) {
-        return TransactionRuleSetCategoryActionToJSON(value as TransactionRuleSetCategoryAction);
-    }
-    return {};
+
+    return {
+        
+        'type': TransactionRuleActionTypeToJSON(value['type']),
+        'category_id': value['categoryId'],
+        'tag_ids': value['tagIds'],
+    };
 }
 
