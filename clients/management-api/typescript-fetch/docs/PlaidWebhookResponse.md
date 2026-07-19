@@ -6,14 +6,8 @@
 
 Name | Type
 ------------ | -------------
-`duplicate` | boolean
-`eventKey` | string
-`kid` | string
-`ignored` | boolean
-`reason` | string
-`commandCreated` | boolean
+`status` | string
 `commandId` | string
-`warning` | string
 
 ## Example
 
@@ -22,14 +16,8 @@ import type { PlaidWebhookResponse } from '@penny/openapi-management-api-client'
 
 // TODO: Update the object below with actual values
 const example = {
-  "duplicate": null,
-  "eventKey": null,
-  "kid": null,
-  "ignored": null,
-  "reason": null,
-  "commandCreated": null,
+  "status": null,
   "commandId": null,
-  "warning": null,
 } satisfies PlaidWebhookResponse
 
 console.log(example)
@@ -44,5 +32,4 @@ console.log(exampleParsed)
 ```
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
-
 

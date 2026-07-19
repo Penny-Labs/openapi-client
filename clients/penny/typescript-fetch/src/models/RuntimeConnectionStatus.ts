@@ -20,7 +20,7 @@ import { mapValues } from '../runtime';
  */
 export interface RuntimeConnectionStatus {
     /**
-     * Redacted local connection identifier.
+     * Stable local connection identifier safe for sync actions.
      * @type {string}
      * @memberof RuntimeConnectionStatus
      */
@@ -136,4 +136,3 @@ export function RuntimeConnectionStatusToJSONTyped(value?: RuntimeConnectionStat
         'date_modified': value['dateModified'] == null ? value['dateModified'] : value['dateModified'].toISOString(),
     };
 }
-

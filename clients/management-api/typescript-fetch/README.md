@@ -62,19 +62,14 @@ All URIs are relative to *http://localhost:8090*
 *LicensePublicApi* | [**validateLicense**](docs/LicensePublicApi.md#validatelicense) | **POST** /v1/license/validate | Validate license and refresh lease
 *LinkApi* | [**connectLinkToken**](docs/LinkApi.md#connectlinktokenoperation) | **POST** /v1/link/connect | Exchange public token and connect item
 *LinkApi* | [**createLinkToken**](docs/LinkApi.md#createlinktoken) | **PUT** /v1/link/token | Create Plaid link token
-*LinkApi* | [**listLinkAccounts**](docs/LinkApi.md#listlinkaccounts) | **GET** /v1/link/{itemID}/accounts | List managed provider accounts for a connected item
-*LinkApi* | [**listLinkTransactions**](docs/LinkApi.md#listlinktransactions) | **GET** /v1/link/{itemID}/transactions | List synced managed transactions for a connected item
-*LinkApi* | [**receivePlaidWebhook**](docs/LinkApi.md#receiveplaidwebhook) | **POST** /v1/plaid/webhook | Receive signed Plaid webhooks
-*LinkApi* | [**syncLinkAccountBalances**](docs/LinkApi.md#synclinkaccountbalances) | **POST** /v1/link/{itemID}/accounts/balances/sync | Refresh managed account balance snapshots for a connected item
-*LinkApi* | [**syncLinkTransactions**](docs/LinkApi.md#synclinktransactions) | **POST** /v1/link/{itemID}/transactions/sync | Sync Plaid transactions for a connected item
 *NewsletterApi* | [**listMailingLists**](docs/NewsletterApi.md#listmailinglists) | **GET** /v1/newsletter/mailing-lists | List mailing lists (admin)
 *NewsletterApi* | [**listNewsletters**](docs/NewsletterApi.md#listnewsletters) | **GET** /v1/newsletter/ | List newsletters (admin)
 *NewsletterApi* | [**listSubscribers**](docs/NewsletterApi.md#listsubscribers) | **GET** /v1/newsletter/subscribers | List subscribers (admin)
 *NewsletterApi* | [**sendNewsletter**](docs/NewsletterApi.md#sendnewsletter) | **POST** /v1/newsletter/send | Publish newsletter to subscribed recipients (admin)
 *NewsletterApi* | [**subscribeNewsletter**](docs/NewsletterApi.md#subscribenewsletter) | **POST** /v1/newsletter/subscribe | Subscribe email to a mailing list (admin)
+*PlaidApi* | [**receivePlaidWebhook**](docs/PlaidApi.md#receiveplaidwebhook) | **POST** /v1/plaid/webhook | Receive a verified Plaid webhook
 *RuntimeApi* | [**activateRuntimeInstall**](docs/RuntimeApi.md#activateruntimeinstall) | **POST** /v1/runtime/activate | Activate runtime install and issue lease JWT
 *RuntimeApi* | [**createRuntimeCommand**](docs/RuntimeApi.md#createruntimecommand) | **POST** /v1/runtime/commands | Dispatch runtime command to install/license/product target (admin)
-*RuntimeApi* | [**getCurrentRuntimeEntitlement**](docs/RuntimeApi.md#getcurrentruntimeentitlement) | **GET** /v1/runtime/entitlement | Get current runtime license and entitlement snapshot
 *RuntimeApi* | [**getRuntimeActivationOverview**](docs/RuntimeApi.md#getruntimeactivationoverview) | **GET** /v1/runtime/activations/overview | Get runtime activation KPI overview (admin)
 *RuntimeApi* | [**getRuntimeJwks**](docs/RuntimeApi.md#getruntimejwks) | **GET** /v1/runtime/jwks | Get active JWKS for lease JWT verification
 *RuntimeApi* | [**ingestRuntimeUsageBatch**](docs/RuntimeApi.md#ingestruntimeusagebatch) | **POST** /v1/runtime/usage/batch | Ingest usage events for billing meters
@@ -115,11 +110,6 @@ All URIs are relative to *http://localhost:8090*
 - [LinkInstitution](docs/LinkInstitution.md)
 - [MailingList](docs/MailingList.md)
 - [MailingListListResponse](docs/MailingListListResponse.md)
-- [ManagedAccount](docs/ManagedAccount.md)
-- [ManagedAccountBalanceSyncResponse](docs/ManagedAccountBalanceSyncResponse.md)
-- [ManagedAccountListResponse](docs/ManagedAccountListResponse.md)
-- [ManagedTransaction](docs/ManagedTransaction.md)
-- [ManagedTransactionListResponse](docs/ManagedTransactionListResponse.md)
 - [NewsletterListResponse](docs/NewsletterListResponse.md)
 - [NewsletterSendRequest](docs/NewsletterSendRequest.md)
 - [NewsletterSendResponse](docs/NewsletterSendResponse.md)
@@ -127,7 +117,7 @@ All URIs are relative to *http://localhost:8090*
 - [NewsletterSubscribeRequest](docs/NewsletterSubscribeRequest.md)
 - [NewsletterSummary](docs/NewsletterSummary.md)
 - [PatchLicenseRequest](docs/PatchLicenseRequest.md)
-- [PlaidTransactionsSyncResult](docs/PlaidTransactionsSyncResult.md)
+- [PlaidWebhookRequest](docs/PlaidWebhookRequest.md)
 - [PlaidWebhookResponse](docs/PlaidWebhookResponse.md)
 - [ProductID](docs/ProductID.md)
 - [RuntimeActivateRequest](docs/RuntimeActivateRequest.md)
@@ -145,8 +135,6 @@ All URIs are relative to *http://localhost:8090*
 - [RuntimeCommandTarget](docs/RuntimeCommandTarget.md)
 - [RuntimeCommandTargetScope](docs/RuntimeCommandTargetScope.md)
 - [RuntimeCommandType](docs/RuntimeCommandType.md)
-- [RuntimeEntitlementSnapshotResponse](docs/RuntimeEntitlementSnapshotResponse.md)
-- [RuntimeEntitlementSnapshotResponseCaps](docs/RuntimeEntitlementSnapshotResponseCaps.md)
 - [RuntimeInstall](docs/RuntimeInstall.md)
 - [RuntimeInstanceListResponse](docs/RuntimeInstanceListResponse.md)
 - [RuntimeInstanceStatus](docs/RuntimeInstanceStatus.md)

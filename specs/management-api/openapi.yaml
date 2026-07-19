@@ -12,6 +12,7 @@ tags:
   - name: Institutions
   - name: Runtime
   - name: Link
+  - name: Plaid
   - name: LicensePublic
   - name: LicenseAdmin
   - name: Newsletter
@@ -160,153 +161,11 @@ paths:
               schema:
                 type: string
 
-
-  /v1/link/{itemID}/accounts:
-    get:
-      tags: [Link]
-      operationId: listLinkAccounts
-      summary: List managed provider accounts for a connected item
-      security:
-        - RuntimeBearer: []
-      parameters:
-        - in: path
-          name: itemID
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: Managed account list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ManagedAccountListResponse"
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-        "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
-        "403":
-          $ref: "#/components/responses/ForbiddenResponse"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
-        "500":
-          $ref: "#/components/responses/InternalServerErrorResponse"
-
-
-  /v1/link/{itemID}/accounts/balances/sync:
-    post:
-      tags: [Link]
-      operationId: syncLinkAccountBalances
-      summary: Refresh managed account balance snapshots for a connected item
-      security:
-        - RuntimeBearer: []
-      parameters:
-        - in: path
-          name: itemID
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: Account balances refreshed
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ManagedAccountBalanceSyncResponse"
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-        "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
-        "403":
-          $ref: "#/components/responses/ForbiddenResponse"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
-        "500":
-          $ref: "#/components/responses/InternalServerErrorResponse"
-
-  /v1/link/{itemID}/transactions:
-    get:
-      tags: [Link]
-      operationId: listLinkTransactions
-      summary: List synced managed transactions for a connected item
-      security:
-        - RuntimeBearer: []
-      parameters:
-        - in: path
-          name: itemID
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - in: query
-          name: limit
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            default: 25
-        - in: query
-          name: cursor
-          required: false
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Managed transaction list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ManagedTransactionListResponse"
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-        "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
-        "403":
-          $ref: "#/components/responses/ForbiddenResponse"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
-        "500":
-          $ref: "#/components/responses/InternalServerErrorResponse"
-
-  /v1/link/{itemID}/transactions/sync:
-    post:
-      tags: [Link]
-      operationId: syncLinkTransactions
-      summary: Sync Plaid transactions for a connected item
-      security:
-        - RuntimeBearer: []
-      parameters:
-        - in: path
-          name: itemID
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: Transactions synced
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PlaidTransactionsSyncResult"
-        "400":
-          $ref: "#/components/responses/BadRequestResponse"
-        "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
-        "403":
-          $ref: "#/components/responses/ForbiddenResponse"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
-        "500":
-          $ref: "#/components/responses/InternalServerErrorResponse"
-
   /v1/plaid/webhook:
     post:
-      tags: [Link]
+      tags: [Plaid]
       operationId: receivePlaidWebhook
-      summary: Receive signed Plaid webhooks
+      summary: Receive a verified Plaid webhook
       parameters:
         - in: header
           name: Plaid-Verification
@@ -318,17 +177,16 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
+              $ref: "#/components/schemas/PlaidWebhookRequest"
       responses:
         "200":
-          description: Duplicate webhook accepted
+          description: Webhook ignored or already processed
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/PlaidWebhookResponse"
         "202":
-          description: Webhook accepted
+          description: Managed sync command queued
           content:
             application/json:
               schema:
@@ -337,12 +195,6 @@ paths:
           $ref: "#/components/responses/BadRequestResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
-        "413":
-          description: Payload too large
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
@@ -416,27 +268,6 @@ paths:
                 $ref: "#/components/schemas/RuntimeRenewResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedResponse"
-        "500":
-          $ref: "#/components/responses/InternalServerErrorResponse"
-
-  /v1/runtime/entitlement:
-    get:
-      tags: [Runtime]
-      operationId: getCurrentRuntimeEntitlement
-      summary: Get current runtime license and entitlement snapshot
-      security:
-        - RuntimeBearer: []
-      responses:
-        "200":
-          description: Current runtime entitlement snapshot
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RuntimeEntitlementSnapshotResponse"
-        "401":
-          $ref: "#/components/responses/UnauthorizedResponse"
-        "404":
-          $ref: "#/components/responses/NotFoundResponse"
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
@@ -1725,219 +1556,28 @@ components:
           format: uuid
       required: [accounts, connection_id]
 
-
-
-    ManagedAccount:
+    PlaidWebhookRequest:
       type: object
       properties:
-        id:
+        webhook_type:
           type: string
-          format: uuid
+        webhook_code:
+          type: string
         item_id:
           type: string
-          format: uuid
-        provider:
-          type: string
-          example: plaid
-        provider_account_id:
-          type: [string, "null"]
-        institution_id:
-          type: [string, "null"]
-        institution_name:
-          type: [string, "null"]
-        name:
-          type: [string, "null"]
-        official_name:
-          type: [string, "null"]
-        mask:
-          type: [string, "null"]
-        type:
-          type: [string, "null"]
-        subtype:
-          type: [string, "null"]
-        balance_available:
-          type: [number, "null"]
-          format: double
-        balance_current:
-          type: [number, "null"]
-          format: double
-        balance_limit:
-          type: [number, "null"]
-          format: double
-        balance_iso_currency_code:
-          type: [string, "null"]
-        balance_unofficial_currency_code:
-          type: [string, "null"]
-        balance_last_updated_at:
-          type: [string, "null"]
-          format: date-time
-        selected:
-          type: boolean
-        date_added:
-          type: string
-          format: date-time
-        date_modified:
-          type: [string, "null"]
-          format: date-time
-      required:
-        - id
-        - item_id
-        - provider
-        - selected
-        - date_added
-
-    ManagedAccountListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/ManagedAccount"
-        total:
-          type: integer
-      required: [items, total]
-
-
-    ManagedAccountBalanceSyncResponse:
-      type: object
-      properties:
-        item_id:
-          type: string
-          format: uuid
-        updated_count:
-          type: integer
-        request_id:
-          type: string
-      required: [item_id, updated_count]
-
-    ManagedTransaction:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        item_id:
-          type: string
-          format: uuid
-        provider:
-          type: string
-          example: plaid
-        provider_transaction_id:
-          type: string
-        provider_account_id:
-          type: string
-        transaction_date:
-          type: string
-          format: date
-        authorized_date:
-          type: [string, "null"]
-          format: date
-        name:
-          type: string
-        merchant_name:
-          type: [string, "null"]
-        amount:
-          type: number
-          format: double
-        iso_currency_code:
-          type: [string, "null"]
-        pending:
-          type: boolean
-        removed:
-          type: boolean
-        raw:
-          type: object
-          additionalProperties: true
-        date_added:
-          type: string
-          format: date-time
-        date_modified:
-          type: [string, "null"]
-          format: date-time
-      required:
-        - id
-        - item_id
-        - provider
-        - provider_transaction_id
-        - provider_account_id
-        - transaction_date
-        - name
-        - amount
-        - pending
-        - removed
-        - raw
-        - date_added
-
-    ManagedTransactionListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/ManagedTransaction"
-        total:
-          type: integer
-        next_cursor:
-          type: [string, "null"]
-      required: [items, total]
-
-    PlaidTransactionsSyncResult:
-      type: object
-      properties:
-        item_id:
-          type: string
-          format: uuid
-        next_cursor:
-          type: string
-        started_at:
-          type: string
-          format: date-time
-        completed_at:
-          type: string
-          format: date-time
-        pages:
-          type: integer
-        added_count:
-          type: integer
-        modified_count:
-          type: integer
-        removed_count:
-          type: integer
-        request_id:
-          type: string
-        had_more:
-          type: boolean
-      required:
-        - item_id
-        - next_cursor
-        - started_at
-        - completed_at
-        - pages
-        - added_count
-        - modified_count
-        - removed_count
-        - had_more
+      required: [webhook_type, webhook_code]
+      additionalProperties: true
 
     PlaidWebhookResponse:
       type: object
       properties:
-        duplicate:
-          type: boolean
-        event_key:
+        status:
           type: string
-        kid:
-          type: string
-        ignored:
-          type: boolean
-        reason:
-          type: string
-        command_created:
-          type: boolean
+          enum: [queued, ignored, duplicate]
         command_id:
           type: string
-        warning:
-          type: string
-      required: [duplicate, event_key]
+          format: uuid
+      required: [status]
 
     JwkKey:
       type: object
@@ -2040,43 +1680,6 @@ components:
           additionalProperties:
             type: integer
       required: [lease_token, lease_expires_at, scopes, caps]
-
-    RuntimeEntitlementSnapshotResponse:
-      type: object
-      properties:
-        license_id:
-          type: string
-          format: uuid
-        product_id:
-          $ref: "#/components/schemas/ProductID"
-        install_id:
-          type: string
-          format: uuid
-        license_status:
-          $ref: "#/components/schemas/LicenseStatus"
-        entitlement_status:
-          type: string
-          enum: [active, suspended, revoked]
-        scopes:
-          type: array
-          items:
-            type: string
-        caps:
-          type: object
-          properties:
-            transactions_connected_accounts:
-              type: integer
-              nullable: true
-            recurring_connected_accounts:
-              type: integer
-              nullable: true
-            transactions_refresh_calls:
-              type: integer
-              nullable: true
-        lease_expires_at:
-          type: string
-          format: date-time
-      required: [license_id, product_id, install_id, license_status, entitlement_status, scopes, caps, lease_expires_at]
 
     RuntimeUsageEvent:
       type: object

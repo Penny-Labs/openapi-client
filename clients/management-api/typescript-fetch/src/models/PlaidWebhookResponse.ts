@@ -21,60 +21,30 @@ import { mapValues } from '../runtime';
 export interface PlaidWebhookResponse {
     /**
      *
-     * @type {boolean}
+     * @type {PlaidWebhookResponseStatusEnum}
      * @memberof PlaidWebhookResponse
      */
-    duplicate: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof PlaidWebhookResponse
-     */
-    eventKey: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PlaidWebhookResponse
-     */
-    kid?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PlaidWebhookResponse
-     */
-    ignored?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof PlaidWebhookResponse
-     */
-    reason?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PlaidWebhookResponse
-     */
-    commandCreated?: boolean;
+    status: PlaidWebhookResponseStatusEnum;
     /**
      *
      * @type {string}
      * @memberof PlaidWebhookResponse
      */
     commandId?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PlaidWebhookResponse
-     */
-    warning?: string;
 }
+
+export const PlaidWebhookResponseStatusEnum = {
+    Queued: 'queued',
+    Ignored: 'ignored',
+    Duplicate: 'duplicate'
+} as const;
+export type PlaidWebhookResponseStatusEnum = typeof PlaidWebhookResponseStatusEnum[keyof typeof PlaidWebhookResponseStatusEnum];
 
 /**
  * Check if a given object implements the PlaidWebhookResponse interface.
  */
 export function instanceOfPlaidWebhookResponse(value: object): value is PlaidWebhookResponse {
-    if (!('duplicate' in value) || value['duplicate'] === undefined) return false;
-    if (!('eventKey' in value) || value['eventKey'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
     return true;
 }
 
@@ -88,14 +58,8 @@ export function PlaidWebhookResponseFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
 
-        'duplicate': json['duplicate'],
-        'eventKey': json['event_key'],
-        'kid': json['kid'] == null ? undefined : json['kid'],
-        'ignored': json['ignored'] == null ? undefined : json['ignored'],
-        'reason': json['reason'] == null ? undefined : json['reason'],
-        'commandCreated': json['command_created'] == null ? undefined : json['command_created'],
+        'status': json['status'],
         'commandId': json['command_id'] == null ? undefined : json['command_id'],
-        'warning': json['warning'] == null ? undefined : json['warning'],
     };
 }
 
@@ -110,14 +74,7 @@ export function PlaidWebhookResponseToJSONTyped(value?: PlaidWebhookResponse | n
 
     return {
 
-        'duplicate': value['duplicate'],
-        'event_key': value['eventKey'],
-        'kid': value['kid'],
-        'ignored': value['ignored'],
-        'reason': value['reason'],
-        'command_created': value['commandCreated'],
+        'status': value['status'],
         'command_id': value['commandId'],
-        'warning': value['warning'],
     };
 }
-

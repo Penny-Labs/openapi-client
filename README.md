@@ -39,7 +39,7 @@ This command:
 - Copies `../penny/api/openapi.yaml` to `specs/penny/openapi.yaml`.
 - Runs `openapitools/openapi-generator-cli:v7.20.0` in Docker.
 - Generates `clients/penny/typescript-fetch`.
-- Sets generated package metadata to `@penny-labs/openapi-penny-client` and version `0.1.0`.
+- Sets generated package metadata to `@penny-labs/openapi-penny-client` and version `0.4.0` by default.
 - Applies Penny-specific post-generation normalization for `tsconfig.json`:
   - `ignoreDeprecations: "5.0"` (compatible with TS 5.x and TS 6.x toolchains)
   - `rootDir: "src"`
@@ -56,8 +56,8 @@ Use `OPENAPI_GENERATOR_IMAGE=<image>` to override the generator image.
 2. Commit and push generated changes to `main`.
 3. Create and push a release tag with semver:
    ```bash
-   git tag penny-client-v0.1.0
-   git push origin penny-client-v0.1.0
+   git tag penny-client-v0.4.0
+   git push origin penny-client-v0.4.0
    ```
 4. GitHub Actions workflow `.github/workflows/publish-penny-client.yml` publishes
    `@penny-labs/openapi-penny-client` to GitHub Packages.

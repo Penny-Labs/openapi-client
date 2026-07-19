@@ -16,17 +16,27 @@
 import * as runtime from '../runtime';
 import type {
   ErrorResponse,
+  ManagedConnectionSyncBatchResult,
+  ManagedConnectionSyncResult,
   RuntimeEntitlementSnapshotResponse,
   RuntimeStatusResponse,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    ManagedConnectionSyncBatchResultFromJSON,
+    ManagedConnectionSyncBatchResultToJSON,
+    ManagedConnectionSyncResultFromJSON,
+    ManagedConnectionSyncResultToJSON,
     RuntimeEntitlementSnapshotResponseFromJSON,
     RuntimeEntitlementSnapshotResponseToJSON,
     RuntimeStatusResponseFromJSON,
     RuntimeStatusResponseToJSON,
 } from '../models/index';
+
+export interface SyncRuntimeConnectionRequest {
+    connectionID: string;
+}
 
 /**
  * 
@@ -106,6 +116,84 @@ export class RuntimeApi extends runtime.BaseAPI {
      */
     async getRuntimeStatus(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RuntimeStatusResponse> {
         const response = await this.getRuntimeStatusRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for syncAllRuntimeConnections without sending the request
+     */
+    async syncAllRuntimeConnectionsRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let urlPath = `/v1/runtime/sync`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Sync every managed connection for the authenticated user
+     */
+    async syncAllRuntimeConnectionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedConnectionSyncBatchResult>> {
+        const requestOptions = await this.syncAllRuntimeConnectionsRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ManagedConnectionSyncBatchResultFromJSON(jsonValue));
+    }
+
+    /**
+     * Sync every managed connection for the authenticated user
+     */
+    async syncAllRuntimeConnections(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedConnectionSyncBatchResult> {
+        const response = await this.syncAllRuntimeConnectionsRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for syncRuntimeConnection without sending the request
+     */
+    async syncRuntimeConnectionRequestOpts(requestParameters: SyncRuntimeConnectionRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['connectionID'] == null) {
+            throw new runtime.RequiredError(
+                'connectionID',
+                'Required parameter "connectionID" was null or undefined when calling syncRuntimeConnection().'
+            );
+        }
+
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let urlPath = `/v1/runtime/connections/{connectionID}/sync`;
+        urlPath = urlPath.replace('{connectionID}', encodeURIComponent(String(requestParameters['connectionID'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Sync one managed connection immediately
+     */
+    async syncRuntimeConnectionRaw(requestParameters: SyncRuntimeConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedConnectionSyncResult>> {
+        const requestOptions = await this.syncRuntimeConnectionRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ManagedConnectionSyncResultFromJSON(jsonValue));
+    }
+
+    /**
+     * Sync one managed connection immediately
+     */
+    async syncRuntimeConnection(requestParameters: SyncRuntimeConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedConnectionSyncResult> {
+        const response = await this.syncRuntimeConnectionRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

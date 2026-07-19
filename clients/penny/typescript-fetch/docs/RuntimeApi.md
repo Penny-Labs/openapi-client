@@ -6,6 +6,8 @@ All URIs are relative to *http://localhost:8080*
 |------------- | ------------- | -------------|
 | [**getRuntimeEntitlementSnapshot**](RuntimeApi.md#getruntimeentitlementsnapshot) | **GET** /v1/runtime/entitlement | Get the local runtime entitlement snapshot |
 | [**getRuntimeStatus**](RuntimeApi.md#getruntimestatus) | **GET** /v1/runtime/status | Get redacted local runtime and managed sync status |
+| [**syncAllRuntimeConnections**](RuntimeApi.md#syncallruntimeconnections) | **POST** /v1/runtime/sync | Sync every managed connection for the authenticated user |
+| [**syncRuntimeConnection**](RuntimeApi.md#syncruntimeconnection) | **POST** /v1/runtime/connections/{connectionID}/sync | Sync one managed connection immediately |
 
 
 
@@ -72,6 +74,34 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
+## syncAllRuntimeConnections
+
+> ManagedConnectionSyncBatchResult syncAllRuntimeConnections()
+
+Runs managed synchronization for all connections owned by the authenticated user.
+
+### Return type
+
+[**ManagedConnectionSyncBatchResult**](ManagedConnectionSyncBatchResult.md)
+
+### Authorization
+
+[SessionCookieAuth](../README.md#SessionCookieAuth)
+
+## syncRuntimeConnection
+
+> ManagedConnectionSyncResult syncRuntimeConnection(connectionID)
+
+Runs managed synchronization for one connection owned by the authenticated user.
+
+### Return type
+
+[**ManagedConnectionSyncResult**](ManagedConnectionSyncResult.md)
+
+### Authorization
+
+[SessionCookieAuth](../README.md#SessionCookieAuth)
+
 
 ## getRuntimeStatus
 
@@ -137,4 +167,3 @@ This endpoint does not need any parameter.
 | **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
-

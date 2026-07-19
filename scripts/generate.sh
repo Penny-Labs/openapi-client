@@ -9,13 +9,16 @@ TARGET_SPEC="${ROOT_DIR}/specs/${API_NAME}/openapi.yaml"
 OUTPUT_DIR="${ROOT_DIR}/clients/${API_NAME}/${GENERATOR}"
 OPENAPI_GENERATOR_IMAGE="${OPENAPI_GENERATOR_IMAGE:-openapitools/openapi-generator-cli:v7.20.0}"
 PACKAGE_NAME="@penny/openapi-${API_NAME}-client"
-PACKAGE_VERSION="${PACKAGE_VERSION:-0.1.0}"
+PACKAGE_VERSION="${PACKAGE_VERSION:-}"
 PENNY_PACKAGE_NAME="@penny-labs/openapi-penny-client"
 PENNY_REPO_URL="git+https://github.com/Penny-Labs/openapi-client.git"
 PENNY_REGISTRY_URL="https://npm.pkg.github.com"
 
 if [[ "${API_NAME}" == "penny" && "${GENERATOR}" == "typescript-fetch" ]]; then
   PACKAGE_NAME="${PENNY_PACKAGE_NAME}"
+  PACKAGE_VERSION="${PACKAGE_VERSION:-0.4.0}"
+else
+  PACKAGE_VERSION="${PACKAGE_VERSION:-0.1.0}"
 fi
 
 if ! command -v docker >/dev/null 2>&1; then

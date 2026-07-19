@@ -1,4 +1,4 @@
-# @penny-labs/openapi-penny-client@0.1.0
+# @penny-labs/openapi-penny-client@0.4.0
 
 A TypeScript SDK client for the localhost API.
 
@@ -112,6 +112,8 @@ All URIs are relative to *http://localhost:8080*
 *ExportsApi* | [**getTransactionExportByID**](docs/ExportsApi.md#gettransactionexportbyid) | **GET** /v1/exports/transactions/{exportID} | Get transaction export job status
 *RuntimeApi* | [**getRuntimeEntitlementSnapshot**](docs/RuntimeApi.md#getruntimeentitlementsnapshot) | **GET** /v1/runtime/entitlement | Get the local runtime entitlement snapshot
 *RuntimeApi* | [**getRuntimeStatus**](docs/RuntimeApi.md#getruntimestatus) | **GET** /v1/runtime/status | Get redacted local runtime and managed sync status
+*RuntimeApi* | [**syncAllRuntimeConnections**](docs/RuntimeApi.md#syncallruntimeconnections) | **POST** /v1/runtime/sync | Sync every managed connection for the authenticated user
+*RuntimeApi* | [**syncRuntimeConnection**](docs/RuntimeApi.md#syncruntimeconnection) | **POST** /v1/runtime/connections/{connectionID}/sync | Sync one managed connection immediately
 *TagsApi* | [**attachTagToTransaction**](docs/TagsApi.md#attachtagtotransaction) | **PUT** /v1/accounts/{accountID}/transactions/{transactionID}/tags/{tagID} | Attach a tag to a transaction owned by the current authenticated user
 *TagsApi* | [**createTag**](docs/TagsApi.md#createtag) | **POST** /v1/tags | Create a tag for current authenticated user
 *TagsApi* | [**deleteTag**](docs/TagsApi.md#deletetag) | **DELETE** /v1/tags/{tagID} | Delete tag by ID for current authenticated user
@@ -166,6 +168,8 @@ All URIs are relative to *http://localhost:8080*
 - [ErrorResponse](docs/ErrorResponse.md)
 - [FeatureListResponse](docs/FeatureListResponse.md)
 - [FeatureState](docs/FeatureState.md)
+- [ManagedConnectionSyncBatchResult](docs/ManagedConnectionSyncBatchResult.md)
+- [ManagedConnectionSyncResult](docs/ManagedConnectionSyncResult.md)
 - [RuntimeConnectionStatus](docs/RuntimeConnectionStatus.md)
 - [RuntimeEntitlementSnapshotResponse](docs/RuntimeEntitlementSnapshotResponse.md)
 - [RuntimeStatusEntitlement](docs/RuntimeStatusEntitlement.md)

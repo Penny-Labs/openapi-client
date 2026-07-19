@@ -182,6 +182,63 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
+  /v1/runtime/connections/{connectionID}/sync:
+    post:
+      tags: [Runtime]
+      operationId: syncRuntimeConnection
+      summary: Sync one managed connection immediately
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - in: path
+          name: connectionID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Managed connection sync completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedConnectionSyncResult"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "409":
+          $ref: "#/components/responses/ConflictResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailableResponse"
+
+  /v1/runtime/sync:
+    post:
+      tags: [Runtime]
+      operationId: syncAllRuntimeConnections
+      summary: Sync every managed connection for the authenticated user
+      security:
+        - SessionCookieAuth: []
+      responses:
+        "200":
+          description: Managed connection sync batch completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedConnectionSyncBatchResult"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailableResponse"
+
   /v1/users:
     post:
       tags: [Users]
@@ -2123,6 +2180,12 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorResponse"
+    ServiceUnavailableResponse:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
 
   schemas:
     ErrorResponse:
@@ -2535,7 +2598,7 @@ components:
       properties:
         id:
           type: string
-          description: Redacted local connection identifier.
+          description: Stable local connection identifier safe for sync actions.
         managed_item_id:
           type: string
           description: Redacted managed item identifier.
@@ -2558,6 +2621,36 @@ components:
           type: string
           format: date-time
       required: [id, managed_item_id, status, date_added]
+
+    ManagedConnectionSyncResult:
+      type: object
+      additionalProperties: false
+      properties:
+        connection_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [connected, syncing, stale, error, revoked]
+        sync:
+          type: object
+          additionalProperties: true
+        error:
+          type: string
+      required: [connection_id, status]
+
+    ManagedConnectionSyncBatchResult:
+      type: object
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ManagedConnectionSyncResult"
+        total:
+          type: integer
+          minimum: 0
+      required: [items, total]
 
     UserListResponse:
       type: object

@@ -32,6 +32,8 @@ export * from './CreateTransactionExportRequest';
 export * from './ErrorResponse';
 export * from './FeatureListResponse';
 export * from './FeatureState';
+export * from './ManagedConnectionSyncBatchResult';
+export * from './ManagedConnectionSyncResult';
 export * from './RuntimeConnectionStatus';
 export * from './RuntimeEntitlementSnapshotResponse';
 export * from './RuntimeStatusEntitlement';
