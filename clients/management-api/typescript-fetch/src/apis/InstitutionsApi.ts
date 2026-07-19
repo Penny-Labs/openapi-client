@@ -12,17 +12,18 @@
  * Do not edit the class manually.
  */
 
+
 import * as runtime from '../runtime';
+import type {
+  ErrorResponse,
+  InstitutionListResponse,
+} from '../models/index';
 import {
-    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-} from '../models/ErrorResponse';
-import {
-    type InstitutionListResponse,
     InstitutionListResponseFromJSON,
     InstitutionListResponseToJSON,
-} from '../models/InstitutionListResponse';
+} from '../models/index';
 
 export interface ListInstitutionsRequest {
     q?: string;

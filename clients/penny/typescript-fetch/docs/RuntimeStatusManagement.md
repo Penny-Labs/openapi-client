@@ -10,6 +10,7 @@ Name | Type
 `apiConfigured` | boolean
 `apiUrlConfigured` | boolean
 `apiTokenConfigured` | boolean
+`autoActivationEnabled` | boolean
 `runtimeSecretDirConfigured` | boolean
 
 ## Example
@@ -23,6 +24,7 @@ const example = {
   "apiConfigured": null,
   "apiUrlConfigured": null,
   "apiTokenConfigured": null,
+  "autoActivationEnabled": null,
   "runtimeSecretDirConfigured": null,
 } satisfies RuntimeStatusManagement
 
@@ -38,5 +40,3 @@ console.log(exampleParsed)
 ```
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
-
-

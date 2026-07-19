@@ -161,6 +161,178 @@ paths:
               schema:
                 type: string
 
+  /v1/link/{itemID}:
+    delete:
+      tags: [Link]
+      operationId: revokeManagedConnection
+      summary: Revoke a managed Plaid connection and delete its hosted credential
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - $ref: "#/components/parameters/ManagedItemID"
+      responses:
+        "204":
+          description: Connection revoked
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "410":
+          description: Connection already revoked
+        "502":
+          $ref: "#/components/responses/BadGatewayResponse"
+
+  /v1/link/{itemID}/update-token:
+    put:
+      tags: [Link]
+      operationId: createManagedConnectionUpdateToken
+      summary: Create a Plaid Link update-mode token for a managed connection
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - $ref: "#/components/parameters/ManagedItemID"
+      responses:
+        "200":
+          description: Update-mode token created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateLinkTokenResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "410":
+          description: Connection is revoked
+
+  /v1/link/{itemID}/update-complete:
+    post:
+      tags: [Link]
+      operationId: completeManagedConnectionUpdate
+      summary: Verify a Plaid Link update and restore the managed connection
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - $ref: "#/components/parameters/ManagedItemID"
+      responses:
+        "200":
+          description: Connection restored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedConnectionStatusResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "502":
+          $ref: "#/components/responses/BadGatewayResponse"
+
+  /v1/link/{itemID}/accounts/balances/sync:
+    post:
+      tags: [ManagedData]
+      operationId: syncManagedBalances
+      summary: Refresh and cache managed accounts and balances
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - $ref: "#/components/parameters/ManagedItemID"
+      responses:
+        "200":
+          description: Balances refreshed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedBalanceSyncResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "429":
+          description: Monthly managed refresh limit reached
+        "502":
+          $ref: "#/components/responses/BadGatewayResponse"
+
+  /v1/link/{itemID}/accounts:
+    get:
+      tags: [ManagedData]
+      operationId: listManagedAccounts
+      summary: List cached managed accounts and balances
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - $ref: "#/components/parameters/ManagedItemID"
+      responses:
+        "200":
+          description: Managed account list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedAccountListResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /v1/link/{itemID}/transactions/sync:
+    post:
+      tags: [ManagedData]
+      operationId: syncManagedTransactions
+      summary: Refresh and cache managed transactions
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - $ref: "#/components/parameters/ManagedItemID"
+      responses:
+        "200":
+          description: Transactions refreshed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedTransactionSyncResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "429":
+          description: Monthly managed refresh limit reached
+        "502":
+          $ref: "#/components/responses/BadGatewayResponse"
+
+  /v1/link/{itemID}/transactions:
+    get:
+      tags: [ManagedData]
+      operationId: listManagedTransactions
+      summary: List cached managed transactions
+      security:
+        - RuntimeBearer: []
+      parameters:
+        - $ref: "#/components/parameters/ManagedItemID"
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+            default: 100
+        - in: query
+          name: cursor
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Managed transaction list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedTransactionListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
   /v1/plaid/webhook:
     post:
       tags: [Plaid]
@@ -197,6 +369,76 @@ paths:
           $ref: "#/components/responses/UnauthorizedResponse"
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/billing/checkout:
+    post:
+      tags: [Billing]
+      operationId: createBillingCheckout
+      summary: Create a Stripe test-mode Checkout session for PennyOS Pro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillingCheckoutRequest"
+      responses:
+        "201":
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingCheckoutResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "502":
+          $ref: "#/components/responses/BadGatewayResponse"
+
+  /v1/billing/claim:
+    post:
+      tags: [Billing]
+      operationId: claimBillingPurchase
+      summary: Claim a fulfilled test-mode purchase license exactly once
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillingClaimRequest"
+      responses:
+        "200":
+          description: License claimed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingClaimResponse"
+        "409":
+          description: Checkout is still being confirmed by Stripe
+        "410":
+          description: Claim is invalid, expired, or already used
+
+  /v1/stripe/webhook:
+    post:
+      tags: [Billing]
+      operationId: receiveStripeWebhook
+      summary: Receive a signature-verified Stripe test-mode webhook
+      parameters:
+        - in: header
+          name: Stripe-Signature
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: Webhook processed or previously processed
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
 
   /v1/runtime/jwks:
     get:
@@ -270,6 +512,44 @@ paths:
           $ref: "#/components/responses/UnauthorizedResponse"
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/runtime/entitlement:
+    get:
+      tags: [Runtime]
+      operationId: getRuntimeEntitlement
+      summary: Read the current effective managed-service entitlement
+      security:
+        - RuntimeBearer: []
+      responses:
+        "200":
+          description: Effective entitlement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuntimeEntitlementResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+
+  /v1/runtime/billing/portal:
+    post:
+      tags: [Billing]
+      operationId: createRuntimeBillingPortal
+      summary: Create a Stripe test-mode customer portal session
+      security:
+        - RuntimeBearer: []
+      responses:
+        "200":
+          description: Portal session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingPortalResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "502":
+          $ref: "#/components/responses/BadGatewayResponse"
 
   /v1/runtime/usage/batch:
     post:
@@ -1035,6 +1315,90 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
+  /v1/license/{licenseID}/billing/subscription:
+    get:
+      tags: [LicenseAdmin]
+      operationId: getLicenseBillingSubscription
+      summary: Get the latest Stripe test subscription linked to a license
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: licenseID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Subscription state or an unconfigured result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingSubscriptionSummary"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "500":
+          $ref: "#/components/responses/InternalServerErrorResponse"
+
+  /v1/license/{licenseID}/support-override:
+    put:
+      tags: [LicenseAdmin]
+      operationId: grantLicenseSupportOverride
+      summary: Grant an audited managed-entitlement override for at most 30 days
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: licenseID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SupportOverrideGrantRequest"
+      responses:
+        "200":
+          description: Override granted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportOverrideResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+    delete:
+      tags: [LicenseAdmin]
+      operationId: clearLicenseSupportOverride
+      summary: Clear an audited managed-entitlement override
+      security:
+        - AdminBearer: []
+      parameters:
+        - in: path
+          name: licenseID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SupportOverrideClearRequest"
+      responses:
+        "204":
+          description: Override cleared
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+
   /v1/newsletter/:
     get:
       tags: [Newsletter]
@@ -1239,6 +1603,15 @@ components:
       in: header
       name: X-License-Machine-Fingerprint
 
+  parameters:
+    ManagedItemID:
+      in: path
+      name: itemID
+      required: true
+      schema:
+        type: string
+        format: uuid
+
   responses:
     BadRequestResponse:
       description: Bad request
@@ -1270,6 +1643,12 @@ components:
             $ref: "#/components/schemas/ErrorResponse"
     InternalServerErrorResponse:
       description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    BadGatewayResponse:
+      description: Upstream provider error
       content:
         application/json:
           schema:
@@ -1494,7 +1873,16 @@ components:
       properties:
         link_token:
           type: string
-      required: [link_token]
+        connection_id:
+          type: string
+          format: uuid
+        expiration:
+          type: string
+          format: date-time
+        mode:
+          type: string
+          enum: [create, update]
+      required: [link_token, expiration, mode]
 
     LinkInstitution:
       type: object
@@ -1555,6 +1943,174 @@ components:
           type: string
           format: uuid
       required: [accounts, connection_id]
+
+    ManagedConnectionStatusResponse:
+      type: object
+      properties:
+        connection_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [active, error, reauth_required, limit_reached, revoked]
+      required: [connection_id, status]
+
+    ManagedBalanceSyncResponse:
+      type: object
+      properties:
+        item_id:
+          type: string
+          format: uuid
+        updated_count:
+          type: integer
+        request_id:
+          type: string
+      required: [item_id, updated_count, request_id]
+
+    ManagedAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        item_id:
+          type: string
+          format: uuid
+        provider:
+          type: string
+          enum: [plaid]
+        provider_account_id:
+          type: string
+        institution_id:
+          type: string
+        institution_name:
+          type: string
+        name:
+          type: string
+        official_name:
+          type: string
+        mask:
+          type: string
+        type:
+          type: string
+        subtype:
+          type: string
+        balance_available:
+          type: number
+        balance_current:
+          type: number
+        balance_limit:
+          type: number
+        balance_iso_currency_code:
+          type: string
+        balance_unofficial_currency_code:
+          type: string
+        balance_last_updated_at:
+          type: string
+          format: date-time
+        selected:
+          type: boolean
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: string
+          format: date-time
+      required: [id, item_id, provider, provider_account_id, selected, date_added]
+
+    ManagedAccountListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ManagedAccount"
+        total:
+          type: integer
+      required: [items, total]
+
+    ManagedTransactionSyncResponse:
+      type: object
+      properties:
+        item_id:
+          type: string
+          format: uuid
+        next_cursor:
+          type: string
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        pages:
+          type: integer
+        added_count:
+          type: integer
+        modified_count:
+          type: integer
+        removed_count:
+          type: integer
+        request_id:
+          type: string
+        had_more:
+          type: boolean
+      required: [item_id, next_cursor, started_at, completed_at, pages, added_count, modified_count, removed_count, request_id, had_more]
+
+    ManagedTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        item_id:
+          type: string
+          format: uuid
+        provider:
+          type: string
+          enum: [plaid]
+        provider_transaction_id:
+          type: string
+        provider_account_id:
+          type: string
+        transaction_date:
+          type: string
+          format: date
+        authorized_date:
+          type: string
+          format: date
+        name:
+          type: string
+        merchant_name:
+          type: string
+        amount:
+          type: number
+        iso_currency_code:
+          type: string
+        pending:
+          type: boolean
+        removed:
+          type: boolean
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: string
+          format: date-time
+      required: [id, item_id, provider, provider_transaction_id, provider_account_id, transaction_date, name, amount, pending, removed, date_added]
+
+    ManagedTransactionListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ManagedTransaction"
+        total:
+          type: integer
+        next_cursor:
+          type: [string, "null"]
+      required: [items, total, next_cursor]
 
     PlaidWebhookRequest:
       type: object
@@ -1681,6 +2237,98 @@ components:
             type: integer
       required: [lease_token, lease_expires_at, scopes, caps]
 
+    RuntimeEntitlementResponse:
+      type: object
+      properties:
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          $ref: "#/components/schemas/ProductID"
+        install_id:
+          type: string
+          format: uuid
+        license_status:
+          $ref: "#/components/schemas/LicenseStatus"
+        entitlement_status:
+          type: string
+          enum: [active, suspended, revoked]
+        plan:
+          type: string
+          enum: [base, pro]
+        scopes:
+          type: array
+          items:
+            type: string
+        caps:
+          type: object
+          properties:
+            managed_connections:
+              type: [integer, "null"]
+            transactions_connected_accounts:
+              type: [integer, "null"]
+            recurring_connected_accounts:
+              type: [integer, "null"]
+            transactions_refresh_calls:
+              type: [integer, "null"]
+        lease_expires_at:
+          type: string
+          format: date-time
+      required: [license_id, product_id, install_id, license_status, entitlement_status, plan, scopes, caps, lease_expires_at]
+
+    BillingCheckoutRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        plan:
+          type: string
+          enum: [pro]
+          default: pro
+      required: [email]
+      additionalProperties: false
+
+    BillingCheckoutResponse:
+      type: object
+      properties:
+        checkout_url:
+          type: string
+          format: uri
+        expires_at:
+          type: string
+          format: date-time
+      required: [checkout_url, expires_at]
+
+    BillingClaimRequest:
+      type: object
+      properties:
+        claim_token:
+          type: string
+      required: [claim_token]
+      additionalProperties: false
+
+    BillingClaimResponse:
+      type: object
+      properties:
+        license_key:
+          type: string
+        plan:
+          type: string
+          enum: [pro]
+        support_email:
+          type: string
+          format: email
+      required: [license_key, plan, support_email]
+
+    BillingPortalResponse:
+      type: object
+      properties:
+        portal_url:
+          type: string
+          format: uri
+      required: [portal_url]
+
     RuntimeUsageEvent:
       type: object
       properties:
@@ -1729,7 +2377,7 @@ components:
 
     RuntimeCommandType:
       type: string
-      enum: [pull_data, notify, license_enforce, license_resync]
+      enum: [pull_data, notify, license_enforce, license_resync, connection_update]
 
     RuntimeCommandTargetScope:
       type: string
@@ -2060,15 +2708,25 @@ components:
         status:
           type: string
           enum: [active, suspended, revoked]
+        plan:
+          type: string
+          enum: [base, pro]
         scopes:
           type: string
+        cap_managed_connections:
+          type: [integer, "null"]
         cap_transactions_connected_accounts:
           type: [integer, "null"]
         cap_recurring_connected_accounts:
           type: [integer, "null"]
         cap_transactions_refresh_calls:
           type: [integer, "null"]
-      required: [id, license_id, product_id, status, scopes]
+        override_expires_at:
+          type: [string, "null"]
+          format: date-time
+        override_reason:
+          type: [string, "null"]
+      required: [id, license_id, product_id, status, plan, scopes]
 
     EntitlementListResponse:
       type: object
@@ -2091,8 +2749,13 @@ components:
         status:
           type: string
           enum: [active, suspended, revoked]
+        plan:
+          type: string
+          enum: [base, pro]
         scopes:
           type: string
+        cap_managed_connections:
+          type: [integer, "null"]
         cap_transactions_connected_accounts:
           type: [integer, "null"]
         cap_recurring_connected_accounts:
@@ -2257,6 +2920,72 @@ components:
         next_cursor:
           type: [string, "null"]
       required: [items, total]
+
+    BillingSubscriptionSummary:
+      type: object
+      properties:
+        configured:
+          type: boolean
+        stripe_customer_id:
+          type: string
+        stripe_subscription_id:
+          type: string
+        email:
+          type: string
+          format: email
+        plan:
+          type: string
+          enum: [pro]
+        status:
+          type: string
+        current_period_end:
+          type: [string, "null"]
+          format: date-time
+        cancel_at_period_end:
+          type: boolean
+        updated_at:
+          type: [string, "null"]
+          format: date-time
+      required: [configured]
+
+    SupportOverrideGrantRequest:
+      type: object
+      properties:
+        product_id:
+          $ref: "#/components/schemas/ProductID"
+        reason:
+          type: string
+        duration_days:
+          type: integer
+          minimum: 1
+          maximum: 30
+      required: [product_id, reason, duration_days]
+      additionalProperties: false
+
+    SupportOverrideClearRequest:
+      type: object
+      properties:
+        product_id:
+          $ref: "#/components/schemas/ProductID"
+        reason:
+          type: string
+      required: [product_id, reason]
+      additionalProperties: false
+
+    SupportOverrideResponse:
+      type: object
+      properties:
+        license_id:
+          type: string
+          format: uuid
+        product_id:
+          $ref: "#/components/schemas/ProductID"
+        expires_at:
+          type: string
+          format: date-time
+        reason:
+          type: string
+      required: [license_id, product_id, expires_at, reason]
 
     NewsletterStatus:
       type: string

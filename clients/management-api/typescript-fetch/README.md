@@ -1,4 +1,4 @@
-# @penny/openapi-management-api-client@0.1.0
+# @penny/openapi-management-api-client@0.2.0
 
 A TypeScript SDK client for the localhost API.
 
@@ -16,16 +16,21 @@ Next, try it out.
 ```ts
 import {
   Configuration,
-  HealthApi,
+  BillingApi,
 } from '@penny/openapi-management-api-client';
-import type { GetHealthzRequest } from '@penny/openapi-management-api-client';
+import type { ClaimBillingPurchaseRequest } from '@penny/openapi-management-api-client';
 
 async function example() {
   console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
-  const api = new HealthApi();
+  const api = new BillingApi();
+
+  const body = {
+    // BillingClaimRequest
+    billingClaimRequest: ...,
+  } satisfies ClaimBillingPurchaseRequest;
 
   try {
-    const data = await api.getHealthz();
+    const data = await api.claimBillingPurchase(body);
     console.log(data);
   } catch (error) {
     console.error(error);
@@ -45,10 +50,17 @@ All URIs are relative to *http://localhost:8090*
 
 | Class | Method | HTTP request | Description
 | ----- | ------ | ------------ | -------------
+*BillingApi* | [**claimBillingPurchase**](docs/BillingApi.md#claimbillingpurchase) | **POST** /v1/billing/claim | Claim a fulfilled test-mode purchase license exactly once
+*BillingApi* | [**createBillingCheckout**](docs/BillingApi.md#createbillingcheckout) | **POST** /v1/billing/checkout | Create a Stripe test-mode Checkout session for PennyOS Pro
+*BillingApi* | [**createRuntimeBillingPortal**](docs/BillingApi.md#createruntimebillingportal) | **POST** /v1/runtime/billing/portal | Create a Stripe test-mode customer portal session
+*BillingApi* | [**receiveStripeWebhook**](docs/BillingApi.md#receivestripewebhook) | **POST** /v1/stripe/webhook | Receive a signature-verified Stripe test-mode webhook
 *HealthApi* | [**getHealthz**](docs/HealthApi.md#gethealthz) | **GET** /healthz | Health check
 *HealthApi* | [**getReadyz**](docs/HealthApi.md#getreadyz) | **GET** /readyz | Readiness check
 *InstitutionsApi* | [**listInstitutions**](docs/InstitutionsApi.md#listinstitutions) | **GET** /v1/institutions/ | List institutions
+*LicenseAdminApi* | [**clearLicenseSupportOverride**](docs/LicenseAdminApi.md#clearlicensesupportoverride) | **DELETE** /v1/license/{licenseID}/support-override | Clear an audited managed-entitlement override
 *LicenseAdminApi* | [**createLicenseAdmin**](docs/LicenseAdminApi.md#createlicenseadmin) | **POST** /v1/license/ | Issue new pending license (admin)
+*LicenseAdminApi* | [**getLicenseBillingSubscription**](docs/LicenseAdminApi.md#getlicensebillingsubscription) | **GET** /v1/license/{licenseID}/billing/subscription | Get the latest Stripe test subscription linked to a license
+*LicenseAdminApi* | [**grantLicenseSupportOverride**](docs/LicenseAdminApi.md#grantlicensesupportoverride) | **PUT** /v1/license/{licenseID}/support-override | Grant an audited managed-entitlement override for at most 30 days
 *LicenseAdminApi* | [**listLicenseBillingMonthly**](docs/LicenseAdminApi.md#listlicensebillingmonthly) | **GET** /v1/license/{licenseID}/billing/monthly | List monthly billing lines for a license/product (admin)
 *LicenseAdminApi* | [**listLicenseEntitlements**](docs/LicenseAdminApi.md#listlicenseentitlements) | **GET** /v1/license/{licenseID}/entitlements | List product entitlements for a license (admin)
 *LicenseAdminApi* | [**listLicenseInstalls**](docs/LicenseAdminApi.md#listlicenseinstalls) | **GET** /v1/license/{licenseID}/installs | List runtime installs for a license (admin)
@@ -60,8 +72,15 @@ All URIs are relative to *http://localhost:8090*
 *LicensePublicApi* | [**activateLicense**](docs/LicensePublicApi.md#activatelicense) | **POST** /v1/license/activate | Activate or transfer license to an install
 *LicensePublicApi* | [**signupLicense**](docs/LicensePublicApi.md#signuplicense) | **POST** /v1/license/signup | Create a pending license via public signup
 *LicensePublicApi* | [**validateLicense**](docs/LicensePublicApi.md#validatelicense) | **POST** /v1/license/validate | Validate license and refresh lease
+*LinkApi* | [**completeManagedConnectionUpdate**](docs/LinkApi.md#completemanagedconnectionupdate) | **POST** /v1/link/{itemID}/update-complete | Verify a Plaid Link update and restore the managed connection
 *LinkApi* | [**connectLinkToken**](docs/LinkApi.md#connectlinktokenoperation) | **POST** /v1/link/connect | Exchange public token and connect item
 *LinkApi* | [**createLinkToken**](docs/LinkApi.md#createlinktoken) | **PUT** /v1/link/token | Create Plaid link token
+*LinkApi* | [**createManagedConnectionUpdateToken**](docs/LinkApi.md#createmanagedconnectionupdatetoken) | **PUT** /v1/link/{itemID}/update-token | Create a Plaid Link update-mode token for a managed connection
+*LinkApi* | [**revokeManagedConnection**](docs/LinkApi.md#revokemanagedconnection) | **DELETE** /v1/link/{itemID} | Revoke a managed Plaid connection and delete its hosted credential
+*ManagedDataApi* | [**listManagedAccounts**](docs/ManagedDataApi.md#listmanagedaccounts) | **GET** /v1/link/{itemID}/accounts | List cached managed accounts and balances
+*ManagedDataApi* | [**listManagedTransactions**](docs/ManagedDataApi.md#listmanagedtransactions) | **GET** /v1/link/{itemID}/transactions | List cached managed transactions
+*ManagedDataApi* | [**syncManagedBalances**](docs/ManagedDataApi.md#syncmanagedbalances) | **POST** /v1/link/{itemID}/accounts/balances/sync | Refresh and cache managed accounts and balances
+*ManagedDataApi* | [**syncManagedTransactions**](docs/ManagedDataApi.md#syncmanagedtransactions) | **POST** /v1/link/{itemID}/transactions/sync | Refresh and cache managed transactions
 *NewsletterApi* | [**listMailingLists**](docs/NewsletterApi.md#listmailinglists) | **GET** /v1/newsletter/mailing-lists | List mailing lists (admin)
 *NewsletterApi* | [**listNewsletters**](docs/NewsletterApi.md#listnewsletters) | **GET** /v1/newsletter/ | List newsletters (admin)
 *NewsletterApi* | [**listSubscribers**](docs/NewsletterApi.md#listsubscribers) | **GET** /v1/newsletter/subscribers | List subscribers (admin)
@@ -71,6 +90,7 @@ All URIs are relative to *http://localhost:8090*
 *RuntimeApi* | [**activateRuntimeInstall**](docs/RuntimeApi.md#activateruntimeinstall) | **POST** /v1/runtime/activate | Activate runtime install and issue lease JWT
 *RuntimeApi* | [**createRuntimeCommand**](docs/RuntimeApi.md#createruntimecommand) | **POST** /v1/runtime/commands | Dispatch runtime command to install/license/product target (admin)
 *RuntimeApi* | [**getRuntimeActivationOverview**](docs/RuntimeApi.md#getruntimeactivationoverview) | **GET** /v1/runtime/activations/overview | Get runtime activation KPI overview (admin)
+*RuntimeApi* | [**getRuntimeEntitlement**](docs/RuntimeApi.md#getruntimeentitlement) | **GET** /v1/runtime/entitlement | Read the current effective managed-service entitlement
 *RuntimeApi* | [**getRuntimeJwks**](docs/RuntimeApi.md#getruntimejwks) | **GET** /v1/runtime/jwks | Get active JWKS for lease JWT verification
 *RuntimeApi* | [**ingestRuntimeUsageBatch**](docs/RuntimeApi.md#ingestruntimeusagebatch) | **POST** /v1/runtime/usage/batch | Ingest usage events for billing meters
 *RuntimeApi* | [**listRuntimeActivationHistory**](docs/RuntimeApi.md#listruntimeactivationhistory) | **GET** /v1/runtime/activations/history | List runtime activation history by day (admin)
@@ -82,8 +102,14 @@ All URIs are relative to *http://localhost:8090*
 
 ### Models
 
+- [BillingCheckoutRequest](docs/BillingCheckoutRequest.md)
+- [BillingCheckoutResponse](docs/BillingCheckoutResponse.md)
+- [BillingClaimRequest](docs/BillingClaimRequest.md)
+- [BillingClaimResponse](docs/BillingClaimResponse.md)
 - [BillingMonthlyLine](docs/BillingMonthlyLine.md)
 - [BillingMonthlyListResponse](docs/BillingMonthlyListResponse.md)
+- [BillingPortalResponse](docs/BillingPortalResponse.md)
+- [BillingSubscriptionSummary](docs/BillingSubscriptionSummary.md)
 - [ConnectLinkMetadata](docs/ConnectLinkMetadata.md)
 - [ConnectLinkTokenRequest](docs/ConnectLinkTokenRequest.md)
 - [ConnectLinkTokenResponse](docs/ConnectLinkTokenResponse.md)
@@ -110,6 +136,13 @@ All URIs are relative to *http://localhost:8090*
 - [LinkInstitution](docs/LinkInstitution.md)
 - [MailingList](docs/MailingList.md)
 - [MailingListListResponse](docs/MailingListListResponse.md)
+- [ManagedAccount](docs/ManagedAccount.md)
+- [ManagedAccountListResponse](docs/ManagedAccountListResponse.md)
+- [ManagedBalanceSyncResponse](docs/ManagedBalanceSyncResponse.md)
+- [ManagedConnectionStatusResponse](docs/ManagedConnectionStatusResponse.md)
+- [ManagedTransaction](docs/ManagedTransaction.md)
+- [ManagedTransactionListResponse](docs/ManagedTransactionListResponse.md)
+- [ManagedTransactionSyncResponse](docs/ManagedTransactionSyncResponse.md)
 - [NewsletterListResponse](docs/NewsletterListResponse.md)
 - [NewsletterSendRequest](docs/NewsletterSendRequest.md)
 - [NewsletterSendResponse](docs/NewsletterSendResponse.md)
@@ -135,6 +168,8 @@ All URIs are relative to *http://localhost:8090*
 - [RuntimeCommandTarget](docs/RuntimeCommandTarget.md)
 - [RuntimeCommandTargetScope](docs/RuntimeCommandTargetScope.md)
 - [RuntimeCommandType](docs/RuntimeCommandType.md)
+- [RuntimeEntitlementResponse](docs/RuntimeEntitlementResponse.md)
+- [RuntimeEntitlementResponseCaps](docs/RuntimeEntitlementResponseCaps.md)
 - [RuntimeInstall](docs/RuntimeInstall.md)
 - [RuntimeInstanceListResponse](docs/RuntimeInstanceListResponse.md)
 - [RuntimeInstanceStatus](docs/RuntimeInstanceStatus.md)
@@ -146,6 +181,9 @@ All URIs are relative to *http://localhost:8090*
 - [SubscriberListResponse](docs/SubscriberListResponse.md)
 - [SubscriberMailingListMembership](docs/SubscriberMailingListMembership.md)
 - [SubscriberSummary](docs/SubscriberSummary.md)
+- [SupportOverrideClearRequest](docs/SupportOverrideClearRequest.md)
+- [SupportOverrideGrantRequest](docs/SupportOverrideGrantRequest.md)
+- [SupportOverrideResponse](docs/SupportOverrideResponse.md)
 - [TransferConfirmationRequiredResponse](docs/TransferConfirmationRequiredResponse.md)
 - [TransferListResponse](docs/TransferListResponse.md)
 - [UpsertEntitlementRequest](docs/UpsertEntitlementRequest.md)
@@ -195,8 +233,8 @@ and is automatically generated by the
 [OpenAPI Generator](https://openapi-generator.tech) project:
 
 - API version: `v1`
-- Package version: `0.1.0`
-- Generator version: `7.22.0`
+- Package version: `0.2.0`
+- Generator version: `7.20.0`
 - Build package: `org.openapitools.codegen.languages.TypeScriptFetchClientCodegen`
 
 The generated npm module supports the following:

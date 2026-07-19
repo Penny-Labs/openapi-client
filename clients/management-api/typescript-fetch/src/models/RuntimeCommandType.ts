@@ -21,7 +21,8 @@ export const RuntimeCommandType = {
     PullData: 'pull_data',
     Notify: 'notify',
     LicenseEnforce: 'license_enforce',
-    LicenseResync: 'license_resync'
+    LicenseResync: 'license_resync',
+    ConnectionUpdate: 'connection_update'
 } as const;
 export type RuntimeCommandType = typeof RuntimeCommandType[keyof typeof RuntimeCommandType];
 
@@ -52,4 +53,3 @@ export function RuntimeCommandTypeToJSON(value?: RuntimeCommandType | null): any
 export function RuntimeCommandTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): RuntimeCommandType {
     return value as RuntimeCommandType;
 }
-

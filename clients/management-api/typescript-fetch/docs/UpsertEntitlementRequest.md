@@ -8,7 +8,9 @@ Name | Type
 ------------ | -------------
 `productId` | [ProductID](ProductID.md)
 `status` | string
+`plan` | string
 `scopes` | string
+`capManagedConnections` | number
 `capTransactionsConnectedAccounts` | number
 `capRecurringConnectedAccounts` | number
 `capTransactionsRefreshCalls` | number
@@ -22,7 +24,9 @@ import type { UpsertEntitlementRequest } from '@penny/openapi-management-api-cli
 const example = {
   "productId": null,
   "status": null,
+  "plan": null,
   "scopes": null,
+  "capManagedConnections": null,
   "capTransactionsConnectedAccounts": null,
   "capRecurringConnectedAccounts": null,
   "capTransactionsRefreshCalls": null,
@@ -40,5 +44,3 @@ console.log(exampleParsed)
 ```
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
-
-

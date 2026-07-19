@@ -4,7 +4,10 @@ All URIs are relative to *http://localhost:8090*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
+| [**clearLicenseSupportOverride**](LicenseAdminApi.md#clearlicensesupportoverride) | **DELETE** /v1/license/{licenseID}/support-override | Clear an audited managed-entitlement override |
 | [**createLicenseAdmin**](LicenseAdminApi.md#createlicenseadmin) | **POST** /v1/license/ | Issue new pending license (admin) |
+| [**getLicenseBillingSubscription**](LicenseAdminApi.md#getlicensebillingsubscription) | **GET** /v1/license/{licenseID}/billing/subscription | Get the latest Stripe test subscription linked to a license |
+| [**grantLicenseSupportOverride**](LicenseAdminApi.md#grantlicensesupportoverride) | **PUT** /v1/license/{licenseID}/support-override | Grant an audited managed-entitlement override for at most 30 days |
 | [**listLicenseBillingMonthly**](LicenseAdminApi.md#listlicensebillingmonthly) | **GET** /v1/license/{licenseID}/billing/monthly | List monthly billing lines for a license/product (admin) |
 | [**listLicenseEntitlements**](LicenseAdminApi.md#listlicenseentitlements) | **GET** /v1/license/{licenseID}/entitlements | List product entitlements for a license (admin) |
 | [**listLicenseInstalls**](LicenseAdminApi.md#listlicenseinstalls) | **GET** /v1/license/{licenseID}/installs | List runtime installs for a license (admin) |
@@ -14,6 +17,80 @@ All URIs are relative to *http://localhost:8090*
 | [**patchLicense**](LicenseAdminApi.md#patchlicenseoperation) | **PATCH** /v1/license/{licenseID} | Patch license status/expiry (admin) |
 | [**upsertLicenseEntitlement**](LicenseAdminApi.md#upsertlicenseentitlement) | **PUT** /v1/license/{licenseID}/entitlements | Upsert product entitlement for a license (admin) |
 
+
+
+## clearLicenseSupportOverride
+
+> clearLicenseSupportOverride(licenseID, supportOverrideClearRequest)
+
+Clear an audited managed-entitlement override
+
+### Example
+
+```ts
+import {
+  Configuration,
+  LicenseAdminApi,
+} from '@penny/openapi-management-api-client';
+import type { ClearLicenseSupportOverrideRequest } from '@penny/openapi-management-api-client';
+
+async function example() {
+  console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
+  const config = new Configuration({
+    // Configure HTTP bearer authorization: AdminBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new LicenseAdminApi(config);
+
+  const body = {
+    // string
+    licenseID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // SupportOverrideClearRequest
+    supportOverrideClearRequest: ...,
+  } satisfies ClearLicenseSupportOverrideRequest;
+
+  try {
+    const data = await api.clearLicenseSupportOverride(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **licenseID** | `string` |  | [Defaults to `undefined`] |
+| **supportOverrideClearRequest** | [SupportOverrideClearRequest](SupportOverrideClearRequest.md) |  | |
+
+### Return type
+
+`void` (Empty response body)
+
+### Authorization
+
+[AdminBearer](../README.md#AdminBearer)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`, `text/plain`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **204** | Override cleared |  -  |
+| **400** | Bad request |  -  |
+| **401** | Unauthorized |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
 
 ## createLicenseAdmin
@@ -83,6 +160,151 @@ example().catch(console.error);
 | **201** | License issued |  -  |
 | **401** | Unauthorized |  -  |
 | **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## getLicenseBillingSubscription
+
+> BillingSubscriptionSummary getLicenseBillingSubscription(licenseID)
+
+Get the latest Stripe test subscription linked to a license
+
+### Example
+
+```ts
+import {
+  Configuration,
+  LicenseAdminApi,
+} from '@penny/openapi-management-api-client';
+import type { GetLicenseBillingSubscriptionRequest } from '@penny/openapi-management-api-client';
+
+async function example() {
+  console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
+  const config = new Configuration({
+    // Configure HTTP bearer authorization: AdminBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new LicenseAdminApi(config);
+
+  const body = {
+    // string
+    licenseID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+  } satisfies GetLicenseBillingSubscriptionRequest;
+
+  try {
+    const data = await api.getLicenseBillingSubscription(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **licenseID** | `string` |  | [Defaults to `undefined`] |
+
+### Return type
+
+[**BillingSubscriptionSummary**](BillingSubscriptionSummary.md)
+
+### Authorization
+
+[AdminBearer](../README.md#AdminBearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`, `text/plain`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Subscription state or an unconfigured result |  -  |
+| **401** | Unauthorized |  -  |
+| **500** | Internal server error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## grantLicenseSupportOverride
+
+> SupportOverrideResponse grantLicenseSupportOverride(licenseID, supportOverrideGrantRequest)
+
+Grant an audited managed-entitlement override for at most 30 days
+
+### Example
+
+```ts
+import {
+  Configuration,
+  LicenseAdminApi,
+} from '@penny/openapi-management-api-client';
+import type { GrantLicenseSupportOverrideRequest } from '@penny/openapi-management-api-client';
+
+async function example() {
+  console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
+  const config = new Configuration({
+    // Configure HTTP bearer authorization: AdminBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new LicenseAdminApi(config);
+
+  const body = {
+    // string
+    licenseID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // SupportOverrideGrantRequest
+    supportOverrideGrantRequest: ...,
+  } satisfies GrantLicenseSupportOverrideRequest;
+
+  try {
+    const data = await api.grantLicenseSupportOverride(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **licenseID** | `string` |  | [Defaults to `undefined`] |
+| **supportOverrideGrantRequest** | [SupportOverrideGrantRequest](SupportOverrideGrantRequest.md) |  | |
+
+### Return type
+
+[**SupportOverrideResponse**](SupportOverrideResponse.md)
+
+### Authorization
+
+[AdminBearer](../README.md#AdminBearer)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`, `text/plain`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Override granted |  -  |
+| **400** | Bad request |  -  |
+| **401** | Unauthorized |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
@@ -723,4 +945,3 @@ example().catch(console.error);
 | **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
-

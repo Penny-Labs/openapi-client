@@ -33,12 +33,17 @@ export interface PlaidWebhookResponse {
     commandId?: string;
 }
 
+
+/**
+ * @export
+ */
 export const PlaidWebhookResponseStatusEnum = {
     Queued: 'queued',
     Ignored: 'ignored',
     Duplicate: 'duplicate'
 } as const;
 export type PlaidWebhookResponseStatusEnum = typeof PlaidWebhookResponseStatusEnum[keyof typeof PlaidWebhookResponseStatusEnum];
+
 
 /**
  * Check if a given object implements the PlaidWebhookResponse interface.

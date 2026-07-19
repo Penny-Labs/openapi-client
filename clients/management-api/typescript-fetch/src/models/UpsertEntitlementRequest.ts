@@ -41,10 +41,22 @@ export interface UpsertEntitlementRequest {
     status?: UpsertEntitlementRequestStatusEnum;
     /**
      *
+     * @type {UpsertEntitlementRequestPlanEnum}
+     * @memberof UpsertEntitlementRequest
+     */
+    plan?: UpsertEntitlementRequestPlanEnum;
+    /**
+     *
      * @type {string}
      * @memberof UpsertEntitlementRequest
      */
     scopes?: string;
+    /**
+     *
+     * @type {number}
+     * @memberof UpsertEntitlementRequest
+     */
+    capManagedConnections?: number | null;
     /**
      *
      * @type {number}
@@ -76,6 +88,15 @@ export const UpsertEntitlementRequestStatusEnum = {
 } as const;
 export type UpsertEntitlementRequestStatusEnum = typeof UpsertEntitlementRequestStatusEnum[keyof typeof UpsertEntitlementRequestStatusEnum];
 
+/**
+ * @export
+ */
+export const UpsertEntitlementRequestPlanEnum = {
+    Base: 'base',
+    Pro: 'pro'
+} as const;
+export type UpsertEntitlementRequestPlanEnum = typeof UpsertEntitlementRequestPlanEnum[keyof typeof UpsertEntitlementRequestPlanEnum];
+
 
 /**
  * Check if a given object implements the UpsertEntitlementRequest interface.
@@ -97,7 +118,9 @@ export function UpsertEntitlementRequestFromJSONTyped(json: any, ignoreDiscrimin
 
         'productId': ProductIDFromJSON(json['product_id']),
         'status': json['status'] == null ? undefined : json['status'],
+        'plan': json['plan'] == null ? undefined : json['plan'],
         'scopes': json['scopes'] == null ? undefined : json['scopes'],
+        'capManagedConnections': json['cap_managed_connections'] == null ? undefined : json['cap_managed_connections'],
         'capTransactionsConnectedAccounts': json['cap_transactions_connected_accounts'] == null ? undefined : json['cap_transactions_connected_accounts'],
         'capRecurringConnectedAccounts': json['cap_recurring_connected_accounts'] == null ? undefined : json['cap_recurring_connected_accounts'],
         'capTransactionsRefreshCalls': json['cap_transactions_refresh_calls'] == null ? undefined : json['cap_transactions_refresh_calls'],
@@ -117,10 +140,11 @@ export function UpsertEntitlementRequestToJSONTyped(value?: UpsertEntitlementReq
 
         'product_id': ProductIDToJSON(value['productId']),
         'status': value['status'],
+        'plan': value['plan'],
         'scopes': value['scopes'],
+        'cap_managed_connections': value['capManagedConnections'],
         'cap_transactions_connected_accounts': value['capTransactionsConnectedAccounts'],
         'cap_recurring_connected_accounts': value['capRecurringConnectedAccounts'],
         'cap_transactions_refresh_calls': value['capTransactionsRefreshCalls'],
     };
 }
-

@@ -12,35 +12,101 @@
  * Do not edit the class manually.
  */
 
+
 import * as runtime from '../runtime';
+import type {
+  ConnectLinkTokenRequest,
+  ConnectLinkTokenResponse,
+  CreateLinkTokenResponse,
+  ErrorResponse,
+  ManagedConnectionStatusResponse,
+} from '../models/index';
 import {
-    type ConnectLinkTokenRequest,
     ConnectLinkTokenRequestFromJSON,
     ConnectLinkTokenRequestToJSON,
-} from '../models/ConnectLinkTokenRequest';
-import {
-    type ConnectLinkTokenResponse,
     ConnectLinkTokenResponseFromJSON,
     ConnectLinkTokenResponseToJSON,
-} from '../models/ConnectLinkTokenResponse';
-import {
-    type CreateLinkTokenResponse,
     CreateLinkTokenResponseFromJSON,
     CreateLinkTokenResponseToJSON,
-} from '../models/CreateLinkTokenResponse';
-import {
-    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-} from '../models/ErrorResponse';
+    ManagedConnectionStatusResponseFromJSON,
+    ManagedConnectionStatusResponseToJSON,
+} from '../models/index';
+
+export interface CompleteManagedConnectionUpdateRequest {
+    itemID: string;
+}
+
 export interface ConnectLinkTokenOperationRequest {
     connectLinkTokenRequest: ConnectLinkTokenRequest;
+}
+
+export interface CreateManagedConnectionUpdateTokenRequest {
+    itemID: string;
+}
+
+export interface RevokeManagedConnectionRequest {
+    itemID: string;
 }
 
 /**
  *
  */
 export class LinkApi extends runtime.BaseAPI {
+
+    /**
+     * Creates request options for completeManagedConnectionUpdate without sending the request
+     */
+    async completeManagedConnectionUpdateRequestOpts(requestParameters: CompleteManagedConnectionUpdateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['itemID'] == null) {
+            throw new runtime.RequiredError(
+                'itemID',
+                'Required parameter "itemID" was null or undefined when calling completeManagedConnectionUpdate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("RuntimeBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/link/{itemID}/update-complete`;
+        urlPath = urlPath.replace(`{${"itemID"}}`, encodeURIComponent(String(requestParameters['itemID'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Verify a Plaid Link update and restore the managed connection
+     */
+    async completeManagedConnectionUpdateRaw(requestParameters: CompleteManagedConnectionUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedConnectionStatusResponse>> {
+        const requestOptions = await this.completeManagedConnectionUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ManagedConnectionStatusResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Verify a Plaid Link update and restore the managed connection
+     */
+    async completeManagedConnectionUpdate(requestParameters: CompleteManagedConnectionUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedConnectionStatusResponse> {
+        const response = await this.completeManagedConnectionUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for connectLinkToken without sending the request
@@ -140,6 +206,111 @@ export class LinkApi extends runtime.BaseAPI {
     async createLinkToken(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateLinkTokenResponse> {
         const response = await this.createLinkTokenRaw(initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Creates request options for createManagedConnectionUpdateToken without sending the request
+     */
+    async createManagedConnectionUpdateTokenRequestOpts(requestParameters: CreateManagedConnectionUpdateTokenRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['itemID'] == null) {
+            throw new runtime.RequiredError(
+                'itemID',
+                'Required parameter "itemID" was null or undefined when calling createManagedConnectionUpdateToken().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("RuntimeBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/link/{itemID}/update-token`;
+        urlPath = urlPath.replace(`{${"itemID"}}`, encodeURIComponent(String(requestParameters['itemID'])));
+
+        return {
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Create a Plaid Link update-mode token for a managed connection
+     */
+    async createManagedConnectionUpdateTokenRaw(requestParameters: CreateManagedConnectionUpdateTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreateLinkTokenResponse>> {
+        const requestOptions = await this.createManagedConnectionUpdateTokenRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CreateLinkTokenResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Create a Plaid Link update-mode token for a managed connection
+     */
+    async createManagedConnectionUpdateToken(requestParameters: CreateManagedConnectionUpdateTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateLinkTokenResponse> {
+        const response = await this.createManagedConnectionUpdateTokenRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for revokeManagedConnection without sending the request
+     */
+    async revokeManagedConnectionRequestOpts(requestParameters: RevokeManagedConnectionRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['itemID'] == null) {
+            throw new runtime.RequiredError(
+                'itemID',
+                'Required parameter "itemID" was null or undefined when calling revokeManagedConnection().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("RuntimeBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/link/{itemID}`;
+        urlPath = urlPath.replace(`{${"itemID"}}`, encodeURIComponent(String(requestParameters['itemID'])));
+
+        return {
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Revoke a managed Plaid connection and delete its hosted credential
+     */
+    async revokeManagedConnectionRaw(requestParameters: RevokeManagedConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.revokeManagedConnectionRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Revoke a managed Plaid connection and delete its hosted credential
+     */
+    async revokeManagedConnection(requestParameters: RevokeManagedConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.revokeManagedConnectionRaw(requestParameters, initOverrides);
     }
 
 }

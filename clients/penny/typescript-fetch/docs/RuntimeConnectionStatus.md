@@ -9,6 +9,10 @@ Name | Type
 `id` | string
 `managedItemId` | string
 `status` | string
+`institutionId` | string
+`institutionName` | string
+`providerErrorCode` | string
+`requiredAction` | string
 `lastSyncStartedAt` | Date
 `lastSyncCompletedAt` | Date
 `lastSyncError` | string
@@ -25,6 +29,10 @@ const example = {
   "id": null,
   "managedItemId": null,
   "status": null,
+  "institutionId": null,
+  "institutionName": null,
+  "providerErrorCode": null,
+  "requiredAction": null,
   "lastSyncStartedAt": null,
   "lastSyncCompletedAt": null,
   "lastSyncError": null,
@@ -44,5 +52,3 @@ console.log(exampleParsed)
 ```
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
-
-

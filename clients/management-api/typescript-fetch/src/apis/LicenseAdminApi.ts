@@ -12,80 +12,83 @@
  * Do not edit the class manually.
  */
 
+
 import * as runtime from '../runtime';
+import type {
+  BillingMonthlyListResponse,
+  BillingSubscriptionSummary,
+  CreateLicenseResponse,
+  Entitlement,
+  EntitlementListResponse,
+  ErrorResponse,
+  InstallListResponse,
+  License,
+  LicenseListResponse,
+  LicenseStatus,
+  PatchLicenseRequest,
+  ProductID,
+  SupportOverrideClearRequest,
+  SupportOverrideGrantRequest,
+  SupportOverrideResponse,
+  TransferListResponse,
+  UpsertEntitlementRequest,
+  UsageDailyListResponse,
+} from '../models/index';
 import {
-    type BillingMonthlyListResponse,
     BillingMonthlyListResponseFromJSON,
     BillingMonthlyListResponseToJSON,
-} from '../models/BillingMonthlyListResponse';
-import {
-    type CreateLicenseResponse,
+    BillingSubscriptionSummaryFromJSON,
+    BillingSubscriptionSummaryToJSON,
     CreateLicenseResponseFromJSON,
     CreateLicenseResponseToJSON,
-} from '../models/CreateLicenseResponse';
-import {
-    type Entitlement,
     EntitlementFromJSON,
     EntitlementToJSON,
-} from '../models/Entitlement';
-import {
-    type EntitlementListResponse,
     EntitlementListResponseFromJSON,
     EntitlementListResponseToJSON,
-} from '../models/EntitlementListResponse';
-import {
-    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-} from '../models/ErrorResponse';
-import {
-    type InstallListResponse,
     InstallListResponseFromJSON,
     InstallListResponseToJSON,
-} from '../models/InstallListResponse';
-import {
-    type License,
     LicenseFromJSON,
     LicenseToJSON,
-} from '../models/License';
-import {
-    type LicenseListResponse,
     LicenseListResponseFromJSON,
     LicenseListResponseToJSON,
-} from '../models/LicenseListResponse';
-import {
-    type LicenseStatus,
     LicenseStatusFromJSON,
     LicenseStatusToJSON,
-} from '../models/LicenseStatus';
-import {
-    type PatchLicenseRequest,
     PatchLicenseRequestFromJSON,
     PatchLicenseRequestToJSON,
-} from '../models/PatchLicenseRequest';
-import {
-    type ProductID,
     ProductIDFromJSON,
     ProductIDToJSON,
-} from '../models/ProductID';
-import {
-    type TransferListResponse,
+    SupportOverrideClearRequestFromJSON,
+    SupportOverrideClearRequestToJSON,
+    SupportOverrideGrantRequestFromJSON,
+    SupportOverrideGrantRequestToJSON,
+    SupportOverrideResponseFromJSON,
+    SupportOverrideResponseToJSON,
     TransferListResponseFromJSON,
     TransferListResponseToJSON,
-} from '../models/TransferListResponse';
-import {
-    type UpsertEntitlementRequest,
     UpsertEntitlementRequestFromJSON,
     UpsertEntitlementRequestToJSON,
-} from '../models/UpsertEntitlementRequest';
-import {
-    type UsageDailyListResponse,
     UsageDailyListResponseFromJSON,
     UsageDailyListResponseToJSON,
-} from '../models/UsageDailyListResponse';
+} from '../models/index';
+
+export interface ClearLicenseSupportOverrideRequest {
+    licenseID: string;
+    supportOverrideClearRequest: SupportOverrideClearRequest;
+}
 
 export interface CreateLicenseAdminRequest {
     body?: object;
+}
+
+export interface GetLicenseBillingSubscriptionRequest {
+    licenseID: string;
+}
+
+export interface GrantLicenseSupportOverrideRequest {
+    licenseID: string;
+    supportOverrideGrantRequest: SupportOverrideGrantRequest;
 }
 
 export interface ListLicenseBillingMonthlyRequest {
@@ -146,6 +149,68 @@ export interface UpsertLicenseEntitlementRequest {
 export class LicenseAdminApi extends runtime.BaseAPI {
 
     /**
+     * Creates request options for clearLicenseSupportOverride without sending the request
+     */
+    async clearLicenseSupportOverrideRequestOpts(requestParameters: ClearLicenseSupportOverrideRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['licenseID'] == null) {
+            throw new runtime.RequiredError(
+                'licenseID',
+                'Required parameter "licenseID" was null or undefined when calling clearLicenseSupportOverride().'
+            );
+        }
+
+        if (requestParameters['supportOverrideClearRequest'] == null) {
+            throw new runtime.RequiredError(
+                'supportOverrideClearRequest',
+                'Required parameter "supportOverrideClearRequest" was null or undefined when calling clearLicenseSupportOverride().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("AdminBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/license/{licenseID}/support-override`;
+        urlPath = urlPath.replace(`{${"licenseID"}}`, encodeURIComponent(String(requestParameters['licenseID'])));
+
+        return {
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+            body: SupportOverrideClearRequestToJSON(requestParameters['supportOverrideClearRequest']),
+        };
+    }
+
+    /**
+     * Clear an audited managed-entitlement override
+     */
+    async clearLicenseSupportOverrideRaw(requestParameters: ClearLicenseSupportOverrideRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.clearLicenseSupportOverrideRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Clear an audited managed-entitlement override
+     */
+    async clearLicenseSupportOverride(requestParameters: ClearLicenseSupportOverrideRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.clearLicenseSupportOverrideRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * Creates request options for createLicenseAdmin without sending the request
      */
     async createLicenseAdminRequestOpts(requestParameters: CreateLicenseAdminRequest): Promise<runtime.RequestOpts> {
@@ -190,6 +255,122 @@ export class LicenseAdminApi extends runtime.BaseAPI {
      */
     async createLicenseAdmin(requestParameters: CreateLicenseAdminRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateLicenseResponse> {
         const response = await this.createLicenseAdminRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getLicenseBillingSubscription without sending the request
+     */
+    async getLicenseBillingSubscriptionRequestOpts(requestParameters: GetLicenseBillingSubscriptionRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['licenseID'] == null) {
+            throw new runtime.RequiredError(
+                'licenseID',
+                'Required parameter "licenseID" was null or undefined when calling getLicenseBillingSubscription().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("AdminBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/license/{licenseID}/billing/subscription`;
+        urlPath = urlPath.replace(`{${"licenseID"}}`, encodeURIComponent(String(requestParameters['licenseID'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get the latest Stripe test subscription linked to a license
+     */
+    async getLicenseBillingSubscriptionRaw(requestParameters: GetLicenseBillingSubscriptionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingSubscriptionSummary>> {
+        const requestOptions = await this.getLicenseBillingSubscriptionRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BillingSubscriptionSummaryFromJSON(jsonValue));
+    }
+
+    /**
+     * Get the latest Stripe test subscription linked to a license
+     */
+    async getLicenseBillingSubscription(requestParameters: GetLicenseBillingSubscriptionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingSubscriptionSummary> {
+        const response = await this.getLicenseBillingSubscriptionRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for grantLicenseSupportOverride without sending the request
+     */
+    async grantLicenseSupportOverrideRequestOpts(requestParameters: GrantLicenseSupportOverrideRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['licenseID'] == null) {
+            throw new runtime.RequiredError(
+                'licenseID',
+                'Required parameter "licenseID" was null or undefined when calling grantLicenseSupportOverride().'
+            );
+        }
+
+        if (requestParameters['supportOverrideGrantRequest'] == null) {
+            throw new runtime.RequiredError(
+                'supportOverrideGrantRequest',
+                'Required parameter "supportOverrideGrantRequest" was null or undefined when calling grantLicenseSupportOverride().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("AdminBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/license/{licenseID}/support-override`;
+        urlPath = urlPath.replace(`{${"licenseID"}}`, encodeURIComponent(String(requestParameters['licenseID'])));
+
+        return {
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: SupportOverrideGrantRequestToJSON(requestParameters['supportOverrideGrantRequest']),
+        };
+    }
+
+    /**
+     * Grant an audited managed-entitlement override for at most 30 days
+     */
+    async grantLicenseSupportOverrideRaw(requestParameters: GrantLicenseSupportOverrideRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SupportOverrideResponse>> {
+        const requestOptions = await this.grantLicenseSupportOverrideRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SupportOverrideResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Grant an audited managed-entitlement override for at most 30 days
+     */
+    async grantLicenseSupportOverride(requestParameters: GrantLicenseSupportOverrideRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SupportOverrideResponse> {
+        const response = await this.grantLicenseSupportOverrideRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -248,7 +429,7 @@ export class LicenseAdminApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/v1/license/{licenseID}/billing/monthly`;
-        urlPath = urlPath.replace('{licenseID}', encodeURIComponent(String(requestParameters['licenseID'])));
+        urlPath = urlPath.replace(`{${"licenseID"}}`, encodeURIComponent(String(requestParameters['licenseID'])));
 
         return {
             path: urlPath,
@@ -309,7 +490,7 @@ export class LicenseAdminApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/v1/license/{licenseID}/entitlements`;
-        urlPath = urlPath.replace('{licenseID}', encodeURIComponent(String(requestParameters['licenseID'])));
+        urlPath = urlPath.replace(`{${"licenseID"}}`, encodeURIComponent(String(requestParameters['licenseID'])));
 
         return {
             path: urlPath,
@@ -370,7 +551,7 @@ export class LicenseAdminApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/v1/license/{licenseID}/installs`;
-        urlPath = urlPath.replace('{licenseID}', encodeURIComponent(String(requestParameters['licenseID'])));
+        urlPath = urlPath.replace(`{${"licenseID"}}`, encodeURIComponent(String(requestParameters['licenseID'])));
 
         return {
             path: urlPath,
@@ -431,7 +612,7 @@ export class LicenseAdminApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/v1/license/{licenseID}/transfers`;
-        urlPath = urlPath.replace('{licenseID}', encodeURIComponent(String(requestParameters['licenseID'])));
+        urlPath = urlPath.replace(`{${"licenseID"}}`, encodeURIComponent(String(requestParameters['licenseID'])));
 
         return {
             path: urlPath,
@@ -511,7 +692,7 @@ export class LicenseAdminApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/v1/license/{licenseID}/usage/daily`;
-        urlPath = urlPath.replace('{licenseID}', encodeURIComponent(String(requestParameters['licenseID'])));
+        urlPath = urlPath.replace(`{${"licenseID"}}`, encodeURIComponent(String(requestParameters['licenseID'])));
 
         return {
             path: urlPath,
@@ -634,7 +815,7 @@ export class LicenseAdminApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/v1/license/{licenseID}`;
-        urlPath = urlPath.replace('{licenseID}', encodeURIComponent(String(requestParameters['licenseID'])));
+        urlPath = urlPath.replace(`{${"licenseID"}}`, encodeURIComponent(String(requestParameters['licenseID'])));
 
         return {
             path: urlPath,
@@ -697,7 +878,7 @@ export class LicenseAdminApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/v1/license/{licenseID}/entitlements`;
-        urlPath = urlPath.replace('{licenseID}', encodeURIComponent(String(requestParameters['licenseID'])));
+        urlPath = urlPath.replace(`{${"licenseID"}}`, encodeURIComponent(String(requestParameters['licenseID'])));
 
         return {
             path: urlPath,

@@ -182,6 +182,144 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerErrorResponse"
 
+  /v1/runtime/connections/link-token:
+    post:
+      tags: [Runtime]
+      operationId: createRuntimeConnectionLinkToken
+      summary: Create a browser-safe managed Plaid Link session
+      security:
+        - SessionCookieAuth: []
+      responses:
+        "200":
+          description: Link session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedLinkTokenResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailableResponse"
+
+  /v1/runtime/connections/link:
+    post:
+      tags: [Runtime]
+      operationId: connectRuntimeManagedConnection
+      summary: Complete a browser-safe managed Plaid Link session
+      security:
+        - SessionCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManagedLinkConnectRequest"
+      responses:
+        "201":
+          description: Managed connection created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedConnectionLinkResult"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "410":
+          description: Link session expired or was already used
+
+  /v1/runtime/connections/{connectionID}/relink-token:
+    post:
+      tags: [Runtime]
+      operationId: createRuntimeConnectionRelinkToken
+      summary: Create an update-mode Link token for a managed connection
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RuntimeConnectionID"
+      responses:
+        "200":
+          description: Relink token created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedLinkTokenResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /v1/runtime/connections/{connectionID}/relink:
+    post:
+      tags: [Runtime]
+      operationId: completeRuntimeConnectionRelink
+      summary: Complete a managed connection repair
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RuntimeConnectionID"
+      responses:
+        "200":
+          description: Managed connection repaired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagedConnection"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /v1/runtime/connections/{connectionID}:
+    delete:
+      tags: [Runtime]
+      operationId: revokeRuntimeManagedConnection
+      summary: Revoke a managed provider connection without deleting local finance history
+      security:
+        - SessionCookieAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RuntimeConnectionID"
+      responses:
+        "204":
+          description: Managed connection revoked
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+  /v1/runtime/billing/portal:
+    post:
+      tags: [Runtime]
+      operationId: createRuntimeBillingPortal
+      summary: Create a Stripe test-mode billing portal session for an administrator
+      security:
+        - SessionCookieAuth: []
+      responses:
+        "200":
+          description: Billing portal created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingPortalResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "502":
+          description: Billing provider unavailable
+
   /v1/runtime/connections/{connectionID}/sync:
     post:
       tags: [Runtime]
@@ -2143,6 +2281,15 @@ components:
       in: cookie
       name: penny_session_token
 
+  parameters:
+    RuntimeConnectionID:
+      in: path
+      name: connectionID
+      required: true
+      schema:
+        type: string
+        format: uuid
+
   responses:
     BadRequestResponse:
       description: Bad request
@@ -2481,7 +2628,7 @@ components:
         configured: true
         license_status: active
         plan: pennyos
-        features: [link:write, usage:write]
+        features: ["link:write", "usage:write"]
         entitlements:
           entitlement_status: active
           product_id: pennyos
@@ -2539,14 +2686,16 @@ components:
           enum: [disabled, optional, required]
         api_configured:
           type: boolean
-          description: True only when both management API URL and token are configured.
+          description: True when the management URL and either a configured token or auto-activation path are present.
         api_url_configured:
           type: boolean
         api_token_configured:
           type: boolean
+        auto_activation_enabled:
+          type: boolean
         runtime_secret_dir_configured:
           type: boolean
-      required: [mode, api_configured, api_url_configured, api_token_configured, runtime_secret_dir_configured]
+      required: [mode, api_configured, api_url_configured, api_token_configured, auto_activation_enabled, runtime_secret_dir_configured]
 
     RuntimeStatusWebsocket:
       type: object
@@ -2604,7 +2753,15 @@ components:
           description: Redacted managed item identifier.
         status:
           type: string
-          enum: [connected, syncing, stale, error, revoked]
+          enum: [connected, syncing, stale, error, reauth_required, limit_reached, revoked]
+        institution_id:
+          type: string
+        institution_name:
+          type: string
+        provider_error_code:
+          type: string
+        required_action:
+          type: string
         last_sync_started_at:
           type: string
           format: date-time
@@ -2622,6 +2779,131 @@ components:
           format: date-time
       required: [id, managed_item_id, status, date_added]
 
+    ManagedLinkTokenResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        connection_id:
+          type: string
+          format: uuid
+        link_token:
+          type: string
+        expiration:
+          type: string
+          format: date-time
+        mode:
+          type: string
+          enum: [create, update]
+      required: [link_token]
+
+    ManagedLinkInstitution:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        institution_id:
+          type: string
+      required: [name, institution_id]
+
+    ManagedLinkAccount:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        mask:
+          type: string
+        type:
+          type: string
+        subtype:
+          type: string
+      required: [id, name, mask, type, subtype]
+
+    ManagedLinkMetadata:
+      type: object
+      additionalProperties: false
+      properties:
+        institution:
+          $ref: "#/components/schemas/ManagedLinkInstitution"
+        accounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ManagedLinkAccount"
+      required: [institution, accounts]
+
+    ManagedLinkConnectRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        public_token:
+          type: string
+        link_token:
+          type: string
+        metadata:
+          $ref: "#/components/schemas/ManagedLinkMetadata"
+      required: [public_token, link_token, metadata]
+
+    ManagedConnection:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        managed_item_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [connected, syncing, stale, error, reauth_required, limit_reached, revoked]
+        institution_id:
+          type: string
+        institution_name:
+          type: string
+        provider_error_code:
+          type: string
+        required_action:
+          type: string
+        last_sync_started_at:
+          type: string
+          format: date-time
+        last_sync_completed_at:
+          type: string
+          format: date-time
+        last_sync_error:
+          type: string
+        date_added:
+          type: string
+          format: date-time
+        date_modified:
+          type: string
+          format: date-time
+      required: [id, managed_item_id, status, date_added]
+
+    ManagedConnectionLinkResult:
+      type: object
+      additionalProperties: false
+      properties:
+        connection:
+          $ref: "#/components/schemas/ManagedConnection"
+        sync:
+          $ref: "#/components/schemas/ManagedConnectionSyncResult"
+        sync_error:
+          type: string
+      required: [connection]
+
+    BillingPortalResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        portal_url:
+          type: string
+          format: uri
+      required: [portal_url]
+
     ManagedConnectionSyncResult:
       type: object
       additionalProperties: false
@@ -2631,7 +2913,7 @@ components:
           format: uuid
         status:
           type: string
-          enum: [connected, syncing, stale, error, revoked]
+          enum: [connected, syncing, stale, error, reauth_required, limit_reached, revoked]
         sync:
           type: object
           additionalProperties: true

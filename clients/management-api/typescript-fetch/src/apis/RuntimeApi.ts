@@ -12,97 +12,69 @@
  * Do not edit the class manually.
  */
 
+
 import * as runtime from '../runtime';
+import type {
+  ErrorResponse,
+  JwksResponse,
+  ProductID,
+  RuntimeActivateRequest,
+  RuntimeActivateResponse,
+  RuntimeActivationHistoryListResponse,
+  RuntimeActivationOverviewResponse,
+  RuntimeCommandCreateRequest,
+  RuntimeCommandCreateResponse,
+  RuntimeCommandDeliveryListResponse,
+  RuntimeCommandListResponse,
+  RuntimeCommandStatus,
+  RuntimeCommandType,
+  RuntimeEntitlementResponse,
+  RuntimeInstanceListResponse,
+  RuntimeRenewResponse,
+  RuntimeUsageBatchRequest,
+  RuntimeUsageBatchResponse,
+  TransferConfirmationRequiredResponse,
+} from '../models/index';
 import {
-    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-} from '../models/ErrorResponse';
-import {
-    type JwksResponse,
     JwksResponseFromJSON,
     JwksResponseToJSON,
-} from '../models/JwksResponse';
-import {
-    type ProductID,
     ProductIDFromJSON,
     ProductIDToJSON,
-} from '../models/ProductID';
-import {
-    type RuntimeActivateRequest,
     RuntimeActivateRequestFromJSON,
     RuntimeActivateRequestToJSON,
-} from '../models/RuntimeActivateRequest';
-import {
-    type RuntimeActivateResponse,
     RuntimeActivateResponseFromJSON,
     RuntimeActivateResponseToJSON,
-} from '../models/RuntimeActivateResponse';
-import {
-    type RuntimeActivationHistoryListResponse,
     RuntimeActivationHistoryListResponseFromJSON,
     RuntimeActivationHistoryListResponseToJSON,
-} from '../models/RuntimeActivationHistoryListResponse';
-import {
-    type RuntimeActivationOverviewResponse,
     RuntimeActivationOverviewResponseFromJSON,
     RuntimeActivationOverviewResponseToJSON,
-} from '../models/RuntimeActivationOverviewResponse';
-import {
-    type RuntimeCommandCreateRequest,
     RuntimeCommandCreateRequestFromJSON,
     RuntimeCommandCreateRequestToJSON,
-} from '../models/RuntimeCommandCreateRequest';
-import {
-    type RuntimeCommandCreateResponse,
     RuntimeCommandCreateResponseFromJSON,
     RuntimeCommandCreateResponseToJSON,
-} from '../models/RuntimeCommandCreateResponse';
-import {
-    type RuntimeCommandDeliveryListResponse,
     RuntimeCommandDeliveryListResponseFromJSON,
     RuntimeCommandDeliveryListResponseToJSON,
-} from '../models/RuntimeCommandDeliveryListResponse';
-import {
-    type RuntimeCommandListResponse,
     RuntimeCommandListResponseFromJSON,
     RuntimeCommandListResponseToJSON,
-} from '../models/RuntimeCommandListResponse';
-import {
-    type RuntimeCommandStatus,
     RuntimeCommandStatusFromJSON,
     RuntimeCommandStatusToJSON,
-} from '../models/RuntimeCommandStatus';
-import {
-    type RuntimeCommandType,
     RuntimeCommandTypeFromJSON,
     RuntimeCommandTypeToJSON,
-} from '../models/RuntimeCommandType';
-import {
-    type RuntimeInstanceListResponse,
+    RuntimeEntitlementResponseFromJSON,
+    RuntimeEntitlementResponseToJSON,
     RuntimeInstanceListResponseFromJSON,
     RuntimeInstanceListResponseToJSON,
-} from '../models/RuntimeInstanceListResponse';
-import {
-    type RuntimeRenewResponse,
     RuntimeRenewResponseFromJSON,
     RuntimeRenewResponseToJSON,
-} from '../models/RuntimeRenewResponse';
-import {
-    type RuntimeUsageBatchRequest,
     RuntimeUsageBatchRequestFromJSON,
     RuntimeUsageBatchRequestToJSON,
-} from '../models/RuntimeUsageBatchRequest';
-import {
-    type RuntimeUsageBatchResponse,
     RuntimeUsageBatchResponseFromJSON,
     RuntimeUsageBatchResponseToJSON,
-} from '../models/RuntimeUsageBatchResponse';
-import {
-    type TransferConfirmationRequiredResponse,
     TransferConfirmationRequiredResponseFromJSON,
     TransferConfirmationRequiredResponseToJSON,
-} from '../models/TransferConfirmationRequiredResponse';
+} from '../models/index';
 
 export interface ActivateRuntimeInstallRequest {
     runtimeActivateRequest: RuntimeActivateRequest;
@@ -326,6 +298,51 @@ export class RuntimeApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for getRuntimeEntitlement without sending the request
+     */
+    async getRuntimeEntitlementRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("RuntimeBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/runtime/entitlement`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Read the current effective managed-service entitlement
+     */
+    async getRuntimeEntitlementRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RuntimeEntitlementResponse>> {
+        const requestOptions = await this.getRuntimeEntitlementRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RuntimeEntitlementResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Read the current effective managed-service entitlement
+     */
+    async getRuntimeEntitlement(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RuntimeEntitlementResponse> {
+        const response = await this.getRuntimeEntitlementRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for getRuntimeJwks without sending the request
      */
     async getRuntimeJwksRequestOpts(): Promise<runtime.RequestOpts> {
@@ -519,7 +536,7 @@ export class RuntimeApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/v1/runtime/commands/{commandID}/deliveries`;
-        urlPath = urlPath.replace('{commandID}', encodeURIComponent(String(requestParameters['commandID'])));
+        urlPath = urlPath.replace(`{${"commandID"}}`, encodeURIComponent(String(requestParameters['commandID'])));
 
         return {
             path: urlPath,

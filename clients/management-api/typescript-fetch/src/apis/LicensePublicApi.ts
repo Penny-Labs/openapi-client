@@ -12,47 +12,36 @@
  * Do not edit the class manually.
  */
 
+
 import * as runtime from '../runtime';
+import type {
+  ErrorResponse,
+  LicenseActivateRequest,
+  LicenseActivateResponse,
+  LicenseSignupRequest,
+  LicenseSignupResponse,
+  LicenseValidateRequest,
+  LicenseValidateResponse,
+  TransferConfirmationRequiredResponse,
+} from '../models/index';
 import {
-    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-} from '../models/ErrorResponse';
-import {
-    type LicenseActivateRequest,
     LicenseActivateRequestFromJSON,
     LicenseActivateRequestToJSON,
-} from '../models/LicenseActivateRequest';
-import {
-    type LicenseActivateResponse,
     LicenseActivateResponseFromJSON,
     LicenseActivateResponseToJSON,
-} from '../models/LicenseActivateResponse';
-import {
-    type LicenseSignupRequest,
     LicenseSignupRequestFromJSON,
     LicenseSignupRequestToJSON,
-} from '../models/LicenseSignupRequest';
-import {
-    type LicenseSignupResponse,
     LicenseSignupResponseFromJSON,
     LicenseSignupResponseToJSON,
-} from '../models/LicenseSignupResponse';
-import {
-    type LicenseValidateRequest,
     LicenseValidateRequestFromJSON,
     LicenseValidateRequestToJSON,
-} from '../models/LicenseValidateRequest';
-import {
-    type LicenseValidateResponse,
     LicenseValidateResponseFromJSON,
     LicenseValidateResponseToJSON,
-} from '../models/LicenseValidateResponse';
-import {
-    type TransferConfirmationRequiredResponse,
     TransferConfirmationRequiredResponseFromJSON,
     TransferConfirmationRequiredResponseToJSON,
-} from '../models/TransferConfirmationRequiredResponse';
+} from '../models/index';
 
 export interface ActivateLicenseRequest {
     licenseActivateRequest: LicenseActivateRequest;

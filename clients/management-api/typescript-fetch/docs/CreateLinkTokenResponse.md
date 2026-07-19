@@ -7,6 +7,9 @@
 Name | Type
 ------------ | -------------
 `linkToken` | string
+`connectionId` | string
+`expiration` | Date
+`mode` | string
 
 ## Example
 
@@ -16,6 +19,9 @@ import type { CreateLinkTokenResponse } from '@penny/openapi-management-api-clie
 // TODO: Update the object below with actual values
 const example = {
   "linkToken": null,
+  "connectionId": null,
+  "expiration": null,
+  "mode": null,
 } satisfies CreateLinkTokenResponse
 
 console.log(example)
@@ -30,5 +36,3 @@ console.log(exampleParsed)
 ```
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
-
-

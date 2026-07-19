@@ -10,10 +10,14 @@ Name | Type
 `licenseId` | string
 `productId` | [ProductID](ProductID.md)
 `status` | string
+`plan` | string
 `scopes` | string
+`capManagedConnections` | number
 `capTransactionsConnectedAccounts` | number
 `capRecurringConnectedAccounts` | number
 `capTransactionsRefreshCalls` | number
+`overrideExpiresAt` | Date
+`overrideReason` | string
 
 ## Example
 
@@ -26,10 +30,14 @@ const example = {
   "licenseId": null,
   "productId": null,
   "status": null,
+  "plan": null,
   "scopes": null,
+  "capManagedConnections": null,
   "capTransactionsConnectedAccounts": null,
   "capRecurringConnectedAccounts": null,
   "capTransactionsRefreshCalls": null,
+  "overrideExpiresAt": null,
+  "overrideReason": null,
 } satisfies Entitlement
 
 console.log(example)
@@ -44,5 +52,3 @@ console.log(exampleParsed)
 ```
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
-
-

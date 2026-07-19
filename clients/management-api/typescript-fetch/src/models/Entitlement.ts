@@ -53,10 +53,22 @@ export interface Entitlement {
     status: EntitlementStatusEnum;
     /**
      *
+     * @type {EntitlementPlanEnum}
+     * @memberof Entitlement
+     */
+    plan: EntitlementPlanEnum;
+    /**
+     *
      * @type {string}
      * @memberof Entitlement
      */
     scopes: string;
+    /**
+     *
+     * @type {number}
+     * @memberof Entitlement
+     */
+    capManagedConnections?: number | null;
     /**
      *
      * @type {number}
@@ -75,6 +87,18 @@ export interface Entitlement {
      * @memberof Entitlement
      */
     capTransactionsRefreshCalls?: number | null;
+    /**
+     *
+     * @type {Date}
+     * @memberof Entitlement
+     */
+    overrideExpiresAt?: Date | null;
+    /**
+     *
+     * @type {string}
+     * @memberof Entitlement
+     */
+    overrideReason?: string | null;
 }
 
 
@@ -88,6 +112,15 @@ export const EntitlementStatusEnum = {
 } as const;
 export type EntitlementStatusEnum = typeof EntitlementStatusEnum[keyof typeof EntitlementStatusEnum];
 
+/**
+ * @export
+ */
+export const EntitlementPlanEnum = {
+    Base: 'base',
+    Pro: 'pro'
+} as const;
+export type EntitlementPlanEnum = typeof EntitlementPlanEnum[keyof typeof EntitlementPlanEnum];
+
 
 /**
  * Check if a given object implements the Entitlement interface.
@@ -97,6 +130,7 @@ export function instanceOfEntitlement(value: object): value is Entitlement {
     if (!('licenseId' in value) || value['licenseId'] === undefined) return false;
     if (!('productId' in value) || value['productId'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('plan' in value) || value['plan'] === undefined) return false;
     if (!('scopes' in value) || value['scopes'] === undefined) return false;
     return true;
 }
@@ -115,10 +149,14 @@ export function EntitlementFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'licenseId': json['license_id'],
         'productId': ProductIDFromJSON(json['product_id']),
         'status': json['status'],
+        'plan': json['plan'],
         'scopes': json['scopes'],
+        'capManagedConnections': json['cap_managed_connections'] == null ? undefined : json['cap_managed_connections'],
         'capTransactionsConnectedAccounts': json['cap_transactions_connected_accounts'] == null ? undefined : json['cap_transactions_connected_accounts'],
         'capRecurringConnectedAccounts': json['cap_recurring_connected_accounts'] == null ? undefined : json['cap_recurring_connected_accounts'],
         'capTransactionsRefreshCalls': json['cap_transactions_refresh_calls'] == null ? undefined : json['cap_transactions_refresh_calls'],
+        'overrideExpiresAt': json['override_expires_at'] == null ? undefined : (new Date(json['override_expires_at'])),
+        'overrideReason': json['override_reason'] == null ? undefined : json['override_reason'],
     };
 }
 
@@ -137,10 +175,13 @@ export function EntitlementToJSONTyped(value?: Entitlement | null, ignoreDiscrim
         'license_id': value['licenseId'],
         'product_id': ProductIDToJSON(value['productId']),
         'status': value['status'],
+        'plan': value['plan'],
         'scopes': value['scopes'],
+        'cap_managed_connections': value['capManagedConnections'],
         'cap_transactions_connected_accounts': value['capTransactionsConnectedAccounts'],
         'cap_recurring_connected_accounts': value['capRecurringConnectedAccounts'],
         'cap_transactions_refresh_calls': value['capTransactionsRefreshCalls'],
+        'override_expires_at': value['overrideExpiresAt'] == null ? value['overrideExpiresAt'] : value['overrideExpiresAt'].toISOString(),
+        'override_reason': value['overrideReason'],
     };
 }
-

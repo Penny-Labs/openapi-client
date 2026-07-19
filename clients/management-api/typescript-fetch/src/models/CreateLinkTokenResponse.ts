@@ -25,13 +25,44 @@ export interface CreateLinkTokenResponse {
      * @memberof CreateLinkTokenResponse
      */
     linkToken: string;
+    /**
+     *
+     * @type {string}
+     * @memberof CreateLinkTokenResponse
+     */
+    connectionId?: string;
+    /**
+     *
+     * @type {Date}
+     * @memberof CreateLinkTokenResponse
+     */
+    expiration: Date;
+    /**
+     *
+     * @type {CreateLinkTokenResponseModeEnum}
+     * @memberof CreateLinkTokenResponse
+     */
+    mode: CreateLinkTokenResponseModeEnum;
 }
+
+
+/**
+ * @export
+ */
+export const CreateLinkTokenResponseModeEnum = {
+    Create: 'create',
+    Update: 'update'
+} as const;
+export type CreateLinkTokenResponseModeEnum = typeof CreateLinkTokenResponseModeEnum[keyof typeof CreateLinkTokenResponseModeEnum];
+
 
 /**
  * Check if a given object implements the CreateLinkTokenResponse interface.
  */
 export function instanceOfCreateLinkTokenResponse(value: object): value is CreateLinkTokenResponse {
     if (!('linkToken' in value) || value['linkToken'] === undefined) return false;
+    if (!('expiration' in value) || value['expiration'] === undefined) return false;
+    if (!('mode' in value) || value['mode'] === undefined) return false;
     return true;
 }
 
@@ -46,6 +77,9 @@ export function CreateLinkTokenResponseFromJSONTyped(json: any, ignoreDiscrimina
     return {
 
         'linkToken': json['link_token'],
+        'connectionId': json['connection_id'] == null ? undefined : json['connection_id'],
+        'expiration': (new Date(json['expiration'])),
+        'mode': json['mode'],
     };
 }
 
@@ -61,6 +95,8 @@ export function CreateLinkTokenResponseToJSONTyped(value?: CreateLinkTokenRespon
     return {
 
         'link_token': value['linkToken'],
+        'connection_id': value['connectionId'],
+        'expiration': value['expiration'].toISOString(),
+        'mode': value['mode'],
     };
 }
-

@@ -12,47 +12,36 @@
  * Do not edit the class manually.
  */
 
+
 import * as runtime from '../runtime';
+import type {
+  ErrorResponse,
+  MailingListListResponse,
+  NewsletterListResponse,
+  NewsletterSendRequest,
+  NewsletterSendResponse,
+  NewsletterStatus,
+  NewsletterSubscribeRequest,
+  SubscriberListResponse,
+} from '../models/index';
 import {
-    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-} from '../models/ErrorResponse';
-import {
-    type MailingListListResponse,
     MailingListListResponseFromJSON,
     MailingListListResponseToJSON,
-} from '../models/MailingListListResponse';
-import {
-    type NewsletterListResponse,
     NewsletterListResponseFromJSON,
     NewsletterListResponseToJSON,
-} from '../models/NewsletterListResponse';
-import {
-    type NewsletterSendRequest,
     NewsletterSendRequestFromJSON,
     NewsletterSendRequestToJSON,
-} from '../models/NewsletterSendRequest';
-import {
-    type NewsletterSendResponse,
     NewsletterSendResponseFromJSON,
     NewsletterSendResponseToJSON,
-} from '../models/NewsletterSendResponse';
-import {
-    type NewsletterStatus,
     NewsletterStatusFromJSON,
     NewsletterStatusToJSON,
-} from '../models/NewsletterStatus';
-import {
-    type NewsletterSubscribeRequest,
     NewsletterSubscribeRequestFromJSON,
     NewsletterSubscribeRequestToJSON,
-} from '../models/NewsletterSubscribeRequest';
-import {
-    type SubscriberListResponse,
     SubscriberListResponseFromJSON,
     SubscriberListResponseToJSON,
-} from '../models/SubscriberListResponse';
+} from '../models/index';
 
 export interface ListMailingListsRequest {
     q?: string;

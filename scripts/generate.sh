@@ -16,9 +16,9 @@ PENNY_REGISTRY_URL="https://npm.pkg.github.com"
 
 if [[ "${API_NAME}" == "penny" && "${GENERATOR}" == "typescript-fetch" ]]; then
   PACKAGE_NAME="${PENNY_PACKAGE_NAME}"
-  PACKAGE_VERSION="${PACKAGE_VERSION:-0.4.0}"
+  PACKAGE_VERSION="${PACKAGE_VERSION:-0.5.0}"
 else
-  PACKAGE_VERSION="${PACKAGE_VERSION:-0.1.0}"
+  PACKAGE_VERSION="${PACKAGE_VERSION:-0.2.0}"
 fi
 
 if ! command -v docker >/dev/null 2>&1; then
@@ -59,6 +59,32 @@ if [[ "${API_NAME}" == "penny" && "${GENERATOR}" == "typescript-fetch" ]]; then
     perl -0pi -e 's#("moduleResolution":\s*"node",\n)#$1    "rootDir": "src",\n#' "${TS_CONFIG}"
   fi
 fi
+
+# The existing clients were generated with different whitespace conventions.
+# Normalize management output wholesale, but only touch Penny files that
+# actually changed, so regeneration remains focused and passes diff checks.
+if [[ "${API_NAME}" == "management-api" ]]; then
+  find "${OUTPUT_DIR}" -type f \( -name '*.ts' -o -name '*.md' \) \
+    -exec perl -pi -e 's/[ \t]+$//' {} +
+else
+  while IFS= read -r generated_file; do
+    case "${generated_file}" in
+      *.ts|*.md) perl -pi -e 's/[ \t]+$//' "${ROOT_DIR}/${generated_file}" ;;
+    esac
+  done < <(
+    git -C "${ROOT_DIR}" diff --name-only -- "clients/${API_NAME}/${GENERATOR}"
+    git -C "${ROOT_DIR}" ls-files --others --exclude-standard -- "clients/${API_NAME}/${GENERATOR}"
+  )
+fi
+
+while IFS= read -r generated_file; do
+  case "${generated_file}" in
+    *.ts|*.md) perl -0pi -e 's/(?:\r?\n)+\z/\n/' "${ROOT_DIR}/${generated_file}" ;;
+  esac
+done < <(
+  git -C "${ROOT_DIR}" diff --name-only -- "clients/${API_NAME}/${GENERATOR}"
+  git -C "${ROOT_DIR}" ls-files --others --exclude-standard -- "clients/${API_NAME}/${GENERATOR}"
+)
 
 echo "Synced spec to ${TARGET_SPEC}"
 echo "Generated ${GENERATOR} client at ${OUTPUT_DIR}"
