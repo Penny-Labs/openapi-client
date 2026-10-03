@@ -22,7 +22,9 @@ import type {
   NewsletterSendResponse,
   NewsletterStatus,
   NewsletterSubscribeRequest,
+  NewsletterSummary,
   SubscriberListResponse,
+  SubscriberSummary,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
@@ -39,9 +41,21 @@ import {
     NewsletterStatusToJSON,
     NewsletterSubscribeRequestFromJSON,
     NewsletterSubscribeRequestToJSON,
+    NewsletterSummaryFromJSON,
+    NewsletterSummaryToJSON,
     SubscriberListResponseFromJSON,
     SubscriberListResponseToJSON,
+    SubscriberSummaryFromJSON,
+    SubscriberSummaryToJSON,
 } from '../models/index';
+
+export interface GetNewsletterRequest {
+    newsletterID: string;
+}
+
+export interface GetSubscriberRequest {
+    subscriberID: string;
+}
 
 export interface ListMailingListsRequest {
     q?: string;
@@ -50,6 +64,7 @@ export interface ListMailingListsRequest {
 }
 
 export interface ListNewslettersRequest {
+    q?: string;
     mailingListId?: string;
     status?: NewsletterStatus;
     limit?: number;
@@ -75,6 +90,112 @@ export interface SubscribeNewsletterRequest {
  *
  */
 export class NewsletterApi extends runtime.BaseAPI {
+
+    /**
+     * Creates request options for getNewsletter without sending the request
+     */
+    async getNewsletterRequestOpts(requestParameters: GetNewsletterRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['newsletterID'] == null) {
+            throw new runtime.RequiredError(
+                'newsletterID',
+                'Required parameter "newsletterID" was null or undefined when calling getNewsletter().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("AdminBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/newsletter/{newsletterID}`;
+        urlPath = urlPath.replace(`{${"newsletterID"}}`, encodeURIComponent(String(requestParameters['newsletterID'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get newsletter
+     */
+    async getNewsletterRaw(requestParameters: GetNewsletterRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NewsletterSummary>> {
+        const requestOptions = await this.getNewsletterRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => NewsletterSummaryFromJSON(jsonValue));
+    }
+
+    /**
+     * Get newsletter
+     */
+    async getNewsletter(requestParameters: GetNewsletterRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NewsletterSummary> {
+        const response = await this.getNewsletterRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getSubscriber without sending the request
+     */
+    async getSubscriberRequestOpts(requestParameters: GetSubscriberRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['subscriberID'] == null) {
+            throw new runtime.RequiredError(
+                'subscriberID',
+                'Required parameter "subscriberID" was null or undefined when calling getSubscriber().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("AdminBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/newsletter/subscribers/{subscriberID}`;
+        urlPath = urlPath.replace(`{${"subscriberID"}}`, encodeURIComponent(String(requestParameters['subscriberID'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get subscriber
+     */
+    async getSubscriberRaw(requestParameters: GetSubscriberRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SubscriberSummary>> {
+        const requestOptions = await this.getSubscriberRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SubscriberSummaryFromJSON(jsonValue));
+    }
+
+    /**
+     * Get subscriber
+     */
+    async getSubscriber(requestParameters: GetSubscriberRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SubscriberSummary> {
+        const response = await this.getSubscriberRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for listMailingLists without sending the request
@@ -138,6 +259,10 @@ export class NewsletterApi extends runtime.BaseAPI {
      */
     async listNewslettersRequestOpts(requestParameters: ListNewslettersRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
+
+        if (requestParameters['q'] != null) {
+            queryParameters['q'] = requestParameters['q'];
+        }
 
         if (requestParameters['mailingListId'] != null) {
             queryParameters['mailing_list_id'] = requestParameters['mailingListId'];

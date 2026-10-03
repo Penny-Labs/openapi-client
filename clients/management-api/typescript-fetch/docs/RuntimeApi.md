@@ -602,7 +602,7 @@ example().catch(console.error);
 
 ## listRuntimeCommands
 
-> RuntimeCommandListResponse listRuntimeCommands(productId, licenseId, installId, status, commandType, limit, cursor)
+> RuntimeCommandListResponse listRuntimeCommands(productId, licenseId, installId, status, commandType, limit, cursor, from, to)
 
 List runtime commands with delivery status counters (admin)
 
@@ -638,6 +638,10 @@ async function example() {
     limit: 56,
     // string (optional)
     cursor: cursor_example,
+    // Date (optional)
+    from: 2013-10-20T19:20:30+01:00,
+    // Date (optional)
+    to: 2013-10-20T19:20:30+01:00,
   } satisfies ListRuntimeCommandsRequest;
 
   try {
@@ -664,6 +668,8 @@ example().catch(console.error);
 | **commandType** | `RuntimeCommandType` |  | [Optional] [Defaults to `undefined`] [Enum: pull_data, notify, license_enforce, license_resync, connection_update] |
 | **limit** | `number` |  | [Optional] [Defaults to `25`] |
 | **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **from** | `Date` |  | [Optional] [Defaults to `undefined`] |
+| **to** | `Date` |  | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
@@ -692,7 +698,7 @@ example().catch(console.error);
 
 ## listRuntimeInstances
 
-> RuntimeInstanceListResponse listRuntimeInstances(productId, licenseId, installId, connected, limit, cursor)
+> RuntimeInstanceListResponse listRuntimeInstances(productId, licenseId, installId, connected, limit, cursor, status)
 
 List runtime instances and websocket connection state (admin)
 
@@ -726,6 +732,8 @@ async function example() {
     limit: 56,
     // string (optional)
     cursor: cursor_example,
+    // 'active' | 'revoked' (optional)
+    status: status_example,
   } satisfies ListRuntimeInstancesRequest;
 
   try {
@@ -751,6 +759,7 @@ example().catch(console.error);
 | **connected** | `boolean` |  | [Optional] [Defaults to `undefined`] |
 | **limit** | `number` |  | [Optional] [Defaults to `25`] |
 | **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **status** | `active`, `revoked` |  | [Optional] [Defaults to `undefined`] [Enum: active, revoked] |
 
 ### Return type
 

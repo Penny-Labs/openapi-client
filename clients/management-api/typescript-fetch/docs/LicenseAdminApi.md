@@ -738,7 +738,7 @@ async function example() {
   const api = new LicenseAdminApi(config);
 
   const body = {
-    // string | Search by id or key suffix (optional)
+    // string | Search by id, key suffix, holder name, email, or company (optional)
     q: q_example,
     // LicenseStatus (optional)
     status: ...,
@@ -765,7 +765,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **q** | `string` | Search by id or key suffix | [Optional] [Defaults to `undefined`] |
+| **q** | `string` | Search by id, key suffix, holder name, email, or company | [Optional] [Defaults to `undefined`] |
 | **status** | `LicenseStatus` |  | [Optional] [Defaults to `undefined`] [Enum: active, pending, revoked, suspended, expired] |
 | **limit** | `number` |  | [Optional] [Defaults to `25`] |
 | **cursor** | `string` |  | [Optional] [Defaults to `undefined`] |

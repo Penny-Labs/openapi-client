@@ -54,6 +54,26 @@ All URIs are relative to *http://localhost:8090*
 *BillingApi* | [**createBillingCheckout**](docs/BillingApi.md#createbillingcheckout) | **POST** /v1/billing/checkout | Create a Stripe test-mode Checkout session for PennyOS Pro
 *BillingApi* | [**createRuntimeBillingPortal**](docs/BillingApi.md#createruntimebillingportal) | **POST** /v1/runtime/billing/portal | Create a Stripe test-mode customer portal session
 *BillingApi* | [**receiveStripeWebhook**](docs/BillingApi.md#receivestripewebhook) | **POST** /v1/stripe/webhook | Receive a signature-verified Stripe test-mode webhook
+*ConsoleApi* | [**getConsoleConnection**](docs/ConsoleApi.md#getconsoleconnection) | **GET** /v1/admin/connections/{connectionID} | getConsoleConnection
+*ConsoleApi* | [**getConsoleOverview**](docs/ConsoleApi.md#getconsoleoverview) | **GET** /v1/admin/overview | getConsoleOverview
+*ConsoleApi* | [**getLicenseAdmin**](docs/ConsoleApi.md#getlicenseadmin) | **GET** /v1/license/{licenseID} | getLicenseAdmin
+*ConsoleApi* | [**getLicenseUsageBillingSummary**](docs/ConsoleApi.md#getlicenseusagebillingsummary) | **GET** /v1/license/{licenseID}/usage-billing/summary | getLicenseUsageBillingSummary
+*ConsoleApi* | [**getRuntimeCommand**](docs/ConsoleApi.md#getruntimecommand) | **GET** /v1/runtime/commands/{commandID} | getRuntimeCommand
+*ConsoleApi* | [**getWebhookEndpoint**](docs/ConsoleApi.md#getwebhookendpoint) | **GET** /v1/webhooks/endpoints/{endpointID} | getWebhookEndpoint
+*ConsoleApi* | [**getWebhookEvent**](docs/ConsoleApi.md#getwebhookevent) | **GET** /v1/webhooks/events/{eventID} | getWebhookEvent
+*ConsoleApi* | [**listBillingCheckouts**](docs/ConsoleApi.md#listbillingcheckouts) | **GET** /v1/billing/checkouts | listBillingCheckouts
+*ConsoleApi* | [**listBillingSubscriptions**](docs/ConsoleApi.md#listbillingsubscriptions) | **GET** /v1/billing/subscriptions | listBillingSubscriptions
+*ConsoleApi* | [**listConsoleConnections**](docs/ConsoleApi.md#listconsoleconnections) | **GET** /v1/admin/connections | listConsoleConnections
+*ConsoleApi* | [**listNewsletterDeliveries**](docs/ConsoleApi.md#listnewsletterdeliveries) | **GET** /v1/newsletter/{newsletterID}/deliveries | listNewsletterDeliveries
+*ConsoleApi* | [**listNewsletterRecipientOutcomes**](docs/ConsoleApi.md#listnewsletterrecipientoutcomes) | **GET** /v1/newsletter/deliveries | List recorded recipient outcomes
+*ConsoleApi* | [**listProcessedStripeEvents**](docs/ConsoleApi.md#listprocessedstripeevents) | **GET** /v1/billing/events | listProcessedStripeEvents
+*ConsoleApi* | [**listSubscriberUnsubscribes**](docs/ConsoleApi.md#listsubscriberunsubscribes) | **GET** /v1/newsletter/subscribers/{subscriberID}/unsubscribes | listSubscriberUnsubscribes
+*ConsoleApi* | [**listSupportOverrideHistory**](docs/ConsoleApi.md#listsupportoverridehistory) | **GET** /v1/license/{licenseID}/support-override/history | listSupportOverrideHistory
+*ConsoleApi* | [**listWebhookDeliveries**](docs/ConsoleApi.md#listwebhookdeliveries) | **GET** /v1/webhooks/deliveries | listWebhookDeliveries
+*ConsoleApi* | [**listWebhookDestinations**](docs/ConsoleApi.md#listwebhookdestinations) | **GET** /v1/webhooks/endpoints/{endpointID}/destinations | listWebhookDestinations
+*ConsoleApi* | [**listWebhookEndpoints**](docs/ConsoleApi.md#listwebhookendpoints) | **GET** /v1/webhooks/endpoints | listWebhookEndpoints
+*ConsoleApi* | [**listWebhookEvents**](docs/ConsoleApi.md#listwebhookevents) | **GET** /v1/webhooks/events | listWebhookEvents
+*ConsoleApi* | [**searchConsole**](docs/ConsoleApi.md#searchconsole) | **GET** /v1/admin/search | searchConsole
 *HealthApi* | [**getHealthz**](docs/HealthApi.md#gethealthz) | **GET** /healthz | Health check
 *HealthApi* | [**getReadyz**](docs/HealthApi.md#getreadyz) | **GET** /readyz | Readiness check
 *InstitutionsApi* | [**listInstitutions**](docs/InstitutionsApi.md#listinstitutions) | **GET** /v1/institutions/ | List institutions
@@ -81,6 +101,8 @@ All URIs are relative to *http://localhost:8090*
 *ManagedDataApi* | [**listManagedTransactions**](docs/ManagedDataApi.md#listmanagedtransactions) | **GET** /v1/link/{itemID}/transactions | List cached managed transactions
 *ManagedDataApi* | [**syncManagedBalances**](docs/ManagedDataApi.md#syncmanagedbalances) | **POST** /v1/link/{itemID}/accounts/balances/sync | Refresh and cache managed accounts and balances
 *ManagedDataApi* | [**syncManagedTransactions**](docs/ManagedDataApi.md#syncmanagedtransactions) | **POST** /v1/link/{itemID}/transactions/sync | Refresh and cache managed transactions
+*NewsletterApi* | [**getNewsletter**](docs/NewsletterApi.md#getnewsletter) | **GET** /v1/newsletter/{newsletterID} | Get newsletter
+*NewsletterApi* | [**getSubscriber**](docs/NewsletterApi.md#getsubscriber) | **GET** /v1/newsletter/subscribers/{subscriberID} | Get subscriber
 *NewsletterApi* | [**listMailingLists**](docs/NewsletterApi.md#listmailinglists) | **GET** /v1/newsletter/mailing-lists | List mailing lists (admin)
 *NewsletterApi* | [**listNewsletters**](docs/NewsletterApi.md#listnewsletters) | **GET** /v1/newsletter/ | List newsletters (admin)
 *NewsletterApi* | [**listSubscribers**](docs/NewsletterApi.md#listsubscribers) | **GET** /v1/newsletter/subscribers | List subscribers (admin)
@@ -98,6 +120,13 @@ All URIs are relative to *http://localhost:8090*
 *RuntimeApi* | [**listRuntimeCommands**](docs/RuntimeApi.md#listruntimecommands) | **GET** /v1/runtime/commands | List runtime commands with delivery status counters (admin)
 *RuntimeApi* | [**listRuntimeInstances**](docs/RuntimeApi.md#listruntimeinstances) | **GET** /v1/runtime/instances | List runtime instances and websocket connection state (admin)
 *RuntimeApi* | [**renewRuntimeLease**](docs/RuntimeApi.md#renewruntimelease) | **POST** /v1/runtime/lease/renew | Renew runtime lease JWT
+*WebhooksApi* | [**createWebhookDestination**](docs/WebhooksApi.md#createwebhookdestinationoperation) | **POST** /v1/webhooks/endpoints/{endpointID}/destinations | createWebhookDestination
+*WebhooksApi* | [**createWebhookEndpoint**](docs/WebhooksApi.md#createwebhookendpointoperation) | **POST** /v1/webhooks/endpoints | createWebhookEndpoint
+*WebhooksApi* | [**disableWebhookDestination**](docs/WebhooksApi.md#disablewebhookdestination) | **DELETE** /v1/webhooks/destinations/{destinationID} | disableWebhookDestination
+*WebhooksApi* | [**disableWebhookEndpoint**](docs/WebhooksApi.md#disablewebhookendpoint) | **DELETE** /v1/webhooks/endpoints/{endpointID} | disableWebhookEndpoint
+*WebhooksApi* | [**patchWebhookDestination**](docs/WebhooksApi.md#patchwebhookdestinationoperation) | **PATCH** /v1/webhooks/destinations/{destinationID} | patchWebhookDestination
+*WebhooksApi* | [**patchWebhookEndpoint**](docs/WebhooksApi.md#patchwebhookendpointoperation) | **PATCH** /v1/webhooks/endpoints/{endpointID} | patchWebhookEndpoint
+*WebhooksApi* | [**receiveRelayWebhook**](docs/WebhooksApi.md#receiverelaywebhook) | **POST** /v1/webhooks/inbound/{endpointID} | Receive a signed or endpoint-token-authenticated relay event
 
 
 ### Models
@@ -113,8 +142,28 @@ All URIs are relative to *http://localhost:8090*
 - [ConnectLinkMetadata](docs/ConnectLinkMetadata.md)
 - [ConnectLinkTokenRequest](docs/ConnectLinkTokenRequest.md)
 - [ConnectLinkTokenResponse](docs/ConnectLinkTokenResponse.md)
+- [ConsoleBillingTotal](docs/ConsoleBillingTotal.md)
+- [ConsoleCheckout](docs/ConsoleCheckout.md)
+- [ConsoleCheckoutPage](docs/ConsoleCheckoutPage.md)
+- [ConsoleConnection](docs/ConsoleConnection.md)
+- [ConsoleConnectionPage](docs/ConsoleConnectionPage.md)
+- [ConsoleLicense](docs/ConsoleLicense.md)
+- [ConsoleOverview](docs/ConsoleOverview.md)
+- [ConsoleOverviewSection](docs/ConsoleOverviewSection.md)
+- [ConsoleSearchGroup](docs/ConsoleSearchGroup.md)
+- [ConsoleSearchResponse](docs/ConsoleSearchResponse.md)
+- [ConsoleSearchResult](docs/ConsoleSearchResult.md)
+- [ConsoleStripeEvent](docs/ConsoleStripeEvent.md)
+- [ConsoleStripeEventPage](docs/ConsoleStripeEventPage.md)
+- [ConsoleSubscription](docs/ConsoleSubscription.md)
+- [ConsoleSubscriptionPage](docs/ConsoleSubscriptionPage.md)
+- [ConsoleUsageBillingSummary](docs/ConsoleUsageBillingSummary.md)
+- [ConsoleUsageTotal](docs/ConsoleUsageTotal.md)
 - [CreateLicenseResponse](docs/CreateLicenseResponse.md)
 - [CreateLinkTokenResponse](docs/CreateLinkTokenResponse.md)
+- [CreateWebhookDestinationRequest](docs/CreateWebhookDestinationRequest.md)
+- [CreateWebhookEndpointRequest](docs/CreateWebhookEndpointRequest.md)
+- [CreateWebhookEndpointResponse](docs/CreateWebhookEndpointResponse.md)
 - [Entitlement](docs/Entitlement.md)
 - [EntitlementListResponse](docs/EntitlementListResponse.md)
 - [ErrorResponse](docs/ErrorResponse.md)
@@ -143,6 +192,8 @@ All URIs are relative to *http://localhost:8090*
 - [ManagedTransaction](docs/ManagedTransaction.md)
 - [ManagedTransactionListResponse](docs/ManagedTransactionListResponse.md)
 - [ManagedTransactionSyncResponse](docs/ManagedTransactionSyncResponse.md)
+- [NewsletterDeliveryMetadata](docs/NewsletterDeliveryMetadata.md)
+- [NewsletterDeliveryMetadataPage](docs/NewsletterDeliveryMetadataPage.md)
 - [NewsletterListResponse](docs/NewsletterListResponse.md)
 - [NewsletterSendRequest](docs/NewsletterSendRequest.md)
 - [NewsletterSendResponse](docs/NewsletterSendResponse.md)
@@ -150,6 +201,8 @@ All URIs are relative to *http://localhost:8090*
 - [NewsletterSubscribeRequest](docs/NewsletterSubscribeRequest.md)
 - [NewsletterSummary](docs/NewsletterSummary.md)
 - [PatchLicenseRequest](docs/PatchLicenseRequest.md)
+- [PatchWebhookDestinationRequest](docs/PatchWebhookDestinationRequest.md)
+- [PatchWebhookEndpointRequest](docs/PatchWebhookEndpointRequest.md)
 - [PlaidWebhookRequest](docs/PlaidWebhookRequest.md)
 - [PlaidWebhookResponse](docs/PlaidWebhookResponse.md)
 - [ProductID](docs/ProductID.md)
@@ -181,6 +234,10 @@ All URIs are relative to *http://localhost:8090*
 - [SubscriberListResponse](docs/SubscriberListResponse.md)
 - [SubscriberMailingListMembership](docs/SubscriberMailingListMembership.md)
 - [SubscriberSummary](docs/SubscriberSummary.md)
+- [SubscriberUnsubscribe](docs/SubscriberUnsubscribe.md)
+- [SubscriberUnsubscribePage](docs/SubscriberUnsubscribePage.md)
+- [SupportOverrideAudit](docs/SupportOverrideAudit.md)
+- [SupportOverrideAuditPage](docs/SupportOverrideAuditPage.md)
 - [SupportOverrideClearRequest](docs/SupportOverrideClearRequest.md)
 - [SupportOverrideGrantRequest](docs/SupportOverrideGrantRequest.md)
 - [SupportOverrideResponse](docs/SupportOverrideResponse.md)
@@ -189,6 +246,15 @@ All URIs are relative to *http://localhost:8090*
 - [UpsertEntitlementRequest](docs/UpsertEntitlementRequest.md)
 - [UsageDailyAgg](docs/UsageDailyAgg.md)
 - [UsageDailyListResponse](docs/UsageDailyListResponse.md)
+- [WebhookDeliveryMetadata](docs/WebhookDeliveryMetadata.md)
+- [WebhookDeliveryMetadataPage](docs/WebhookDeliveryMetadataPage.md)
+- [WebhookDestination](docs/WebhookDestination.md)
+- [WebhookDestinationPage](docs/WebhookDestinationPage.md)
+- [WebhookEndpoint](docs/WebhookEndpoint.md)
+- [WebhookEndpointPage](docs/WebhookEndpointPage.md)
+- [WebhookEventMetadata](docs/WebhookEventMetadata.md)
+- [WebhookEventMetadataPage](docs/WebhookEventMetadataPage.md)
+- [WebhookReceiveResponse](docs/WebhookReceiveResponse.md)
 
 ### Authorization
 

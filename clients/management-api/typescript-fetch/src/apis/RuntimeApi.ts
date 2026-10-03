@@ -118,6 +118,8 @@ export interface ListRuntimeCommandsRequest {
     commandType?: RuntimeCommandType;
     limit?: number;
     cursor?: string;
+    from?: Date;
+    to?: Date;
 }
 
 export interface ListRuntimeInstancesRequest {
@@ -127,6 +129,7 @@ export interface ListRuntimeInstancesRequest {
     connected?: boolean;
     limit?: number;
     cursor?: string;
+    status?: ListRuntimeInstancesStatusEnum;
 }
 
 /**
@@ -598,6 +601,14 @@ export class RuntimeApi extends runtime.BaseAPI {
             queryParameters['cursor'] = requestParameters['cursor'];
         }
 
+        if (requestParameters['from'] != null) {
+            queryParameters['from'] = (requestParameters['from'] as any).toISOString();
+        }
+
+        if (requestParameters['to'] != null) {
+            queryParameters['to'] = (requestParameters['to'] as any).toISOString();
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.accessToken) {
@@ -665,6 +676,10 @@ export class RuntimeApi extends runtime.BaseAPI {
 
         if (requestParameters['cursor'] != null) {
             queryParameters['cursor'] = requestParameters['cursor'];
+        }
+
+        if (requestParameters['status'] != null) {
+            queryParameters['status'] = requestParameters['status'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -752,3 +767,12 @@ export class RuntimeApi extends runtime.BaseAPI {
     }
 
 }
+
+/**
+ * @export
+ */
+export const ListRuntimeInstancesStatusEnum = {
+    Active: 'active',
+    Revoked: 'revoked'
+} as const;
+export type ListRuntimeInstancesStatusEnum = typeof ListRuntimeInstancesStatusEnum[keyof typeof ListRuntimeInstancesStatusEnum];

@@ -4,12 +4,160 @@ All URIs are relative to *http://localhost:8090*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
+| [**getNewsletter**](NewsletterApi.md#getnewsletter) | **GET** /v1/newsletter/{newsletterID} | Get newsletter |
+| [**getSubscriber**](NewsletterApi.md#getsubscriber) | **GET** /v1/newsletter/subscribers/{subscriberID} | Get subscriber |
 | [**listMailingLists**](NewsletterApi.md#listmailinglists) | **GET** /v1/newsletter/mailing-lists | List mailing lists (admin) |
 | [**listNewsletters**](NewsletterApi.md#listnewsletters) | **GET** /v1/newsletter/ | List newsletters (admin) |
 | [**listSubscribers**](NewsletterApi.md#listsubscribers) | **GET** /v1/newsletter/subscribers | List subscribers (admin) |
 | [**sendNewsletter**](NewsletterApi.md#sendnewsletter) | **POST** /v1/newsletter/send | Publish newsletter to subscribed recipients (admin) |
 | [**subscribeNewsletter**](NewsletterApi.md#subscribenewsletter) | **POST** /v1/newsletter/subscribe | Subscribe email to a mailing list (admin) |
 
+
+
+## getNewsletter
+
+> NewsletterSummary getNewsletter(newsletterID)
+
+Get newsletter
+
+### Example
+
+```ts
+import {
+  Configuration,
+  NewsletterApi,
+} from '@penny/openapi-management-api-client';
+import type { GetNewsletterRequest } from '@penny/openapi-management-api-client';
+
+async function example() {
+  console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
+  const config = new Configuration({
+    // Configure HTTP bearer authorization: AdminBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new NewsletterApi(config);
+
+  const body = {
+    // string
+    newsletterID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+  } satisfies GetNewsletterRequest;
+
+  try {
+    const data = await api.getNewsletter(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **newsletterID** | `string` |  | [Defaults to `undefined`] |
+
+### Return type
+
+[**NewsletterSummary**](NewsletterSummary.md)
+
+### Authorization
+
+[AdminBearer](../README.md#AdminBearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`, `text/plain`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Explicit stored metadata |  -  |
+| **400** | Bad request |  -  |
+| **401** | Unauthorized |  -  |
+| **404** | Not found |  -  |
+| **503** | Diagnostic data unavailable |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## getSubscriber
+
+> SubscriberSummary getSubscriber(subscriberID)
+
+Get subscriber
+
+### Example
+
+```ts
+import {
+  Configuration,
+  NewsletterApi,
+} from '@penny/openapi-management-api-client';
+import type { GetSubscriberRequest } from '@penny/openapi-management-api-client';
+
+async function example() {
+  console.log("🚀 Testing @penny/openapi-management-api-client SDK...");
+  const config = new Configuration({
+    // Configure HTTP bearer authorization: AdminBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new NewsletterApi(config);
+
+  const body = {
+    // string
+    subscriberID: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+  } satisfies GetSubscriberRequest;
+
+  try {
+    const data = await api.getSubscriber(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **subscriberID** | `string` |  | [Defaults to `undefined`] |
+
+### Return type
+
+[**SubscriberSummary**](SubscriberSummary.md)
+
+### Authorization
+
+[AdminBearer](../README.md#AdminBearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`, `text/plain`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Explicit stored metadata |  -  |
+| **400** | Bad request |  -  |
+| **401** | Unauthorized |  -  |
+| **404** | Not found |  -  |
+| **503** | Diagnostic data unavailable |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
 
 ## listMailingLists
@@ -92,7 +240,7 @@ example().catch(console.error);
 
 ## listNewsletters
 
-> NewsletterListResponse listNewsletters(mailingListId, status, limit, cursor)
+> NewsletterListResponse listNewsletters(q, mailingListId, status, limit, cursor)
 
 List newsletters (admin)
 
@@ -114,6 +262,8 @@ async function example() {
   const api = new NewsletterApi(config);
 
   const body = {
+    // string | Literal title or record ID search, at most 200 characters. (optional)
+    q: q_example,
     // string (optional)
     mailingListId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
     // NewsletterStatus (optional)
@@ -141,6 +291,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
+| **q** | `string` | Literal title or record ID search, at most 200 characters. | [Optional] [Defaults to `undefined`] |
 | **mailingListId** | `string` |  | [Optional] [Defaults to `undefined`] |
 | **status** | `NewsletterStatus` |  | [Optional] [Defaults to `undefined`] [Enum: draft, scheduled, published, canceled] |
 | **limit** | `number` |  | [Optional] [Defaults to `25`] |
@@ -169,6 +320,7 @@ example().catch(console.error);
 | **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
 
 
 ## listSubscribers
@@ -395,4 +547,3 @@ example().catch(console.error);
 | **500** | Internal server error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
-
