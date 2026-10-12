@@ -87,6 +87,24 @@ export interface ManagedTransaction {
     isoCurrencyCode?: string;
     /**
      *
+     * @type {string}
+     * @memberof ManagedTransaction
+     */
+    unofficialCurrencyCode?: string | null;
+    /**
+     * Plaid predecessor transaction ID for a pending-to-posted replacement.
+     * @type {string}
+     * @memberof ManagedTransaction
+     */
+    pendingTransactionId?: string | null;
+    /**
+     * Provider payment channel; defaults to other when unavailable on legacy records.
+     * @type {string}
+     * @memberof ManagedTransaction
+     */
+    paymentChannel?: string;
+    /**
+     *
      * @type {boolean}
      * @memberof ManagedTransaction
      */
@@ -160,6 +178,9 @@ export function ManagedTransactionFromJSONTyped(json: any, ignoreDiscriminator: 
         'merchantName': json['merchant_name'] == null ? undefined : json['merchant_name'],
         'amount': json['amount'],
         'isoCurrencyCode': json['iso_currency_code'] == null ? undefined : json['iso_currency_code'],
+        'unofficialCurrencyCode': json['unofficial_currency_code'] == null ? undefined : json['unofficial_currency_code'],
+        'pendingTransactionId': json['pending_transaction_id'] == null ? undefined : json['pending_transaction_id'],
+        'paymentChannel': json['payment_channel'] == null ? undefined : json['payment_channel'],
         'pending': json['pending'],
         'removed': json['removed'],
         'dateAdded': (new Date(json['date_added'])),
@@ -189,6 +210,9 @@ export function ManagedTransactionToJSONTyped(value?: ManagedTransaction | null,
         'merchant_name': value['merchantName'],
         'amount': value['amount'],
         'iso_currency_code': value['isoCurrencyCode'],
+        'unofficial_currency_code': value['unofficialCurrencyCode'],
+        'pending_transaction_id': value['pendingTransactionId'],
+        'payment_channel': value['paymentChannel'],
         'pending': value['pending'],
         'removed': value['removed'],
         'date_added': value['dateAdded'].toISOString(),

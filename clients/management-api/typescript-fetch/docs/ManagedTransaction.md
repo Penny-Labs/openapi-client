@@ -17,6 +17,9 @@ Name | Type
 `merchantName` | string
 `amount` | number
 `isoCurrencyCode` | string
+`unofficialCurrencyCode` | string
+`pendingTransactionId` | string
+`paymentChannel` | string
 `pending` | boolean
 `removed` | boolean
 `dateAdded` | Date
@@ -40,6 +43,9 @@ const example = {
   "merchantName": null,
   "amount": null,
   "isoCurrencyCode": null,
+  "unofficialCurrencyCode": null,
+  "pendingTransactionId": null,
+  "paymentChannel": null,
   "pending": null,
   "removed": null,
   "dateAdded": null,
@@ -58,4 +64,3 @@ console.log(exampleParsed)
 ```
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
-
